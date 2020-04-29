@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  },
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "sourceMap": true,
+    "module": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "declaration": false,
+    "outDir": "./dist/out-tsc",
+    "target": "es2015",
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "baseUrl": "./",
+    "moduleResolution": "node"
+  }
+}

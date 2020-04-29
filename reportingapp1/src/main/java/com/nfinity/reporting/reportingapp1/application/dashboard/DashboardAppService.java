@@ -1,0 +1,197 @@
+package com.nfinity.reporting.reportingapp1.application.dashboard;
+
+import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.domain.dashboard.IDashboardManager;
+import com.nfinity.reporting.reportingapp1.domain.model.QDashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
+import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
+import com.nfinity.reporting.reportingapp1.commons.search.*;
+import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
+import com.querydsl.core.BooleanBuilder;
+
+import java.util.*;
+import org.springframework.cache.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Pageable; 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
+
+@Service
+@Validated
+public class DashboardAppService implements IDashboardAppService {
+
+    static final int case1=1;
+	static final int case2=2;
+	static final int case3=3;
+	
+	@Autowired
+	private IDashboardManager _dashboardManager;
+
+    @Autowired
+	private UserManager _userManager;
+	@Autowired
+	private DashboardMapper mapper;
+	
+	@Autowired
+	private LoggingHelper logHelper;
+
+    @Transactional(propagation = Propagation.REQUIRED)
+	public CreateDashboardOutput create(CreateDashboardInput input) {
+
+		DashboardEntity dashboard = mapper.createDashboardInputToDashboardEntity(input);
+	  	if(input.getUserId()!=null) {
+			UserEntity foundUser = _userManager.findById(input.getUserId());
+			if(foundUser!=null) {
+				dashboard.setUser(foundUser);
+			}
+		}
+		DashboardEntity createdDashboard = _dashboardManager.create(dashboard);
+		
+		return mapper.dashboardEntityToCreateDashboardOutput(createdDashboard);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Dashboard", key = "#p0")
+	public UpdateDashboardOutput update(Long  dashboardId, UpdateDashboardInput input) {
+
+		DashboardEntity dashboard = mapper.updateDashboardInputToDashboardEntity(input);
+	  	if(input.getUserId()!=null) {
+			UserEntity foundUser = _userManager.findById(input.getUserId());
+			if(foundUser!=null) {
+				dashboard.setUser(foundUser);
+			}
+		}
+		
+		DashboardEntity updatedDashboard = _dashboardManager.update(dashboard);
+		
+		return mapper.dashboardEntityToUpdateDashboardOutput(updatedDashboard);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Dashboard", key = "#p0")
+	public void delete(Long dashboardId) {
+
+		DashboardEntity existing = _dashboardManager.findById(dashboardId) ; 
+		_dashboardManager.delete(existing);
+		
+	}
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Dashboard", key = "#p0")
+	public FindDashboardByIdOutput findById(Long dashboardId) {
+
+		DashboardEntity foundDashboard = _dashboardManager.findById(dashboardId);
+		if (foundDashboard == null)  
+			return null ; 
+ 	   
+ 	    FindDashboardByIdOutput output=mapper.dashboardEntityToFindDashboardByIdOutput(foundDashboard); 
+		return output;
+	}
+    //User
+	// ReST API Call - GET /dashboard/1/user
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Cacheable (value = "Dashboard", key="#p0")
+	public GetUserOutput getUser(Long dashboardId) {
+
+		DashboardEntity foundDashboard = _dashboardManager.findById(dashboardId);
+		if (foundDashboard == null) {
+			logHelper.getLogger().error("There does not exist a dashboard wth a id=%s", dashboardId);
+			return null;
+		}
+		UserEntity re = _dashboardManager.getUser(dashboardId);
+		return mapper.userEntityToGetUserOutput(re, foundDashboard);
+	}
+	
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Dashboard")
+	public List<FindDashboardByIdOutput> find(SearchCriteria search, Pageable pageable) throws Exception  {
+
+		Page<DashboardEntity> foundDashboard = _dashboardManager.findAll(search(search), pageable);
+		List<DashboardEntity> dashboardList = foundDashboard.getContent();
+		Iterator<DashboardEntity> dashboardIterator = dashboardList.iterator(); 
+		List<FindDashboardByIdOutput> output = new ArrayList<>();
+
+		while (dashboardIterator.hasNext()) {
+			output.add(mapper.dashboardEntityToFindDashboardByIdOutput(dashboardIterator.next()));
+		}
+		return output;
+	}
+	
+	public BooleanBuilder search(SearchCriteria search) throws Exception {
+
+		QDashboardEntity dashboard= QDashboardEntity.dashboardEntity;
+		if(search != null) {
+			Map<String,SearchFields> map = new HashMap<>();
+			for(SearchFields fieldDetails: search.getFields())
+			{
+				map.put(fieldDetails.getFieldName(),fieldDetails);
+			}
+			List<String> keysList = new ArrayList<String>(map.keySet());
+			checkProperties(keysList);
+			return searchKeyValuePair(dashboard, map,search.getJoinColumns());
+		}
+		return null;
+	}
+	
+	public void checkProperties(List<String> list) throws Exception  {
+		for (int i = 0; i < list.size(); i++) {
+			if(!(
+				list.get(i).replace("%20","").trim().equals("userId") ||
+				list.get(i).replace("%20","").trim().equals("description") ||
+				list.get(i).replace("%20","").trim().equals("id") ||
+				list.get(i).replace("%20","").trim().equals("reportdashboard") ||
+				list.get(i).replace("%20","").trim().equals("title") ||
+				list.get(i).replace("%20","").trim().equals("user")
+			)) 
+			{
+			 throw new Exception("Wrong URL Format: Property " + list.get(i) + " not found!" );
+			}
+		}
+	}
+	
+	public BooleanBuilder searchKeyValuePair(QDashboardEntity dashboard, Map<String,SearchFields> map,Map<String,String> joinColumns) {
+		BooleanBuilder builder = new BooleanBuilder();
+        
+		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
+            if(details.getKey().replace("%20","").trim().equals("description")) {
+				if(details.getValue().getOperator().equals("contains"))
+					builder.and(dashboard.description.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
+				else if(details.getValue().getOperator().equals("equals"))
+					builder.and(dashboard.description.eq(details.getValue().getSearchValue()));
+				else if(details.getValue().getOperator().equals("notEqual"))
+					builder.and(dashboard.description.ne(details.getValue().getSearchValue()));
+			}
+            if(details.getKey().replace("%20","").trim().equals("title")) {
+				if(details.getValue().getOperator().equals("contains"))
+					builder.and(dashboard.title.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
+				else if(details.getValue().getOperator().equals("equals"))
+					builder.and(dashboard.title.eq(details.getValue().getSearchValue()));
+				else if(details.getValue().getOperator().equals("notEqual"))
+					builder.and(dashboard.title.ne(details.getValue().getSearchValue()));
+			}
+		}
+		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
+        if(joinCol != null && joinCol.getKey().equals("userId")) {
+		    builder.and(dashboard.user.id.eq(Long.parseLong(joinCol.getValue())));
+		}
+        }
+		return builder;
+	}
+	
+	
+	public Map<String,String> parseReportdashboardJoinColumn(String keysString) {
+		
+		Map<String,String> joinColumnMap = new HashMap<String,String>();
+		joinColumnMap.put("dashboardId", keysString);
+		return joinColumnMap;
+	}
+    
+	
+}
+
+
