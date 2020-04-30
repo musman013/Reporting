@@ -3,6 +3,9 @@ package com.nfinity.reporting.reportingapp1.domain.reportdashboard;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 import javax.validation.constraints.Positive;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardId;
@@ -18,6 +21,8 @@ public interface IReportdashboardManager {
     ReportdashboardEntity update(ReportdashboardEntity reportdashboard);
 
     ReportdashboardEntity findById(ReportdashboardId reportdashboardId);
+    
+    List<ReportdashboardEntity> findByDashboardId(Long id);
 	
     Page<ReportdashboardEntity> findAll(Predicate predicate, Pageable pageable);
    

@@ -13,4 +13,10 @@ import org.javers.spring.annotation.JaversSpringDataAuditable;
 @RepositoryRestResource(collectionResourceRel = "report", path = "report")
 public interface IReportRepository extends JpaRepository<ReportEntity, Long>,QuerydslPredicateExecutor<ReportEntity> {
 
+	@Query("select r from ReportEntity r where r.id = ?1 and r.user.id = ?2")
+	ReportEntity findByReportIdAndUserId(Long reportId, Long userId);
+	
+	@Query("select r from ReportEntity r where r.user.id = ?1")
+	List<ReportEntity> findByUserId(Long userId);
+	
 }

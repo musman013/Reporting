@@ -1,70 +1,73 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
 import java.util.Date;
+
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+import org.json.simple.JSONObject;
+
 
 public class CreateReportInput {
+	
+	private String ctype;
 
-  private String ctype;
-  
-  private String description;
-  
-  private String query;
-  
-  @Length(max = 255, message = "reportType must be less than 255 characters")
-  private String reportType;
-  
-  private String title;
-  
-  private Long userId;
+	private String description;
 
-  public Long getUserId() {
-  	return userId;
-  }
+	private JSONObject query;
 
-  public void setUserId(Long userId){
-  	this.userId = userId;
-  }
-  public String getCtype() {
-  return ctype;
-  }
+	@Length(max = 255, message = "reportType must be less than 255 characters")
+	private String reportType;
 
-  public void setCtype(String ctype){
-  this.ctype = ctype;
-  }
-  
-  public String getDescription() {
-  return description;
-  }
+	private String title;
 
-  public void setDescription(String description){
-  this.description = description;
-  }
-  
-  public String getQuery() {
-  return query;
-  }
+	private Long userId;
 
-  public void setQuery(String query){
-  this.query = query;
-  }
-  
-  public String getReportType() {
-  return reportType;
-  }
+	public Long getUserId() {
+		return userId;
+	}
 
-  public void setReportType(String reportType){
-  this.reportType = reportType;
-  }
-  
-  public String getTitle() {
-  return title;
-  }
+	public void setUserId(Long userId){
+		this.userId = userId;
+	}
+	public String getCtype() {
+		return ctype;
+	}
 
-  public void setTitle(String title){
-  this.title = title;
-  }
-  
- 
+	public void setCtype(String ctype){
+		this.ctype = ctype;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+
+	public JSONObject getQuery() {
+		return query;
+	}
+
+	public void setQuery(JSONObject query){
+		this.query = query;
+	}
+
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType){
+		this.reportType = reportType;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title){
+		this.title = title;
+	}
+
+
 }

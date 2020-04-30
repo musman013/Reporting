@@ -25,6 +25,7 @@ import com.nfinity.reporting.reportingapp1.commons.domain.EmptyJsonResponse;
 import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;
 import com.nfinity.reporting.reportingapp1.application.reportdashboard.dto.*;
 import com.nfinity.reporting.reportingapp1.application.dashboard.DashboardAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboard.dto.FindDashboardByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.report.ReportAppService;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,7 @@ public class ReportdashboardController {
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
+   
     
     @PreAuthorize("hasAnyAuthority('REPORTDASHBOARDENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)

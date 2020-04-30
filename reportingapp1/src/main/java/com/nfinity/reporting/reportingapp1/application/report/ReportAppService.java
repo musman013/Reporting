@@ -1,5 +1,6 @@
 package com.nfinity.reporting.reportingapp1.application.report;
 
+import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.report.IReportManager;
 import com.nfinity.reporting.reportingapp1.domain.model.QReportEntity;
@@ -81,6 +82,15 @@ public class ReportAppService implements IReportAppService {
 		
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Report", key = "#p0")
+	public void delete(Long reportId, Long userId) {
+
+		ReportEntity existing = _reportManager.findByReportIdAndUserId(reportId, userId);
+		_reportManager.delete(existing);
+		
+	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Report", key = "#p0")
 	public FindReportByIdOutput findById(Long reportId) {
@@ -107,6 +117,36 @@ public class ReportAppService implements IReportAppService {
 		return mapper.userEntityToGetUserOutput(re, foundReport);
 	}
 	
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Report", key = "#p0")
+	public FindReportByIdOutput findByReportIdAndUserId(Long reportId, Long userId) {
+
+		ReportEntity foundReport = _reportManager.findByReportIdAndUserId(reportId, userId);
+		if (foundReport == null)  
+			return null ; 
+ 	   
+ 	    FindReportByIdOutput output = mapper.reportEntityToFindReportByIdOutput(foundReport); 
+		return output;
+	}
+    
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Report", key = "#p0")
+	public List<FindReportByIdOutput> findByUserId(Long userId) {
+
+		List<ReportEntity> reportList = _reportManager.findByUserId(userId);
+		if (reportList == null)  
+			return null ; 
+		
+		Iterator<ReportEntity> reportIterator = reportList.iterator(); 
+		List<FindReportByIdOutput> output = new ArrayList<>();
+
+		while (reportIterator.hasNext()) {
+			output.add(mapper.reportEntityToFindReportByIdOutput(reportIterator.next()));
+		}
+	
+		return output;
+	}
+    
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Report")
 	public List<FindReportByIdOutput> find(SearchCriteria search, Pageable pageable) throws Exception  {
@@ -177,14 +217,14 @@ public class ReportAppService implements IReportAppService {
 				else if(details.getValue().getOperator().equals("notEqual"))
 					builder.and(report.description.ne(details.getValue().getSearchValue()));
 			}
-            if(details.getKey().replace("%20","").trim().equals("query")) {
-				if(details.getValue().getOperator().equals("contains"))
-					builder.and(report.query.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
-				else if(details.getValue().getOperator().equals("equals"))
-					builder.and(report.query.eq(details.getValue().getSearchValue()));
-				else if(details.getValue().getOperator().equals("notEqual"))
-					builder.and(report.query.ne(details.getValue().getSearchValue()));
-			}
+//            if(details.getKey().replace("%20","").trim().equals("query")) {
+//				if(details.getValue().getOperator().equals("contains"))
+//					builder.and(report.query.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
+//				else if(details.getValue().getOperator().equals("equals"))
+//					builder.and(report.query.eq(details.getValue().getSearchValue()));
+//				else if(details.getValue().getOperator().equals("notEqual"))
+//					builder.and(report.query.ne(details.getValue().getSearchValue()));
+//			}
             if(details.getKey().replace("%20","").trim().equals("reportType")) {
 				if(details.getValue().getOperator().equals("contains"))
 					builder.and(report.reportType.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));

@@ -132,6 +132,9 @@ public class AppStartupRunner implements ApplicationRunner {
     	UserEntity admin = new UserEntity();
         admin.setUserName("admin");
         admin.setIsActive(true);
+        admin.setEmailAddress("Abc@g.com");
+        admin.setFirstName("test");
+    	admin.setLastName("admin");
         admin.setPassword(pEncoder.encode("secret"));
     	admin = userManager.create(admin);
     	UserroleEntity urole = new UserroleEntity();

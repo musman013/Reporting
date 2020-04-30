@@ -49,6 +49,11 @@ public class DashboardManager implements IDashboardManager {
 		}
 
 	}
+	
+	public DashboardEntity findByDashboardIdAndUserId(Long dashboardId, Long userId)
+	{
+		return _dashboardRepository.findByDashboardIdAndUserId(dashboardId, userId);
+	}
 
 	public Page<DashboardEntity> findAll(Predicate predicate, Pageable pageable) {
 

@@ -5,12 +5,20 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportInput;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 
 @Mapper(componentModel = "spring")
 public interface DashboardMapper {
 
    DashboardEntity createDashboardInputToDashboardEntity(CreateDashboardInput dashboardDto);
+   
+   DashboardEntity createDashboardAndReportInputToDashboardEntity(AddNewReportToNewDashboardInput dashboardDto);
+   
+   DashboardEntity addExistingReportToNewDashboardInputToDashboardEntity(AddExistingReportToNewDashboardInput input);
+   
+   ReportEntity createDashboardAndReportInputToReportEntity(CreateReportInput reportDto);
    
    @Mappings({ 
    @Mapping(source = "user.id", target = "userId"),                   

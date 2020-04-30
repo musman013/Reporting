@@ -19,10 +19,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.nfinity.reporting.reportingapp1.commons.search.SearchCriteria;
 import com.nfinity.reporting.reportingapp1.commons.search.SearchUtils;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.commons.application.OffsetBasedPageRequest;
 import com.nfinity.reporting.reportingapp1.commons.domain.EmptyJsonResponse;
 import com.nfinity.reporting.reportingapp1.application.dashboard.DashboardAppService;
 import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.application.report.ReportAppService;
+import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportInput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
 import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;
 import com.nfinity.reporting.reportingapp1.application.reportdashboard.dto.FindReportdashboardByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.authorization.user.UserAppService;
@@ -31,16 +36,20 @@ import java.util.Map;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 
 @RestController
+@SuppressWarnings({"unchecked", "rawtypes"})
 @RequestMapping("/dashboard")
 public class DashboardController {
 
 	@Autowired
 	private DashboardAppService _dashboardAppService;
-    
-    @Autowired
+
+	@Autowired
 	private ReportdashboardAppService  _reportdashboardAppService;
-    
-    @Autowired
+	
+	@Autowired
+	private ReportAppService _reportAppService;
+
+	@Autowired
 	private UserAppService  _userAppService;
 
 	@Autowired
@@ -48,65 +57,203 @@ public class DashboardController {
 
 	@Autowired
 	private Environment env;
-	
-	
-    
-    public DashboardController(DashboardAppService dashboardAppService, ReportdashboardAppService reportdashboardAppService, UserAppService userAppService,
-	 LoggingHelper helper) {
+
+
+
+	public DashboardController(DashboardAppService dashboardAppService, ReportdashboardAppService reportdashboardAppService, UserAppService userAppService,
+			LoggingHelper helper) {
 		super();
 		this._dashboardAppService = dashboardAppService;
-    	this._reportdashboardAppService = reportdashboardAppService;
-    	this._userAppService = userAppService;
+		this._reportdashboardAppService = reportdashboardAppService;
+		this._userAppService = userAppService;
 		this.logHelper = helper;
 	}
 
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_CREATE')")
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateDashboardOutput> create(@RequestBody @Valid CreateDashboardInput dashboard) {
 		CreateDashboardOutput output=_dashboardAppService.create(dashboard);
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-   
+
+	//	// ------------ Delete dashboard ------------
+	//	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_DELETE')")
+	//	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	//	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	//	public void delete(@PathVariable String id) {
+	//    FindDashboardByIdOutput output = _dashboardAppService.findById(Long.valueOf(id));
+	//	if (output == null) {
+	//		logHelper.getLogger().error("There does not exist a dashboard with a id=%s", id);
+	//		throw new EntityNotFoundException(
+	//			String.format("There does not exist a dashboard with a id=%s", id));
+	//	}
+	//    _dashboardAppService.delete(Long.valueOf(id));
+	//    }
+
 	// ------------ Delete dashboard ------------
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_DELETE')")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable String id) {
-    FindDashboardByIdOutput output = _dashboardAppService.findById(Long.valueOf(id));
-	if (output == null) {
-		logHelper.getLogger().error("There does not exist a dashboard with a id=%s", id);
-		throw new EntityNotFoundException(
-			String.format("There does not exist a dashboard with a id=%s", id));
+	@RequestMapping(value = "/{id}/userId/{userId}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable String id, @PathVariable String userId) {
+		FindDashboardByIdOutput output = _dashboardAppService.findByDashboardIdAndUserId(Long.valueOf(id),Long.valueOf(userId));
+		if (output == null) {
+			logHelper.getLogger().error("There does not exist a dashboard with a id=%s", id);
+			throw new EntityNotFoundException(
+					String.format("There does not exist a dashboard with a id=%s", id));
+		}
+		_dashboardAppService.delete(Long.valueOf(id),Long.valueOf(userId));
 	}
-    _dashboardAppService.delete(Long.valueOf(id));
-    }
-    
-	
+
+
+	//	// ------------ Update dashboard ------------
+	//    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
+	//	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	//	public ResponseEntity<UpdateDashboardOutput> update(@PathVariable String id, @RequestBody @Valid UpdateDashboardInput dashboard) {
+	//	    FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
+	//			
+	//		if (currentDashboard == null) {
+	//			logHelper.getLogger().error("Unable to update. Dashboard with id {} not found.", id);
+	//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+	//		}
+	//		
+	//	    return new ResponseEntity(_dashboardAppService.update(Long.valueOf(id),dashboard), HttpStatus.OK);
+	//	}
+
 	// ------------ Update dashboard ------------
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<UpdateDashboardOutput> update(@PathVariable String id, @RequestBody @Valid UpdateDashboardInput dashboard) {
-	    FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
-			
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
+	@RequestMapping(value = "/{id}/userId/{userId}", method = RequestMethod.PUT)
+	public ResponseEntity<UpdateDashboardOutput> update(@PathVariable String id,@PathVariable String userId, @RequestBody @Valid UpdateDashboardInput dashboard) {
+		FindDashboardByIdOutput currentDashboard = _dashboardAppService.findByDashboardIdAndUserId(Long.valueOf(id),Long.valueOf(userId));
+
 		if (currentDashboard == null) {
 			logHelper.getLogger().error("Unable to update. Dashboard with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
-		
-	    return new ResponseEntity(_dashboardAppService.update(Long.valueOf(id),dashboard), HttpStatus.OK);
+
+		return new ResponseEntity(_dashboardAppService.update(Long.valueOf(id),dashboard), HttpStatus.OK);
 	}
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindDashboardByIdOutput> findById(@PathVariable String id) {
-    FindDashboardByIdOutput output = _dashboardAppService.findById(Long.valueOf(id));
+		FindDashboardByIdOutput output = _dashboardAppService.findById(Long.valueOf(id));
+
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+
+		output.setReportDetails(_dashboardAppService.setReportsList(Long.valueOf(id)));
+
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/{id}/userId/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<FindDashboardByIdOutput> findByDasboardIdAndUserId(@PathVariable String id, @PathVariable String userId) {
+		FindDashboardByIdOutput output = _dashboardAppService.findByDashboardIdAndUserId(Long.valueOf(id),Long.valueOf(userId));
+
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/addNewReportToNewDashboard", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> addNewReportsToNewDasboard(@RequestBody AddNewReportToNewDashboardInput input) {
+		
+		Boolean status = _dashboardAppService.addNewReportsToNewDashboard(input);
+		return new ResponseEntity(status, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/addNewReportToExistingDashboard", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> addNewReportsToExistingDasboard(@RequestBody AddNewReportToExistingDashboardInput input) {
+		FindDashboardByIdOutput dashboard = _dashboardAppService.findById(input.getId());
+    	if(dashboard == null)
+    	{
+    		logHelper.getLogger().error("There does not exist a dashboard with a id=%s", input.getId());
+			throw new EntityNotFoundException(
+					String.format("There does not exist a dashboard with a id=%s", input.getId()));
+    	}
+		Boolean status = _dashboardAppService.addNewReportsToExistingDashboard(input);
+		return new ResponseEntity(status, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/addExistingReportToNewDashboard", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> addExistingReportsToNewDasboard(@RequestBody AddExistingReportToNewDashboardInput input) {
+		for(UpdateReportInput reportInput : input.getReportDetails())
+		{
+			FindReportByIdOutput report = _reportAppService.findById(reportInput.getId());
+			if(report == null) {
+				logHelper.getLogger().error("There does not exist a report with a id=%s", reportInput.getId());
+				throw new EntityNotFoundException(
+						String.format("There does not exist a report with a id=%s", reportInput.getId()));
+			}
+		}
+		
+		Boolean status = _dashboardAppService.addExistingReportsToNewDashboard(input);
+		return new ResponseEntity(status, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/addExistingReportToExistingDashboard", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> addExistingReportsToExistingDasboard(@RequestBody AddExistingReportToExistingDashboardInput input) {
+		FindDashboardByIdOutput dashboard = _dashboardAppService.findById(input.getId());
+    	if(dashboard == null)
+    	{
+    		logHelper.getLogger().error("There does not exist a dashboard with a id=%s", input.getId());
+			throw new EntityNotFoundException(
+					String.format("There does not exist a dashboard with a id=%s", input.getId()));
+    	}
+		
+		for(UpdateReportInput reportInput : input.getReportDetails())
+		{
+			FindReportByIdOutput report = _reportAppService.findById(reportInput.getId());
+			if(report == null) {
+				logHelper.getLogger().error("There does not exist a report with a id=%s", reportInput.getId());
+				throw new EntityNotFoundException(
+						String.format("There does not exist a report with a id=%s", reportInput.getId()));
+			}
+		}
+		
+		Boolean status = _dashboardAppService.addExistingReportsToExistingDashboard(input);
+		return new ResponseEntity(status, HttpStatus.OK);
+	}
+	
+	
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	@RequestMapping(value = "/userId/{userId}", method = RequestMethod.GET)
+	public ResponseEntity getDashboard(@PathVariable String userId, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+
+		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+		Map<String,String> joinColDetails=_userAppService.parseDashboardJoinColumn(userId);
+		if(joinColDetails== null)
+		{
+			logHelper.getLogger().error("Invalid Join Column");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		searchCriteria.setJoinColumns(joinColDetails);
+
+		List<FindDashboardByIdOutput> output = _dashboardAppService.find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
+		for(FindDashboardByIdOutput ds : output)
+			ds.setReportDetails(_dashboardAppService.setReportsList(Long.valueOf(ds.getId())));
+
 		return new ResponseEntity(output, HttpStatus.OK);
-	}
-    
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+	}   
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
@@ -114,18 +261,18 @@ public class DashboardController {
 
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		
+
 		return ResponseEntity.ok(_dashboardAppService.find(searchCriteria,Pageable));
 	}
-    
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
 	@RequestMapping(value = "/{id}/reportdashboard", method = RequestMethod.GET)
 	public ResponseEntity getReportdashboard(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
-   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-		
+
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		Map<String,String> joinColDetails=_dashboardAppService.parseReportdashboardJoinColumn(id);
 		if(joinColDetails== null)
@@ -134,19 +281,19 @@ public class DashboardController {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		searchCriteria.setJoinColumns(joinColDetails);
-		
-    	List<FindReportdashboardByIdOutput> output = _reportdashboardAppService.find(searchCriteria,pageable);
+
+		List<FindReportdashboardByIdOutput> output = _reportdashboardAppService.find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
-		
+
 		return new ResponseEntity(output, HttpStatus.OK);
 	}   
- 
-    @PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
+
+	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_READ')")
 	@RequestMapping(value = "/{id}/user", method = RequestMethod.GET)
 	public ResponseEntity<GetUserOutput> getUser(@PathVariable String id) {
-    GetUserOutput output= _dashboardAppService.getUser(Long.valueOf(id));
+		GetUserOutput output= _dashboardAppService.getUser(Long.valueOf(id));
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}

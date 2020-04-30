@@ -1,5 +1,6 @@
 package com.nfinity.reporting.reportingapp1.domain.report;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,16 @@ public class ReportManager implements IReportManager {
 		    return null;
 		}
 
+	}
+	
+	public ReportEntity findByReportIdAndUserId(Long reportId,Long userId)
+	{
+		return _reportRepository.findByReportIdAndUserId(reportId, userId);
+	}
+	
+	public List<ReportEntity> findByUserId(Long userId)
+	{
+		return _reportRepository.findByUserId(userId);
 	}
 
 	public Page<ReportEntity> findAll(Predicate predicate, Pageable pageable) {

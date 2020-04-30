@@ -65,6 +65,29 @@ public class ReportdashboardAppService implements IReportdashboardAppService {
 		
 		return mapper.reportdashboardEntityToCreateReportdashboardOutput(createdReportdashboard);
 	}
+    
+    public Boolean addReportsToDashboard(DashboardEntity dashboard, List<ReportEntity> reportsList)
+    {
+    	Boolean status = true;
+    	ReportdashboardEntity reportdashboard = new ReportdashboardEntity();
+    	reportdashboard.setDashboardId(dashboard.getId());
+    	reportdashboard.setDashboard(dashboard);
+    
+    	for(ReportEntity report : reportsList)
+    	{
+    		reportdashboard.setReport(report);
+    		reportdashboard.setReportId(report.getId());
+    		
+    		ReportdashboardEntity createdReportdashboard = _reportdashboardManager.create(reportdashboard);
+    		
+    		if(createdReportdashboard == null)
+    		{
+    		status = false;	
+    		}
+    	}
+    	
+    	return status;
+    }
 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(value="Reportdashboard", key = "#p0")

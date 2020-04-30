@@ -17,6 +17,7 @@ public interface IDashboardManager {
     DashboardEntity update(DashboardEntity dashboard);
 
     DashboardEntity findById(Long id);
+    DashboardEntity findByDashboardIdAndUserId(Long id, Long userId);
 	
     Page<DashboardEntity> findAll(Predicate predicate, Pageable pageable);
    

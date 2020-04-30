@@ -124,7 +124,7 @@ public class ReportControllerTest {
   		report.setCtype("1");
   		report.setDescription("1");
 		report.setId(1L);
-  		report.setQuery("1");
+  		//report.setQuery("1");
   		report.setReportType("1");
   		report.setTitle("1");
 		report.setUser(user);
@@ -137,7 +137,7 @@ public class ReportControllerTest {
 	    CreateReportInput report = new CreateReportInput();
   		report.setCtype("2");
   		report.setDescription("2");
-  		report.setQuery("2");
+  	//	report.setQuery("2");
   		report.setReportType("2");
   		report.setTitle("2");
 	    
@@ -175,7 +175,7 @@ public class ReportControllerTest {
   		report.setCtype("3");
   		report.setDescription("3");
 		report.setId(3L);
-  		report.setQuery("3");
+  	//	report.setQuery("3");
   		report.setReportType("3");
   		report.setTitle("3");
 		return report;
@@ -320,7 +320,7 @@ public class ReportControllerTest {
   		report.setCtype("111");
   		report.setDescription("111");
 		report.setId(111L);
-  		report.setQuery("111");
+  	//	report.setQuery("111");
   		report.setReportType("111");
   		report.setTitle("111");
 

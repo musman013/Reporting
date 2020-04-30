@@ -67,19 +67,33 @@ public class ReportController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
    
-	// ------------ Delete report ------------
-	@PreAuthorize("hasAnyAuthority('REPORTENTITY_DELETE')")
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable String id) {
-    FindReportByIdOutput output = _reportAppService.findById(Long.valueOf(id));
-	if (output == null) {
-		logHelper.getLogger().error("There does not exist a report with a id=%s", id);
-		throw new EntityNotFoundException(
-			String.format("There does not exist a report with a id=%s", id));
-	}
-    _reportAppService.delete(Long.valueOf(id));
-    }
+//	// ------------ Delete report ------------
+//	@PreAuthorize("hasAnyAuthority('REPORTENTITY_DELETE')")
+//	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+//	@RequestMapping(value = "/{id}/userId/{userId}", method = RequestMethod.DELETE)
+//	public void delete(@PathVariable String id) {
+//    FindReportByIdOutput output = _reportAppService.findById(Long.valueOf(id));
+//	if (output == null) {
+//		logHelper.getLogger().error("There does not exist a report with a id=%s", id);
+//		throw new EntityNotFoundException(
+//			String.format("There does not exist a report with a id=%s", id));
+//	}
+//    _reportAppService.delete(Long.valueOf(id));
+//    }
+    
+ // ------------ Delete report ------------
+ 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_DELETE')")
+ 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+ 	@RequestMapping(value = "/{id}/userId/{userId}", method = RequestMethod.DELETE)
+ 	public void delete(@PathVariable String id, @PathVariable String userId) {
+     FindReportByIdOutput output = _reportAppService.findByReportIdAndUserId(Long.valueOf(id), Long.valueOf(userId));
+ 	if (output == null) {
+ 		logHelper.getLogger().error("There does not exist a report with a id=%s", id);
+ 		throw new EntityNotFoundException(
+ 			String.format("There does not exist a report with a id=%s", id));
+ 	}
+     _reportAppService.delete(Long.valueOf(id), Long.valueOf(userId));
+     }
     
 	
 	// ------------ Update report ------------
@@ -95,10 +109,33 @@ public class ReportController {
 		
 	    return new ResponseEntity(_reportAppService.update(Long.valueOf(id),report), HttpStatus.OK);
 	}
+    
+//    @PreAuthorize("hasAnyAuthority('REPORTENTITY_READ')")
+//	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+//	public ResponseEntity<FindReportByIdOutput> findById(@PathVariable String id) {
+//    FindReportByIdOutput output = _reportAppService.findById(Long.valueOf(id));
+//		if (output == null) {
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//		
+//		return new ResponseEntity(output, HttpStatus.OK);
+//	}
+    
     @PreAuthorize("hasAnyAuthority('REPORTENTITY_READ')")
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<FindReportByIdOutput> findById(@PathVariable String id) {
-    FindReportByIdOutput output = _reportAppService.findById(Long.valueOf(id));
+	@RequestMapping(value = "/{id}/user/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<FindReportByIdOutput> findByReportIdAndUserId(@PathVariable String id, @PathVariable String userId) {
+    FindReportByIdOutput output = _reportAppService.findByReportIdAndUserId(Long.valueOf(id), Long.valueOf(userId));
+		if (output == null) {
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity(output, HttpStatus.OK);
+	}
+    
+    @PreAuthorize("hasAnyAuthority('REPORTENTITY_READ')")
+	@RequestMapping(value = "/userId/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<List<FindReportByIdOutput>> findByUserId(@PathVariable String userId) {
+    List<FindReportByIdOutput> output = _reportAppService.findByUserId(Long.valueOf(userId));
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
@@ -117,6 +154,8 @@ public class ReportController {
 		
 		return ResponseEntity.ok(_reportAppService.find(searchCriteria,Pageable));
 	}
+    
+    
     
     @PreAuthorize("hasAnyAuthority('REPORTENTITY_READ')")
 	@RequestMapping(value = "/{id}/reportdashboard", method = RequestMethod.GET)

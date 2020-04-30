@@ -1,17 +1,28 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard;
 
 import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.application.report.ReportMapper;
+import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportInput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
+import com.nfinity.reporting.reportingapp1.application.reportdashboard.IReportdashboardAppService;
+import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;
 import com.nfinity.reporting.reportingapp1.domain.dashboard.IDashboardManager;
 import com.nfinity.reporting.reportingapp1.domain.model.QDashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
+import com.nfinity.reporting.reportingapp1.domain.report.IReportManager;
+import com.nfinity.reporting.reportingapp1.domain.reportdashboard.IReportdashboardManager;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.*;
 import org.springframework.cache.annotation.*;
+import org.omg.stub.java.rmi._Remote_Stub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page; 
@@ -19,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.lang3.StringUtils;
 
 @Service
 @Validated
@@ -31,11 +41,23 @@ public class DashboardAppService implements IDashboardAppService {
 	
 	@Autowired
 	private IDashboardManager _dashboardManager;
+	
+	@Autowired
+	private ReportdashboardAppService _reportDashboardAppService;
+	
+	@Autowired
+	private IReportdashboardManager _reportDashboardManager;
 
     @Autowired
 	private UserManager _userManager;
 	@Autowired
 	private DashboardMapper mapper;
+	
+	@Autowired
+	private ReportMapper reportMapper;
+	
+	@Autowired
+	private IReportManager _reportManager;
 	
 	@Autowired
 	private LoggingHelper logHelper;
@@ -81,11 +103,47 @@ public class DashboardAppService implements IDashboardAppService {
 		
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@CacheEvict(value="Dashboard", key = "#p0")
+	public void delete(Long dashboardId, Long userId) {
+
+		DashboardEntity existing = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
+		_dashboardManager.delete(existing);
+		
+	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Dashboard", key = "#p0")
 	public FindDashboardByIdOutput findById(Long dashboardId) {
 
 		DashboardEntity foundDashboard = _dashboardManager.findById(dashboardId);
+		if (foundDashboard == null)  
+			return null ; 
+ 	   
+ 	    FindDashboardByIdOutput output=mapper.dashboardEntityToFindDashboardByIdOutput(foundDashboard); 
+		return output;
+	}
+	
+	 public List<FindReportByIdOutput> setReportsList(Long id)
+	 {
+		 List<ReportdashboardEntity> reportDashboardList = _reportDashboardManager.findByDashboardId(id);
+		 List<FindReportByIdOutput> reportDetails = new ArrayList<>();
+		 for(ReportdashboardEntity rd : reportDashboardList)
+		 {
+			 
+			 FindReportByIdOutput output= reportMapper.reportEntityToFindReportByIdOutput(rd.getReport()); 
+			 reportDetails.add(output);
+		 }
+		 
+		 return reportDetails;
+		 
+	 }
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Cacheable(value = "Dashboard", key = "#p0")
+	public FindDashboardByIdOutput findByDashboardIdAndUserId(Long dashboardId, Long userId) {
+
+		DashboardEntity foundDashboard = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
 		if (foundDashboard == null)  
 			return null ; 
  	   
@@ -121,6 +179,99 @@ public class DashboardAppService implements IDashboardAppService {
 		}
 		return output;
 	}
+    
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+   	@Cacheable(value = "Dashboard")
+    public Boolean addNewReportsToNewDashboard(AddNewReportToNewDashboardInput input)
+    {
+    	DashboardEntity dashboard = mapper.createDashboardAndReportInputToDashboardEntity(input);
+    	UserEntity foundUser = null;
+    	if(input.getUserId()!=null) {
+			foundUser = _userManager.findById(input.getUserId());
+			if(foundUser!=null) {
+				dashboard.setUser(foundUser);
+			}
+		}
+    	
+    	DashboardEntity createdDashboard = _dashboardManager.create(dashboard);
+    	
+    	List<ReportEntity> reportEntities = new ArrayList<>();
+    	for(CreateReportInput report : input.getReportDetails())
+    	{
+    		ReportEntity reportEntity = mapper.createDashboardAndReportInputToReportEntity(report);
+    		if(foundUser!=null) {
+    			reportEntity.setUser(foundUser);
+			}
+    		
+    		ReportEntity createdReport = _reportManager.create(reportEntity);
+    		reportEntities.add(createdReport);
+    	}
+    	
+    	return _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	
+    }
+    
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+   	@Cacheable(value = "Dashboard")
+    public Boolean addNewReportsToExistingDashboard(AddNewReportToExistingDashboardInput input)
+    {
+    	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
+    	List<ReportEntity> reportEntities = new ArrayList<>();
+    	for(CreateReportInput report : input.getReportDetails())
+    	{
+    		ReportEntity reportEntity = mapper.createDashboardAndReportInputToReportEntity(report);
+    		reportEntity.setUser(dashboard.getUser());
+    		
+    		ReportEntity createdReport = _reportManager.create(reportEntity);
+    		reportEntities.add(createdReport);
+    	}
+    	
+    	return _reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	
+    }
+    
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+   	@Cacheable(value = "Dashboard")
+    public Boolean addExistingReportsToNewDashboard(AddExistingReportToNewDashboardInput input)
+    {
+    	DashboardEntity dashboard = mapper.addExistingReportToNewDashboardInputToDashboardEntity(input);
+    	UserEntity foundUser = null;
+    	if(input.getUserId()!=null) {
+			foundUser = _userManager.findById(input.getUserId());
+			if(foundUser!=null) {
+				dashboard.setUser(foundUser);
+			}
+		}
+    	
+    	DashboardEntity createdDashboard = _dashboardManager.create(dashboard);
+    	
+    	List<ReportEntity> reportEntities = new ArrayList<>();
+    	for(UpdateReportInput report : input.getReportDetails())
+    	{
+    		ReportEntity reportEntity = _reportManager.findById(report.getId());
+    		reportEntities.add(reportEntity);
+    	}
+    	
+    	return _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	
+    }
+    
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+   	@Cacheable(value = "Dashboard")
+    public Boolean addExistingReportsToExistingDashboard(AddExistingReportToExistingDashboardInput input)
+    {
+    	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
+    	List<ReportEntity> reportEntities = new ArrayList<>();
+    	for(UpdateReportInput report : input.getReportDetails())
+    	{
+    		ReportEntity reportEntity = _reportManager.findById(report.getId());
+    		reportEntities.add(reportEntity);
+    	}
+    	
+    	return _reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	
+    }
+    
 	
 	public BooleanBuilder search(SearchCriteria search) throws Exception {
 

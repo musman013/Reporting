@@ -1,12 +1,14 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
 import java.util.Date;
+
+import org.json.simple.JSONObject;
 public class UpdateReportOutput {
 
   private String ctype;
   private String description;
   private Long id;
-  private String query;
+  private JSONObject query;
   private String reportType;
   private String title;
   private Long userId;
@@ -52,11 +54,11 @@ public class UpdateReportOutput {
   	this.id = id;
   }
   
-  public String getQuery() {
+  public JSONObject getQuery() {
   	return query;
   }
 
-  public void setQuery(String query){
+  public void setQuery(JSONObject query){
   	this.query = query;
   }
   

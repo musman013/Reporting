@@ -2,9 +2,11 @@ package com.nfinity.reporting.reportingapp1.domain.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.json.simple.JSONObject;
+import com.nfinity.reporting.reportingapp1.JSONObjectConverter;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Date;
 
 @Entity
 @Table(name = "report", schema = "reporting")
@@ -13,7 +15,7 @@ public class ReportEntity implements Serializable {
   	private String ctype;
   	private String description;
 	private Long id;
-  	private String query;
+  	private JSONObject query;
   	private String reportType;
   	private String title;
  
@@ -52,12 +54,13 @@ public class ReportEntity implements Serializable {
   	}
   
   	@Basic
-  	@Column(name = "query", nullable = true, length =255)
-  	public String getQuery() {
+  	@Column(columnDefinition = "TEXT",name = "query", nullable = true, length =255)
+  	@Convert(converter= JSONObjectConverter.class)
+  	public JSONObject getQuery() {
   		return query;
   	}
 
-  	public void setQuery(String query) {
+  	public void setQuery(JSONObject query) {
   		this.query = query;
   	}
   
@@ -81,6 +84,7 @@ public class ReportEntity implements Serializable {
   	} 
  
   	private Set<ReportdashboardEntity> reportdashboardSet = new HashSet<ReportdashboardEntity>(); 
+  	
   	@Basic
   	@Column(name = "title", nullable = true, length =255)
   	public String getTitle() {

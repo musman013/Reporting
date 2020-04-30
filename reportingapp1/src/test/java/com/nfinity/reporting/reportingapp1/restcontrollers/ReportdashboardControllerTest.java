@@ -158,7 +158,7 @@ public class ReportdashboardControllerTest {
   		report.setCtype("2");
   		report.setDescription("2");
 		report.setId(2L);
-  		report.setQuery("2");
+  //		report.setQuery("2");
   		report.setReportType("2");
   		report.setTitle("2");
 		report=reportRepository.save(report);
@@ -188,7 +188,7 @@ public class ReportdashboardControllerTest {
   		report.setCtype("1");
   		report.setDescription("1");
 		report.setId(1L);
-  		report.setQuery("1");
+  //		report.setQuery("1");
   		report.setReportType("1");
   		report.setTitle("1");
 		return report;
@@ -274,7 +274,7 @@ public class ReportdashboardControllerTest {
   		report.setCtype("3");
   		report.setDescription("3");
 		report.setId(3L);
-  		report.setQuery("3");
+  	//	report.setQuery("3");
   		report.setReportType("3");
   		report.setTitle("3");
 		report=reportRepository.save(report);
@@ -325,7 +325,7 @@ public class ReportdashboardControllerTest {
   		report.setCtype("5");
   		report.setDescription("5");
 		report.setId(5L);
-  		report.setQuery("5");
+  	//	report.setQuery("5");
   		report.setReportType("5");
   		report.setTitle("5");
 		report=reportRepository.save(report);
