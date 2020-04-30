@@ -16,6 +16,15 @@ public class UpdateReportInput {
 	private String reportType;
 	private String title;
 	private Long userId;
+	private String reportWidth;
+	 
+  	public String getReportWidth() {
+		return reportWidth;
+	}
+
+	public void setReportWidth(String reportWidth) {
+		this.reportWidth = reportWidth;
+	}
 
 	public Long getUserId() {
 		return userId;

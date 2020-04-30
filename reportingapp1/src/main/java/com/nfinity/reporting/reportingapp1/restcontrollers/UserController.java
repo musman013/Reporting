@@ -193,56 +193,56 @@ public class UserController {
 		return ResponseEntity.ok(_userAppService.find(searchCriteria,Pageable));
 	}
     
-    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
-	@RequestMapping(value = "/{id}/dashboard", method = RequestMethod.GET)
-	public ResponseEntity getDashboard(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
-   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-		
-		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_userAppService.parseDashboardJoinColumn(id);
-		if(joinColDetails== null)
-		{
-			logHelper.getLogger().error("Invalid Join Column");
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		searchCriteria.setJoinColumns(joinColDetails);
-		
-    	List<FindDashboardByIdOutput> output = _dashboardAppService.find(searchCriteria,pageable);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		
-		return new ResponseEntity(output, HttpStatus.OK);
-	}   
- 
-    
-    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
-	@RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
-	public ResponseEntity getReport(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
-   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-		
-		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_userAppService.parseReportJoinColumn(id);
-		if(joinColDetails== null)
-		{
-			logHelper.getLogger().error("Invalid Join Column");
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		searchCriteria.setJoinColumns(joinColDetails);
-		
-    	List<FindReportByIdOutput> output = _reportAppService.find(searchCriteria,pageable);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		
-		return new ResponseEntity(output, HttpStatus.OK);
-	}   
+//    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
+//	@RequestMapping(value = "/{id}/dashboard", method = RequestMethod.GET)
+//	public ResponseEntity getDashboard(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+//   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+//		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+//
+//		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+//		
+//		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+//		Map<String,String> joinColDetails=_userAppService.parseDashboardJoinColumn(id);
+//		if(joinColDetails== null)
+//		{
+//			logHelper.getLogger().error("Invalid Join Column");
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//		searchCriteria.setJoinColumns(joinColDetails);
+//		
+//    	List<FindDashboardByIdOutput> output = _dashboardAppService.find(searchCriteria,pageable);
+//		if (output == null) {
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//		
+//		return new ResponseEntity(output, HttpStatus.OK);
+//	}   
+// 
+//    
+//    @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
+//	@RequestMapping(value = "/{id}/report", method = RequestMethod.GET)
+//	public ResponseEntity getReport(@PathVariable String id, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
+//   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+//		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+//
+//		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+//		
+//		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
+//		Map<String,String> joinColDetails=_userAppService.parseReportJoinColumn(id);
+//		if(joinColDetails== null)
+//		{
+//			logHelper.getLogger().error("Invalid Join Column");
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//		searchCriteria.setJoinColumns(joinColDetails);
+//		
+//    	List<FindReportByIdOutput> output = _reportAppService.find(searchCriteria,pageable);
+//		if (output == null) {
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//		
+//		return new ResponseEntity(output, HttpStatus.OK);
+//	}   
  
     @PreAuthorize("hasAnyAuthority('USERENTITY_READ')")
    	@RequestMapping(value = "/{id}/userpermission", method = RequestMethod.GET)

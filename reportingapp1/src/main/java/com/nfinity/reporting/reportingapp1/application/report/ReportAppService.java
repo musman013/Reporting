@@ -82,14 +82,14 @@ public class ReportAppService implements IReportAppService {
 		
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Report", key = "#p0")
-	public void delete(Long reportId, Long userId) {
-
-		ReportEntity existing = _reportManager.findByReportIdAndUserId(reportId, userId);
-		_reportManager.delete(existing);
-		
-	}
+//	@Transactional(propagation = Propagation.REQUIRED)
+//	@CacheEvict(value="Report", key = "#p0")
+//	public void delete(Long reportId, Long userId) {
+//
+//		ReportEntity existing = _reportManager.findByReportIdAndUserId(reportId, userId);
+//		_reportManager.delete(existing);
+//		
+//	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Report", key = "#p0")
@@ -117,17 +117,17 @@ public class ReportAppService implements IReportAppService {
 		return mapper.userEntityToGetUserOutput(re, foundReport);
 	}
 	
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Report", key = "#p0")
-	public FindReportByIdOutput findByReportIdAndUserId(Long reportId, Long userId) {
-
-		ReportEntity foundReport = _reportManager.findByReportIdAndUserId(reportId, userId);
-		if (foundReport == null)  
-			return null ; 
- 	   
- 	    FindReportByIdOutput output = mapper.reportEntityToFindReportByIdOutput(foundReport); 
-		return output;
-	}
+//    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	@Cacheable(value = "Report", key = "#p0")
+//	public FindReportByIdOutput findByReportIdAndUserId(Long reportId, Long userId) {
+//
+//		ReportEntity foundReport = _reportManager.findByReportIdAndUserId(reportId, userId);
+//		if (foundReport == null)  
+//			return null ; 
+// 	   
+// 	    FindReportByIdOutput output = mapper.reportEntityToFindReportByIdOutput(foundReport); 
+//		return output;
+//	}
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Report", key = "#p0")

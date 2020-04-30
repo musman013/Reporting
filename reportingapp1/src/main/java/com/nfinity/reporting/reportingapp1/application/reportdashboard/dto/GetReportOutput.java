@@ -11,6 +11,15 @@ public class GetReportOutput {
   private JSONObject query;
   private String reportType;
   private String title;
+  private String reportWidth;
+  
+	public String getReportWidth() {
+		return reportWidth;
+	}
+
+	public void setReportWidth(String reportWidth) {
+		this.reportWidth = reportWidth;
+	}
 
   private Long reportdashboardDashboardId;
   

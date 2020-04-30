@@ -18,8 +18,19 @@ public class ReportEntity implements Serializable {
   	private JSONObject query;
   	private String reportType;
   	private String title;
+  	private String reportWidth;
  
-  	public ReportEntity() {
+  	@Basic
+  	@Column(name = "reportWidth" , nullable= true, length = 255)
+  	public String getReportWidth() {
+		return reportWidth;
+	}
+
+	public void setReportWidth(String reportWidth) {
+		this.reportWidth = reportWidth;
+	}
+
+	public ReportEntity() {
   	}
 
   	@Basic

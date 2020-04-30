@@ -103,14 +103,14 @@ public class DashboardAppService implements IDashboardAppService {
 		
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Dashboard", key = "#p0")
-	public void delete(Long dashboardId, Long userId) {
-
-		DashboardEntity existing = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
-		_dashboardManager.delete(existing);
-		
-	}
+//	@Transactional(propagation = Propagation.REQUIRED)
+//	@CacheEvict(value="Dashboard", key = "#p0")
+//	public void delete(Long dashboardId, Long userId) {
+//
+//		DashboardEntity existing = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
+//		_dashboardManager.delete(existing);
+//		
+//	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Dashboard", key = "#p0")
@@ -139,17 +139,18 @@ public class DashboardAppService implements IDashboardAppService {
 		 
 	 }
 	
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Dashboard", key = "#p0")
-	public FindDashboardByIdOutput findByDashboardIdAndUserId(Long dashboardId, Long userId) {
-
-		DashboardEntity foundDashboard = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
-		if (foundDashboard == null)  
-			return null ; 
- 	   
- 	    FindDashboardByIdOutput output=mapper.dashboardEntityToFindDashboardByIdOutput(foundDashboard); 
-		return output;
-	}
+//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	@Cacheable(value = "Dashboard", key = "#p0")
+//	public FindDashboardByIdOutput findByDashboardIdAndUserId(Long dashboardId, Long userId) {
+//
+//		DashboardEntity foundDashboard = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
+//		if (foundDashboard == null)  
+//			return null ; 
+// 	   
+// 	    FindDashboardByIdOutput output=mapper.dashboardEntityToFindDashboardByIdOutput(foundDashboard); 
+//		return output;
+//	}
+	 
     //User
 	// ReST API Call - GET /dashboard/1/user
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -181,7 +182,6 @@ public class DashboardAppService implements IDashboardAppService {
 	}
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-   	@Cacheable(value = "Dashboard")
     public Boolean addNewReportsToNewDashboard(AddNewReportToNewDashboardInput input)
     {
     	DashboardEntity dashboard = mapper.createDashboardAndReportInputToDashboardEntity(input);
@@ -212,7 +212,6 @@ public class DashboardAppService implements IDashboardAppService {
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-   	@Cacheable(value = "Dashboard")
     public Boolean addNewReportsToExistingDashboard(AddNewReportToExistingDashboardInput input)
     {
     	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
@@ -231,7 +230,6 @@ public class DashboardAppService implements IDashboardAppService {
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-   	@Cacheable(value = "Dashboard")
     public Boolean addExistingReportsToNewDashboard(AddExistingReportToNewDashboardInput input)
     {
     	DashboardEntity dashboard = mapper.addExistingReportToNewDashboardInputToDashboardEntity(input);
@@ -257,7 +255,6 @@ public class DashboardAppService implements IDashboardAppService {
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-   	@Cacheable(value = "Dashboard")
     public Boolean addExistingReportsToExistingDashboard(AddExistingReportToExistingDashboardInput input)
     {
     	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
