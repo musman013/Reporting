@@ -182,7 +182,7 @@ public class DashboardAppService implements IDashboardAppService {
 	}
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public Boolean addNewReportsToNewDashboard(AddNewReportToNewDashboardInput input)
+    public FindDashboardByIdOutput addNewReportsToNewDashboard(AddNewReportToNewDashboardInput input)
     {
     	DashboardEntity dashboard = mapper.createDashboardAndReportInputToDashboardEntity(input);
     	UserEntity foundUser = null;
@@ -194,7 +194,7 @@ public class DashboardAppService implements IDashboardAppService {
 		}
     	
     	DashboardEntity createdDashboard = _dashboardManager.create(dashboard);
-    	
+    	List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
     	List<ReportEntity> reportEntities = new ArrayList<>();
     	for(CreateReportInput report : input.getReportDetails())
     	{
@@ -205,16 +205,23 @@ public class DashboardAppService implements IDashboardAppService {
     		
     		ReportEntity createdReport = _reportManager.create(reportEntity);
     		reportEntities.add(createdReport);
+    		reportsOutput.add(reportMapper.reportEntityToFindReportByIdOutput(createdReport));
     	}
     	
-    	return _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	 _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	
+    	FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardEntityToFindDashboardByIdOutput(createdDashboard);
+    	dashboardOuputDto.setReportDetails(reportsOutput);
+    	
+    	return dashboardOuputDto;
     	
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public Boolean addNewReportsToExistingDashboard(AddNewReportToExistingDashboardInput input)
+    public FindDashboardByIdOutput addNewReportsToExistingDashboard(AddNewReportToExistingDashboardInput input)
     {
     	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
+    	List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
     	List<ReportEntity> reportEntities = new ArrayList<>();
     	for(CreateReportInput report : input.getReportDetails())
     	{
@@ -223,14 +230,21 @@ public class DashboardAppService implements IDashboardAppService {
     		
     		ReportEntity createdReport = _reportManager.create(reportEntity);
     		reportEntities.add(createdReport);
+    		reportsOutput.add(reportMapper.reportEntityToFindReportByIdOutput(createdReport));
     	}
     	
-    	return _reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	_reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	
+    	FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardEntityToFindDashboardByIdOutput(dashboard);
+    	dashboardOuputDto.setReportDetails(reportsOutput);
+    	
+    	return dashboardOuputDto;
+    	
     	
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public Boolean addExistingReportsToNewDashboard(AddExistingReportToNewDashboardInput input)
+    public FindDashboardByIdOutput addExistingReportsToNewDashboard(AddExistingReportToNewDashboardInput input)
     {
     	DashboardEntity dashboard = mapper.addExistingReportToNewDashboardInputToDashboardEntity(input);
     	UserEntity foundUser = null;
@@ -242,30 +256,44 @@ public class DashboardAppService implements IDashboardAppService {
 		}
     	
     	DashboardEntity createdDashboard = _dashboardManager.create(dashboard);
-    	
+    	List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
     	List<ReportEntity> reportEntities = new ArrayList<>();
     	for(UpdateReportInput report : input.getReportDetails())
     	{
     		ReportEntity reportEntity = _reportManager.findById(report.getId());
     		reportEntities.add(reportEntity);
+    		reportsOutput.add(reportMapper.reportEntityToFindReportByIdOutput(reportEntity));
     	}
     	
-    	return _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	 _reportDashboardAppService.addReportsToDashboard(createdDashboard, reportEntities);
+    	
+    	FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardEntityToFindDashboardByIdOutput(createdDashboard);
+    	dashboardOuputDto.setReportDetails(reportsOutput);
+    	
+    	return dashboardOuputDto;
+    	
     	
     }
     
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public Boolean addExistingReportsToExistingDashboard(AddExistingReportToExistingDashboardInput input)
+    public FindDashboardByIdOutput addExistingReportsToExistingDashboard(AddExistingReportToExistingDashboardInput input)
     {
     	DashboardEntity dashboard = _dashboardManager.findById(input.getId());
     	List<ReportEntity> reportEntities = new ArrayList<>();
+    	List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
     	for(UpdateReportInput report : input.getReportDetails())
     	{
     		ReportEntity reportEntity = _reportManager.findById(report.getId());
     		reportEntities.add(reportEntity);
+    		reportsOutput.add(reportMapper.reportEntityToFindReportByIdOutput(reportEntity));
     	}
     	
-    	return _reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	 _reportDashboardAppService.addReportsToDashboard(dashboard, reportEntities);
+    	
+    	FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardEntityToFindDashboardByIdOutput(dashboard);
+    	dashboardOuputDto.setReportDetails(reportsOutput);
+    	
+    	return dashboardOuputDto;
     	
     }
     

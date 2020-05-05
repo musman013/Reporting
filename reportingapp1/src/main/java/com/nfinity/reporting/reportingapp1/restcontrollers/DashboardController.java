@@ -133,15 +133,15 @@ public class DashboardController {
 
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_CREATE')")
 	@RequestMapping(value = "/addNewReportToNewDashboard", method = RequestMethod.POST)
-	public ResponseEntity<Boolean> addNewReportsToNewDasboard(@RequestBody AddNewReportToNewDashboardInput input) {
+	public ResponseEntity<FindDashboardByIdOutput> addNewReportsToNewDasboard(@RequestBody AddNewReportToNewDashboardInput input) {
 		
-		Boolean status = _dashboardAppService.addNewReportsToNewDashboard(input);
-		return new ResponseEntity(status, HttpStatus.OK);
+		FindDashboardByIdOutput output  = _dashboardAppService.addNewReportsToNewDashboard(input);
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/addNewReportToExistingDashboard", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> addNewReportsToExistingDasboard(@RequestBody AddNewReportToExistingDashboardInput input) {
+	public ResponseEntity<FindDashboardByIdOutput> addNewReportsToExistingDasboard(@RequestBody AddNewReportToExistingDashboardInput input) {
 		FindDashboardByIdOutput dashboard = _dashboardAppService.findById(input.getId());
     	if(dashboard == null)
     	{
@@ -149,13 +149,14 @@ public class DashboardController {
 			throw new EntityNotFoundException(
 					String.format("There does not exist a dashboard with a id=%s", input.getId()));
     	}
-		Boolean status = _dashboardAppService.addNewReportsToExistingDashboard(input);
-		return new ResponseEntity(status, HttpStatus.OK);
+    	FindDashboardByIdOutput output = _dashboardAppService.addNewReportsToExistingDashboard(input);
+    	
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_CREATE')")
 	@RequestMapping(value = "/addExistingReportToNewDashboard", method = RequestMethod.POST)
-	public ResponseEntity<Boolean> addExistingReportsToNewDasboard(@RequestBody AddExistingReportToNewDashboardInput input) {
+	public ResponseEntity<FindDashboardByIdOutput> addExistingReportsToNewDasboard(@RequestBody AddExistingReportToNewDashboardInput input) {
 		for(UpdateReportInput reportInput : input.getReportDetails())
 		{
 			FindReportByIdOutput report = _reportAppService.findById(reportInput.getId());
@@ -166,13 +167,14 @@ public class DashboardController {
 			}
 		}
 		
-		Boolean status = _dashboardAppService.addExistingReportsToNewDashboard(input);
-		return new ResponseEntity(status, HttpStatus.OK);
+		FindDashboardByIdOutput output  = _dashboardAppService.addExistingReportsToNewDashboard(input);
+		
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/addExistingReportToExistingDashboard", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> addExistingReportsToExistingDasboard(@RequestBody AddExistingReportToExistingDashboardInput input) {
+	public ResponseEntity<FindDashboardByIdOutput> addExistingReportsToExistingDasboard(@RequestBody AddExistingReportToExistingDashboardInput input) {
 		FindDashboardByIdOutput dashboard = _dashboardAppService.findById(input.getId());
     	if(dashboard == null)
     	{
@@ -191,8 +193,8 @@ public class DashboardController {
 			}
 		}
 		
-		Boolean status = _dashboardAppService.addExistingReportsToExistingDashboard(input);
-		return new ResponseEntity(status, HttpStatus.OK);
+		FindDashboardByIdOutput output  = _dashboardAppService.addExistingReportsToExistingDashboard(input);
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	
