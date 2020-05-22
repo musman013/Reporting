@@ -5,7 +5,7 @@ import com.nfinity.reporting.reportingapp1.application.authorization.user.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface IUserMapper {
 
    UserEntity createUserInputToUserEntity(CreateUserInput userDto);
    

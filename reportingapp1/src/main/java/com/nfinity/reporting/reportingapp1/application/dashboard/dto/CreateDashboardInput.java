@@ -1,9 +1,5 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
-import java.util.Date;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
-
 public class CreateDashboardInput {
 
   private String description;

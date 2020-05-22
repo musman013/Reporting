@@ -3,6 +3,9 @@ package com.nfinity.reporting.reportingapp1.domain.authorization.userrole;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 import javax.validation.constraints.Positive;
 import com.nfinity.reporting.reportingapp1.domain.model.UserroleEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserroleId;
@@ -19,6 +22,8 @@ public interface IUserroleManager {
     UserroleEntity update(UserroleEntity userrole);
 
     UserroleEntity findById(UserroleId userroleId);
+    
+    List<UserroleEntity> findByRoleId(Long roleId);
 	
     Page<UserroleEntity> findAll(Predicate predicate, Pageable pageable);
    

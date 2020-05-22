@@ -19,7 +19,6 @@ public interface IReportAppService {
     FindReportByIdOutput findById(Long id);
 
     List<FindReportByIdOutput> find(SearchCriteria search, Pageable pageable) throws Exception;
-
     
     //User
     GetUserOutput getUser(Long reportid);

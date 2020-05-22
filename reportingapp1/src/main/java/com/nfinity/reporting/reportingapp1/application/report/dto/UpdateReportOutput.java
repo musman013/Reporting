@@ -1,92 +1,101 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
-import java.util.Date;
-
+import org.hibernate.validator.constraints.Length;
 import org.json.simple.JSONObject;
+
 public class UpdateReportOutput {
 
-  private String ctype;
-  private String description;
-  private Long id;
-  private JSONObject query;
-  private String reportType;
-  private String title;
-  private Long userId;
-	private String userDescriptiveField;
-	
+	private Long id;
+	private Boolean isPublished;
+	private String ctype;
+	private String description;
+	private JSONObject query;
+	@Length(max = 255, message = "reportType must be less than 255 characters")
+	private String reportType;
+	private String title;
 	private String reportWidth;
-	 
-  	public String getReportWidth() {
+	private Long ownerId;
+	private String ownerDescriptiveField;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id){
+		this.id = id;
+	}
+
+	public Boolean getIsPublished() {
+		return isPublished;
+	}
+
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
+
+	public String getReportWidth() {
 		return reportWidth;
 	}
 
 	public void setReportWidth(String reportWidth) {
 		this.reportWidth = reportWidth;
 	}
+	
+	public String getCtype() {
+		return ctype;
+	}
 
-  public Long getUserId() {
-  return userId;
-  }
+	public void setCtype(String ctype){
+		this.ctype = ctype;
+	}
 
-  public void setUserId(Long userId){
-  this.userId = userId;
-  }
-  
-  public String getUserDescriptiveField() {
-  	return userDescriptiveField;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  public void setUserDescriptiveField(String userDescriptiveField){
-  	this.userDescriptiveField = userDescriptiveField;
-  }
- 
-  public String getCtype() {
-  	return ctype;
-  }
+	public void setDescription(String description){
+		this.description = description;
+	}
 
-  public void setCtype(String ctype){
-  	this.ctype = ctype;
-  }
-  
-  public String getDescription() {
-  	return description;
-  }
+	public JSONObject getQuery() {
+		return query;
+	}
 
-  public void setDescription(String description){
-  	this.description = description;
-  }
-  
-  public Long getId() {
-  	return id;
-  }
+	public void setQuery(JSONObject query){
+		this.query = query;
+	}
 
-  public void setId(Long id){
-  	this.id = id;
-  }
-  
-  public JSONObject getQuery() {
-  	return query;
-  }
+	public String getReportType() {
+		return reportType;
+	}
 
-  public void setQuery(JSONObject query){
-  	this.query = query;
-  }
-  
-  public String getReportType() {
-  	return reportType;
-  }
+	public void setReportType(String reportType){
+		this.reportType = reportType;
+	}
 
-  public void setReportType(String reportType){
-  	this.reportType = reportType;
-  }
-  
-  public String getTitle() {
-  	return title;
-  }
+	public String getTitle() {
+		return title;
+	}
 
-  public void setTitle(String title){
-  	this.title = title;
-  }
-  
+	public void setTitle(String title){
+		this.title = title;
+	}
+
+	
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
+	public String getOwnerDescriptiveField() {
+		return ownerDescriptiveField;
+	}
+
+	public void setOwnerDescriptiveField(String ownerDescriptiveField){
+		this.ownerDescriptiveField = ownerDescriptiveField;
+	}
+
 
 }

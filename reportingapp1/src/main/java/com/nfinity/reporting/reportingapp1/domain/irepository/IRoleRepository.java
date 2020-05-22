@@ -3,13 +3,13 @@ package com.nfinity.reporting.reportingapp1.domain.irepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
 @JaversSpringDataAuditable
-@RepositoryRestResource(collectionResourceRel = "roles", path = "roles")
+@Repository
 public interface IRoleRepository extends JpaRepository<RoleEntity, Long>, QuerydslPredicateExecutor<RoleEntity> {
 
  //   @Query("select u from RoleEntity u where u.id = ?1")

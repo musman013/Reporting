@@ -56,16 +56,6 @@ public class UserEntity implements Serializable {
   		this.authenticationSource = authenticationSource;
   	}
   
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
-  	public Set<DashboardEntity> getDashboardSet() { 
-    	return dashboardSet; 
-  	} 
- 
-  	public void setDashboardSet(Set<DashboardEntity> dashboard) { 
-    	this.dashboardSet = dashboard; 
-  	} 
- 
-  	private Set<DashboardEntity> dashboardSet = new HashSet<DashboardEntity>(); 
   	@Basic
   	@Column(name = "emailAddress", nullable = false, length =256)
   	public String getEmailAddress() {
@@ -226,6 +216,29 @@ public class UserEntity implements Serializable {
   	public void setProfilePictureId(Long profilePictureId) {
   		this.profilePictureId = profilePictureId;
   	}
+  	
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	public Set<DashboardEntity> getDashboardSet() { 
+    	return dashboardSet; 
+  	} 
+ 
+  	public void setDashboardSet(Set<DashboardEntity> dashboard) { 
+    	this.dashboardSet = dashboard; 
+  	} 
+ 
+  	private Set<DashboardEntity> dashboardSet = new HashSet<DashboardEntity>(); 
+  	
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	public Set<DashboardversionEntity> getDashboardversionSet() { 
+    	return dashboardversionSet; 
+  	} 
+ 
+  	public void setDashboardversionSet(Set<DashboardversionEntity> dashboardversion) { 
+    	this.dashboardversionSet = dashboardversion; 
+  	} 
+ 
+  	private Set<DashboardversionEntity> dashboardversionSet = new HashSet<DashboardversionEntity>(); 
+  	
   
   	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
   	public Set<ReportEntity> getReportSet() { 
@@ -237,6 +250,18 @@ public class UserEntity implements Serializable {
   	} 
  
   	private Set<ReportEntity> reportSet = new HashSet<ReportEntity>(); 
+  	
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	public Set<ReportversionEntity> getReportversionSet() { 
+    	return reportversionSet; 
+  	} 
+ 
+  	public void setReportversionSet(Set<ReportversionEntity> reportversion) { 
+    	this.reportversionSet = reportversion; 
+  	} 
+ 
+  	private Set<ReportversionEntity> reportversionSet = new HashSet<ReportversionEntity>(); 
+  	
   	@Basic
   	@Column(name = "twoFactorEnabled", nullable = true)
   	public Boolean getTwoFactorEnabled() {
@@ -279,13 +304,29 @@ public class UserEntity implements Serializable {
     } 
  
 	private Set<UserroleEntity> userroleSet = new HashSet<UserroleEntity>(); 
-//  @Override
-//  public boolean equals(Object o) {
-//    if (this == o) return true;
-//      if (!(o instanceof UserEntity)) return false;
-//        UserEntity user = (UserEntity) o;
-//        return id != null && id.equals(user.id);
-//  }
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	public Set<ReportuserEntity> getReportuserSet() { 
+    	return reportuserSet; 
+  	} 
+ 
+  	public void setReportuserSet(Set<ReportuserEntity> reportuser) { 
+    	this.reportuserSet = reportuser; 
+  	} 
+ 
+  	private Set<ReportuserEntity> reportuserSet = new HashSet<ReportuserEntity>();
+  	
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	public Set<DashboarduserEntity> getDashboarduserSet() { 
+    	return dashboarduserSet; 
+  	} 
+ 
+  	public void setDashboarduserSet(Set<DashboarduserEntity> dashboarduser) { 
+    	this.dashboarduserSet = dashboarduser; 
+  	} 
+ 
+  	private Set<DashboarduserEntity> dashboarduserSet = new HashSet<DashboarduserEntity>(); 
+  	
 
 }
 

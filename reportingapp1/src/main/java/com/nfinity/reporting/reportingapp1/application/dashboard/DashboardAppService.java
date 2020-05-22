@@ -334,25 +334,15 @@ public class DashboardAppService implements IDashboardAppService {
 		BooleanBuilder builder = new BooleanBuilder();
         
 		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
-            if(details.getKey().replace("%20","").trim().equals("description")) {
-				if(details.getValue().getOperator().equals("contains"))
-					builder.and(dashboard.description.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
-				else if(details.getValue().getOperator().equals("equals"))
-					builder.and(dashboard.description.eq(details.getValue().getSearchValue()));
-				else if(details.getValue().getOperator().equals("notEqual"))
-					builder.and(dashboard.description.ne(details.getValue().getSearchValue()));
-			}
-            if(details.getKey().replace("%20","").trim().equals("title")) {
-				if(details.getValue().getOperator().equals("contains"))
-					builder.and(dashboard.title.likeIgnoreCase("%"+ details.getValue().getSearchValue() + "%"));
-				else if(details.getValue().getOperator().equals("equals"))
-					builder.and(dashboard.title.eq(details.getValue().getSearchValue()));
-				else if(details.getValue().getOperator().equals("notEqual"))
-					builder.and(dashboard.title.ne(details.getValue().getSearchValue()));
+			if(details.getKey().replace("%20","").trim().equals("isPublished")) {
+				if(details.getValue().getOperator().equals("equals") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
+					builder.and(dashboard.isPublished.eq(Boolean.parseBoolean(details.getValue().getSearchValue())));
+				else if(details.getValue().getOperator().equals("notEqual") && (details.getValue().getSearchValue().equalsIgnoreCase("true") || details.getValue().getSearchValue().equalsIgnoreCase("false")))
+					builder.and(dashboard.isPublished.ne(Boolean.parseBoolean(details.getValue().getSearchValue())));
 			}
 		}
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
-        if(joinCol != null && joinCol.getKey().equals("userId")) {
+        if(joinCol != null && joinCol.getKey().equals("ownerId")) {
 		    builder.and(dashboard.user.id.eq(Long.parseLong(joinCol.getValue())));
 		}
         }

@@ -5,24 +5,24 @@ public class UpdateReportdashboardOutput {
 
   private Long dashboardId;
   private Long reportId;
-	private String dashboardDescriptiveField;
-	private String reportDescriptiveField;
-
-  public String getDashboardDescriptiveField() {
-  	return dashboardDescriptiveField;
-  }
-
-  public void setDashboardDescriptiveField(String dashboardDescriptiveField){
-  	this.dashboardDescriptiveField = dashboardDescriptiveField;
-  }
- 
-  public String getReportDescriptiveField() {
-  	return reportDescriptiveField;
-  }
-
-  public void setReportDescriptiveField(String reportDescriptiveField){
-  	this.reportDescriptiveField = reportDescriptiveField;
-  }
+//	private String dashboardDescriptiveField;
+//	private String reportDescriptiveField;
+//
+//  public String getDashboardDescriptiveField() {
+//  	return dashboardDescriptiveField;
+//  }
+//
+//  public void setDashboardDescriptiveField(String dashboardDescriptiveField){
+//  	this.dashboardDescriptiveField = dashboardDescriptiveField;
+//  }
+// 
+//  public String getReportDescriptiveField() {
+//  	return reportDescriptiveField;
+//  }
+//
+//  public void setReportDescriptiveField(String reportDescriptiveField){
+//  	this.reportDescriptiveField = reportDescriptiveField;
+//  }
  
   public Long getDashboardId() {
   	return dashboardId;

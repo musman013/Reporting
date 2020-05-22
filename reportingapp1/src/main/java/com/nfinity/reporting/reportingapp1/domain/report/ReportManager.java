@@ -1,5 +1,6 @@
 package com.nfinity.reporting.reportingapp1.domain.report;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
+import com.nfinity.reporting.reportingapp1.application.report.dto.IReportDetailsOutput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.ReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
 import com.querydsl.core.types.Predicate;
 
@@ -65,7 +68,18 @@ public class ReportManager implements IReportManager {
 
 		return _reportRepository.findAll(predicate,pageable);
 	}
-  
+	
+	public Page<ReportDetailsOutput> getReports(Long userId, String search, Pageable pageable) throws Exception
+	{
+		Page<ReportDetailsOutput> list = _reportRepository.getAllReportsByUserId(userId, search, pageable);
+		return list;
+	}
+	
+	public Page<ReportDetailsOutput> getSharedReports(Long userId, String search, Pageable pageable) throws Exception
+	{
+		Page<ReportDetailsOutput> list = _reportRepository.getSharedReportsByUserId(userId, search, pageable);
+		return list;
+	}
    //User
 	public UserEntity getUser(Long reportId) {
 		

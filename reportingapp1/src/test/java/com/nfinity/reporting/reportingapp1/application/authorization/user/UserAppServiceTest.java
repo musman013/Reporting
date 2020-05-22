@@ -61,7 +61,7 @@ public class UserAppServiceTest {
 	private ReportManager  _reportManager;
 	
 	@Mock
-	private UserMapper _mapper;
+	private IUserMapper _mapper;
 
 	@Mock
 	private Logger loggerMock;

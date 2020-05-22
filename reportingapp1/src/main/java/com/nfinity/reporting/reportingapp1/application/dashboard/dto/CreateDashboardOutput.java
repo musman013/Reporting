@@ -1,6 +1,5 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
-import java.util.Date;
 public class CreateDashboardOutput {
 
     private String description;

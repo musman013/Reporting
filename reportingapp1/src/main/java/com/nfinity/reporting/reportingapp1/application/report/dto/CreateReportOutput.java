@@ -1,45 +1,47 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
-import java.util.Date;
-
+import org.hibernate.validator.constraints.Length;
 import org.json.simple.JSONObject;
+
 public class CreateReportOutput {
 
+	private Long id;
+	private Boolean isPublished;
 	private String ctype;
 	private String description;
-	private Long id;
 	private JSONObject query;
+	@Length(max = 255, message = "reportType must be less than 255 characters")
 	private String reportType;
 	private String title;
-	private Long userId;
-	private String userDescriptiveField;
-	
 	private String reportWidth;
-	 
-  	public String getReportWidth() {
+	private Long ownerId;
+	private String ownerDescriptiveField;
+
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id){
+		this.id = id;
+	}
+
+	public Boolean getIsPublished() {
+		return isPublished;
+	}
+
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
+
+	public String getReportWidth() {
 		return reportWidth;
 	}
 
 	public void setReportWidth(String reportWidth) {
 		this.reportWidth = reportWidth;
 	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId){
-		this.userId = userId;
-	}
-
-	public String getUserDescriptiveField() {
-		return userDescriptiveField;
-	}
-
-	public void setUserDescriptiveField(String userDescriptiveField){
-		this.userDescriptiveField = userDescriptiveField;
-	}
-
+	
 	public String getCtype() {
 		return ctype;
 	}
@@ -54,14 +56,6 @@ public class CreateReportOutput {
 
 	public void setDescription(String description){
 		this.description = description;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
 	}
 
 	public JSONObject getQuery() {
@@ -86,6 +80,21 @@ public class CreateReportOutput {
 
 	public void setTitle(String title){
 		this.title = title;
+	}
+	
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
+	public String getOwnerDescriptiveField() {
+		return ownerDescriptiveField;
+	}
+
+	public void setOwnerDescriptiveField(String ownerDescriptiveField){
+		this.ownerDescriptiveField = ownerDescriptiveField;
 	}
 
 }

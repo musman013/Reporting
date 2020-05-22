@@ -78,8 +78,31 @@ public class RoleEntity implements Serializable {
     } 
  
     private Set<UserroleEntity> userroleSet = new HashSet<UserroleEntity>(); 
+    
+  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+  	public Set<ReportroleEntity> getReportroleSet() { 
+    	return reportroleSet; 
+  	} 
+ 
+  	public void setReportroleSet(Set<ReportroleEntity> reportrole) { 
+    	this.reportroleSet = reportrole; 
+  	} 
+ 
+  	private Set<ReportroleEntity> reportroleSet = new HashSet<ReportroleEntity>(); 
+  	
+  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+  	public Set<DashboardroleEntity> getDashboardroleSet() { 
+    	return dashboardroleSet; 
+  	} 
+ 
+  	public void setDashboardroleSet(Set<DashboardroleEntity> dashboardrole) { 
+    	this.dashboardroleSet = dashboardrole; 
+  	} 
+ 
+  	private Set<DashboardroleEntity> dashboardroleSet = new HashSet<DashboardroleEntity>(); 
+  	
     public RoleEntity() {
-
     }
+    
 
 }

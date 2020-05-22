@@ -4,25 +4,13 @@ import com.nfinity.reporting.reportingapp1.application.authorization.user.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.IUserManager;
 import com.nfinity.reporting.reportingapp1.domain.model.QUserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IJwtRepository;
-import com.nfinity.reporting.reportingapp1.domain.model.JwtEntity;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
-import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
 import java.util.*;
-import java.util.Set;
-import javax.servlet.ServletContext;
 
-import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
-import com.nfinity.reporting.reportingapp1.domain.model.RolepermissionEntity;
-import com.nfinity.reporting.reportingapp1.domain.model.UserpermissionEntity;
 import com.nfinity.reporting.reportingapp1.security.SecurityUtils;
 
-import org.springframework.security.core.userdetails.User;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.cache.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page; 
@@ -45,10 +33,7 @@ public class UserAppService implements IUserAppService {
 	private IUserManager _userManager;
 
 	@Autowired
-	private UserMapper mapper;
-	
-	@Autowired
-	private LoggingHelper logHelper;
+	private IUserMapper mapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
 	public CreateUserOutput create(CreateUserInput input) {
@@ -60,7 +45,7 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="User", key = "#p0")
+//	@CacheEvict(value="User", key = "#p0")
 	public UpdateUserOutput update(Long  userId, UpdateUserInput input) {
 
 		UserEntity user = mapper.updateUserInputToUserEntity(input);
@@ -71,7 +56,7 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="User", key = "#p0")
+//	@CacheEvict(value="User", key = "#p0")
 	public void delete(Long userId) {
 
 		UserEntity existing = _userManager.findById(userId) ; 
@@ -80,7 +65,7 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "User", key = "#p0")
+//	@Cacheable(value = "User", key = "#p0")
 	public FindUserByIdOutput findById(Long userId) {
 
 		UserEntity foundUser = _userManager.findById(userId);
@@ -91,7 +76,7 @@ public class UserAppService implements IUserAppService {
 		return output;
 	}
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "User", key = "#p0")
+//	@Cacheable(value = "User", key = "#p0")
 	public FindUserWithAllFieldsByIdOutput findWithAllFieldsById(Long userId) {
 
 		UserEntity foundUser = _userManager.findById(userId);
@@ -109,7 +94,7 @@ public class UserAppService implements IUserAppService {
 	}
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "User", key = "#p0")
+//	@Cacheable(value = "User", key = "#p0")
 	public FindUserByUserNameOutput findByUserName(String userName) {
 
 		UserEntity foundUser = _userManager.findByUserName(userName);
@@ -119,6 +104,7 @@ public class UserAppService implements IUserAppService {
 		return  mapper.userEntityToFindUserByUserNameOutput(foundUser);
 
 	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public FindUserByUserNameOutput findByEmailAddress(String emailAddress) {
 
@@ -129,6 +115,7 @@ public class UserAppService implements IUserAppService {
 	
 		return  mapper.userEntityToFindUserByUserNameOutput(foundUser);
 	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public UserEntity savePasswordResetCode(String email)
 	{
@@ -155,8 +142,9 @@ public class UserAppService implements IUserAppService {
 	
 		return  foundUser;
 	}
+	
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "User")
+//	@Cacheable(value = "User")
 	public List<FindUserByIdOutput> find(SearchCriteria search, Pageable pageable) throws Exception  {
 
 		Page<UserEntity> foundUser = _userManager.findAll(search(search), pageable);
