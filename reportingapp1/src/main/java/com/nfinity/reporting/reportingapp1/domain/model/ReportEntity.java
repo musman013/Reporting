@@ -61,15 +61,15 @@ public class ReportEntity implements Serializable {
   	
   	
   	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
-  	public Set<ReportdashboardEntity> getReportdashboardSet() { 
+  	public Set<DashboardversionreportEntity> getReportdashboardSet() { 
     	return reportdashboardSet; 
   	} 
  
-  	public void setReportdashboardSet(Set<ReportdashboardEntity> reportdashboard) { 
+  	public void setReportdashboardSet(Set<DashboardversionreportEntity> reportdashboard) { 
     	this.reportdashboardSet = reportdashboard; 
   	} 
  
-  	private Set<ReportdashboardEntity> reportdashboardSet = new HashSet<ReportdashboardEntity>(); 
+  	private Set<DashboardversionreportEntity> reportdashboardSet = new HashSet<DashboardversionreportEntity>(); 
   	
   	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
   	public Set<ReportuserEntity> getReportuserSet() { 

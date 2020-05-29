@@ -1,6 +1,5 @@
 package com.nfinity.reporting.reportingapp1.domain.report;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
-import com.nfinity.reporting.reportingapp1.application.report.dto.IReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.ReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
 import com.querydsl.core.types.Predicate;
@@ -23,7 +21,7 @@ public class ReportManager implements IReportManager {
     IReportRepository  _reportRepository;
     
     @Autowired
-	IReportdashboardRepository  _reportdashboardRepository;
+	IDashboardversionreportRepository  _reportdashboardRepository;
     
     @Autowired
 	IUserRepository  _userRepository;

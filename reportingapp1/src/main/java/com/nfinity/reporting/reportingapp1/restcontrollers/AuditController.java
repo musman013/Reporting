@@ -3,7 +3,7 @@ package com.nfinity.reporting.reportingapp1.restcontrollers;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
-import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.PermissionEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.RolepermissionEntity;
@@ -96,7 +96,7 @@ public class AuditController {
     }
     @RequestMapping("/reportdashboard")
     public String getReportdashboardChanges(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit) {
-        QueryBuilder jqlQuery = addPaginationAndFilters(QueryBuilder.byClass(ReportdashboardEntity.class),limit,offset,search);
+        QueryBuilder jqlQuery = addPaginationAndFilters(QueryBuilder.byClass(DashboardversionreportEntity.class),limit,offset,search);
         List<Change> changes = javers.findChanges(jqlQuery.withNewObjectChanges().build());
         return javers.getJsonConverter().toJson(changes);
     }

@@ -2,50 +2,60 @@ package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
 public class CreateDashboardOutput {
 
-    private String description;
-    private Long id;
-    private String title;
-	private Long userId;
-	private String userDescriptiveField;
+	private String description;
+	private Long id;
+	private String title;
+	private Boolean isPublished;
+	private Long ownerId;
+	private String ownerDescriptiveField;
 
-  public Long getUserId() {
-  	return userId;
-  }
+	public Long getOwnerId() {
+		return ownerId;
+	}
 
-  public void setUserId(Long userId){
-    this.userId = userId;
-  }
-  
-  public String getUserDescriptiveField() {
-  	return userDescriptiveField;
-  }
+	public void setOwnerId(Long ownerId){
+		this.ownerId = ownerId;
+	}
 
-  public void setUserDescriptiveField(String userDescriptiveField){
-  	this.userDescriptiveField = userDescriptiveField;
-  }
- 
-  public String getDescription() {
-  	return description;
-  }
+	
+	public Boolean getIsPublished() {
+		return isPublished;
+	}
 
-  public void setDescription(String description){
-  	this.description = description;
-  }
-  
-  public Long getId() {
-  	return id;
-  }
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
 
-  public void setId(Long id){
-  	this.id = id;
-  }
-  
-  public String getTitle() {
-  	return title;
-  }
+	public String getOwnerDescriptiveField() {
+		return ownerDescriptiveField;
+	}
 
-  public void setTitle(String title){
-  	this.title = title;
-  }
-  
+	public void setOwnerDescriptiveField(String ownerDescriptiveField){
+		this.ownerDescriptiveField = ownerDescriptiveField;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id){
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title){
+		this.title = title;
+	}
+
 }

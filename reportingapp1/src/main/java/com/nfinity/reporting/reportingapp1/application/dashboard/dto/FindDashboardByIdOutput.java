@@ -1,16 +1,24 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
-import java.util.Date;
 import java.util.List;
-
 import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
+
 public class FindDashboardByIdOutput {
 
 	private String description;
-	private Long id;
 	private String title;
 	private Long userId;
-	private String userDescriptiveField;
+	private Long dashboardId;
+//	private Boolean editable;
+//	private Boolean isResetted;
+//	private Boolean isRefreshed;
+//	private Boolean ownerSharingStatus;
+//	private Boolean recipientSharingStatus;
+//	private Boolean isAssignedByRole;
+	private Boolean isResetable;
+	private Boolean isPublished;
+	private Long ownerId;
+	private String ownerDescriptiveField;
 	private List<FindReportByIdOutput> reportDetails;
 
 	public List<FindReportByIdOutput> getReportDetails() {
@@ -21,20 +29,105 @@ public class FindDashboardByIdOutput {
 		this.reportDetails = reportDetails;
 	}
 
+	
+	public Boolean getIsPublished() {
+		return isPublished;
+	}
+
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
+
+	public Long getDashboardId() {
+		return dashboardId;
+	}
+
+	public void setDashboardId(Long dashboardId) {
+		this.dashboardId = dashboardId;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId){
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	public String getUserDescriptiveField() {
-		return userDescriptiveField;
+//	public Boolean getEditable() {
+//		return editable;
+//	}
+//
+//	public void setEditable(Boolean editable) {
+//		this.editable = editable;
+//	}
+//
+//	public Boolean getIsResetted() {
+//		return isResetted;
+//	}
+//
+//	public void setIsResetted(Boolean isResetted) {
+//		this.isResetted = isResetted;
+//	}
+//
+//	public Boolean getIsRefreshed() {
+//		return isRefreshed;
+//	}
+//
+//	public void setIsRefreshed(Boolean isRefreshed) {
+//		this.isRefreshed = isRefreshed;
+//	}
+//
+//	public Boolean getOwnerSharingStatus() {
+//		return ownerSharingStatus;
+//	}
+//
+//	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
+//		this.ownerSharingStatus = ownerSharingStatus;
+//	}
+//
+//	public Boolean getRecipientSharingStatus() {
+//		return recipientSharingStatus;
+//	}
+//
+//	public void setRecipientSharingStatus(Boolean recipientSharingStatus) {
+//		this.recipientSharingStatus = recipientSharingStatus;
+//	}
+//
+//	public Boolean getIsAssignedByRole() {
+//		return isAssignedByRole;
+//	}
+//
+//	public void setIsAssignedByRole(Boolean isAssignedByRole) {
+//		this.isAssignedByRole = isAssignedByRole;
+//	}
+
+	public Boolean getIsResetable() {
+		return isResetable;
 	}
 
-	public void setUserDescriptiveField(String userDescriptiveField){
-		this.userDescriptiveField = userDescriptiveField;
+	public void setIsResetable(Boolean isResetable) {
+		this.isResetable = isResetable;
+	}
+
+	public void setOwnerDescriptiveField(String ownerDescriptiveField) {
+		this.ownerDescriptiveField = ownerDescriptiveField;
+	}
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId){
+		this.ownerId = ownerId;
+	}
+
+	public String getOwnerDescriptiveField() {
+		return ownerDescriptiveField;
+	}
+
+	public void setOwneserDescriptiveField(String ownerDescriptiveField){
+		this.ownerDescriptiveField = ownerDescriptiveField;
 	}
 
 	public String getDescription() {
@@ -43,14 +136,6 @@ public class FindDashboardByIdOutput {
 
 	public void setDescription(String description){
 		this.description = description;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
 	}
 
 	public String getTitle() {

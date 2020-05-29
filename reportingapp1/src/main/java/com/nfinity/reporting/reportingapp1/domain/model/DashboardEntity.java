@@ -12,9 +12,7 @@ public class DashboardEntity implements Serializable {
 
 	private Long id;
 	private Boolean isPublished;
-//  	private String title;
-//  	private String description;
- 
+
   	public DashboardEntity() {
   	}
   	
@@ -39,37 +37,6 @@ public class DashboardEntity implements Serializable {
 		this.isPublished = isPublished;
 	}
   	
-//  	@Basic
-//  	@Column(name = "description", nullable = true, length =255)
-//  	public String getDescription() {
-//  		return description;
-//  	}
-//
-//  	public void setDescription(String description) {
-//  		this.description = description;
-//  	}
-// 
-//	@Basic
-//  	@Column(name = "title", nullable = true, length =255)
-//  	public String getTitle() {
-//  		return title;
-//  	}
-//
-//  	public void setTitle(String title) {
-//  		this.title = title;
-//  	}
-//  
-  	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
-  	public Set<ReportdashboardEntity> getReportdashboardSet() { 
-    	return reportdashboardSet; 
-  	} 
-
-	public void setReportdashboardSet(Set<ReportdashboardEntity> reportdashboard) { 
-    	this.reportdashboardSet = reportdashboard; 
-  	} 
- 
-  	private Set<ReportdashboardEntity> reportdashboardSet = new HashSet<ReportdashboardEntity>(); 
-  
   	@ManyToOne
   	@JoinColumn(name = "ownerId")
   	public UserEntity getUser() {

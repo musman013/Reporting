@@ -23,7 +23,7 @@ public class GetUserOutput {
   private Long profilePictureId;
   private Boolean twoFactorEnabled;
   private String userName;
-
+  private String dashboardVersion;
   private Long dashboardversionId;
   
   public Long getDashboardversionId() {
@@ -32,6 +32,14 @@ public class GetUserOutput {
 
   public void setDashboardversionId(Long dashboardversionId){
   	this.dashboardversionId = dashboardversionId;
+  }
+  
+  public String getDashboardVersion() {
+  	return dashboardVersion;
+  }
+
+  public void setDashboardVersion(String dashboardVersion){
+  	this.dashboardVersion = dashboardVersion;
   }
   public Integer getAccessFailedCount() {
   	return accessFailedCount;

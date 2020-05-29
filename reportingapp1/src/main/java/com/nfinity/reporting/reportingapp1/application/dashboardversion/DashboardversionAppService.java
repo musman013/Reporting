@@ -3,8 +3,13 @@ package com.nfinity.reporting.reportingapp1.application.dashboardversion;
 import com.nfinity.reporting.reportingapp1.application.dashboardversion.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.dashboardversion.IDashboardversionManager;
 import com.nfinity.reporting.reportingapp1.domain.model.QDashboardversionEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionId;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboard.DashboardManager;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
@@ -33,6 +38,10 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 
     @Autowired
 	private UserManager _userManager;
+    
+    @Autowired
+   	private DashboardManager _dashboardManager;
+    
 	@Autowired
 	private IDashboardversionMapper mapper;
 	
@@ -49,31 +58,50 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 				dashboardversion.setUser(foundUser);
 			}
 		}
-		DashboardversionEntity createdDashboardversion = _dashboardversionManager.create(dashboardversion);
+	  	if(input.getDashboardId()!=null) {
+			DashboardEntity foundDashboard = _dashboardManager.findById(input.getDashboardId());
+			if(foundDashboard!=null) {
+				dashboardversion.setDashboard(foundDashboard);
+			}
+		}
+	  	dashboardversion.setVersion("running");
+		DashboardversionEntity createdRunningDashboardversion = _dashboardversionManager.create(dashboardversion);
+		dashboardversion.setVersion("published");
+		DashboardversionEntity createdPublishedDashboardversion = _dashboardversionManager.create(dashboardversion);
 		
-		return mapper.dashboardversionEntityToCreateDashboardversionOutput(createdDashboardversion);
+		return mapper.dashboardversionEntityToCreateDashboardversionOutput(createdRunningDashboardversion);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Dashboardversion", key = "#p0")
-	public UpdateDashboardversionOutput update(Long  dashboardversionId, UpdateDashboardversionInput input) {
+//	@CacheEvict(value="Dashboardversion", key = "#p0")
+	public UpdateDashboardversionOutput update(DashboardversionId dashboardversionId, UpdateDashboardversionInput input) {
 
 		DashboardversionEntity dashboardversion = mapper.updateDashboardversionInputToDashboardversionEntity(input);
-	  	if(input.getUserId()!=null) {
+	  	
+		if(input.getUserId()!=null) {
 			UserEntity foundUser = _userManager.findById(input.getUserId());
 			if(foundUser!=null) {
 				dashboardversion.setUser(foundUser);
 			}
 		}
+	  	
+	  	if(input.getDashboardId()!=null) {
+			DashboardEntity foundDashboard = _dashboardManager.findById(input.getDashboardId());
+			dashboardversion.setDashboard(foundDashboard);
+		}
 		
-		DashboardversionEntity updatedDashboardversion = _dashboardversionManager.update(dashboardversion);
-		
+	  	dashboardversion.setVersion(dashboardversionId.getVersion());
+	  	DashboardversionEntity updatedDashboardversion = _dashboardversionManager.update(dashboardversion);
+
 		return mapper.dashboardversionEntityToUpdateDashboardversionOutput(updatedDashboardversion);
+		
+
+
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
-	@CacheEvict(value="Dashboardversion", key = "#p0")
-	public void delete(Long dashboardversionId) {
+//	@CacheEvict(value="Dashboardversion", key = "#p0")
+	public void delete(DashboardversionId dashboardversionId) {
 
 		DashboardversionEntity existing = _dashboardversionManager.findById(dashboardversionId) ; 
 		_dashboardversionManager.delete(existing);
@@ -91,7 +119,7 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Cacheable(value = "Dashboardversion", key = "#p0")
-	public FindDashboardversionByIdOutput findById(Long dashboardversionId) {
+	public FindDashboardversionByIdOutput findById(DashboardversionId dashboardversionId) {
 
 		DashboardversionEntity foundDashboardversion = _dashboardversionManager.findById(dashboardversionId);
 		if (foundDashboardversion == null)  
@@ -104,8 +132,8 @@ public class DashboardversionAppService implements IDashboardversionAppService {
     //User
 	// ReST API Call - GET /dashboard/1/user
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @Cacheable (value = "Dashboardversion", key="#p0")
-	public GetUserOutput getUser(Long dashboardversionId) {
+//    @Cacheable (value = "Dashboardversion", key="#p0")
+	public GetUserOutput getUser(DashboardversionId dashboardversionId) {
 
 		DashboardversionEntity foundDashboardversion = _dashboardversionManager.findById(dashboardversionId);
 		if (foundDashboardversion == null) {

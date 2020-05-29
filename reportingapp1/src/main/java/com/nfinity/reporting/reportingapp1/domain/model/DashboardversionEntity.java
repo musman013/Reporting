@@ -1,8 +1,11 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -18,19 +22,30 @@ import javax.persistence.Table;
 @IdClass(DashboardversionId.class)
 public class DashboardversionEntity implements Serializable {
 	
-	private Long id;
+	private Long userId;
+	private Long dashboardId;
 	private String description;
   	private String title;
   	private String version;
   	
   	@Id
-  	@Column(name = "id", nullable = false)
-  	public Long getId() {
-  		return id;
+  	@Column(name = "userId", nullable = false)
+  	public Long getUserId() {
+  		return userId;
   	}
 
-  	public void setId(Long id) {
-  		this.id = id;
+  	public void setUserId(Long userId) {
+  		this.userId = userId;
+  	}
+  	
+  	@Id
+  	@Column(name = "dashboardId", nullable = false)
+  	public Long getDashboardId() {
+  		return dashboardId;
+  	}
+
+  	public void setDashboardId(Long dashboardId) {
+  		this.dashboardId = dashboardId;
   	}
   	
   	@Id
@@ -64,7 +79,18 @@ public class DashboardversionEntity implements Serializable {
   	}
   	
   	@ManyToOne
-  	@JoinColumn(name = "userId")
+  	@JoinColumn(name = "dashboardId", insertable = false, updatable = false)
+  	public DashboardEntity getDashboard() {
+    	return dashboard;
+  	}
+  	public void setDashboard(DashboardEntity dashboard) {
+    	this.dashboard = dashboard;
+  	}
+  
+  	private DashboardEntity dashboard;
+  	
+  	@ManyToOne
+  	@JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
   	public UserEntity getUser() {
     	return user;
   	}
@@ -74,15 +100,15 @@ public class DashboardversionEntity implements Serializable {
   
   	private UserEntity user;
   	
-  	@ManyToOne
-  	@JoinColumn(name = "dashboardId")
-  	public DashboardEntity getDashboard() {
-    	return dashboard;
-  	}
-  	public void setDashboard(DashboardEntity dashboard) {
-    	this.dashboard = dashboard;
-  	}
-  
-  	private DashboardEntity dashboard;
+  	@OneToMany(mappedBy = "dashboardversion", cascade = CascadeType.ALL) 
+  	public Set<DashboardversionreportEntity> getDashboardversionreportSet() { 
+    	return dashboardversionreportSet; 
+  	} 
+
+	public void setDashboardversionreportSet(Set<DashboardversionreportEntity> dashboardversionreport) { 
+    	this.dashboardversionreportSet = dashboardversionreport; 
+  	} 
+ 
+  	private Set<DashboardversionreportEntity> dashboardversionreportSet = new HashSet<DashboardversionreportEntity>(); 
 
 }

@@ -6,12 +6,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import javax.validation.constraints.Positive;
-
-import com.nfinity.reporting.reportingapp1.application.report.dto.IReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.ReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
-import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 
 public interface IReportManager {

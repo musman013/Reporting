@@ -6,24 +6,24 @@ public class UpdateDashboardOutput {
   private String description;
   private Long id;
   private String title;
-  private Long userId;
-	private String userDescriptiveField;
+  private Long ownerId;
+  private String ownerDescriptiveField;
+	
 
-  public Long getUserId() {
-  return userId;
-  }
+  public Long getOwnerId() {
+		return ownerId;
+	}
 
-  public void setUserId(Long userId){
-  this.userId = userId;
-  }
-  
-  public String getUserDescriptiveField() {
-  	return userDescriptiveField;
-  }
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
+	public String getOwnerDescriptiveField() {
+		return ownerDescriptiveField;
+	}
 
-  public void setUserDescriptiveField(String userDescriptiveField){
-  	this.userDescriptiveField = userDescriptiveField;
-  }
+	public void setOwnerDescriptiveField(String ownerDescriptiveField){
+		this.ownerDescriptiveField = ownerDescriptiveField;
+	}
  
   public String getDescription() {
   	return description;

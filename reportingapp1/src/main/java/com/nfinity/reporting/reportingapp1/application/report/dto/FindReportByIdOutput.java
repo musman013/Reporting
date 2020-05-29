@@ -17,15 +17,16 @@ public class FindReportByIdOutput {
 	private String title;
 	private String version;
 	private String reportWidth;
-	private Long userId;
-	private Boolean editable;
-	private Boolean isResetted;
-	private Boolean isRefreshed;
-	private Boolean ownerSharingStatus;
-	private Boolean recipientSharingStatus;
-	private Boolean isAssignedByRole;
-	private Boolean isResetable;
 	private Long ownerId;
+	private Long userId;
+//	private Boolean editable;
+//	private Boolean isResetted;
+//	private Boolean isRefreshed;
+//	private Boolean ownerSharingStatus;
+//	private Boolean recipientSharingStatus;
+//	private Boolean isAssignedByRole;
+	private Boolean isResetable;
+	
 
 	public Long getOwnerId() {
 		return ownerId;
@@ -93,42 +94,42 @@ public class FindReportByIdOutput {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	public Boolean getEditable() {
-		return editable;
-	}
-	public void setEditable(Boolean editable) {
-		this.editable = editable;
-	}
-	public Boolean getIsResetted() {
-		return isResetted;
-	}
-	public void setIsResetted(Boolean isResetted) {
-		this.isResetted = isResetted;
-	}
-	public Boolean getIsRefreshed() {
-		return isRefreshed;
-	}
-	public void setIsRefreshed(Boolean isRefreshed) {
-		this.isRefreshed = isRefreshed;
-	}
-	public Boolean getOwnerSharingStatus() {
-		return ownerSharingStatus;
-	}
-	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
-		this.ownerSharingStatus = ownerSharingStatus;
-	}
-	public Boolean getRecipientSharingStatus() {
-		return recipientSharingStatus;
-	}
-	public void setRecipientSharingStatus(Boolean recipientSharingStatus) {
-		this.recipientSharingStatus = recipientSharingStatus;
-	}
-	public Boolean getIsAssignedByRole() {
-		return isAssignedByRole;
-	}
-	public void setIsAssignedByRole(Boolean isAssignedByRole) {
-		this.isAssignedByRole = isAssignedByRole;
-	}
+//	public Boolean getEditable() {
+//		return editable;
+//	}
+//	public void setEditable(Boolean editable) {
+//		this.editable = editable;
+//	}
+//	public Boolean getIsResetted() {
+//		return isResetted;
+//	}
+//	public void setIsResetted(Boolean isResetted) {
+//		this.isResetted = isResetted;
+//	}
+//	public Boolean getIsRefreshed() {
+//		return isRefreshed;
+//	}
+//	public void setIsRefreshed(Boolean isRefreshed) {
+//		this.isRefreshed = isRefreshed;
+//	}
+//	public Boolean getOwnerSharingStatus() {
+//		return ownerSharingStatus;
+//	}
+//	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
+//		this.ownerSharingStatus = ownerSharingStatus;
+//	}
+//	public Boolean getRecipientSharingStatus() {
+//		return recipientSharingStatus;
+//	}
+//	public void setRecipientSharingStatus(Boolean recipientSharingStatus) {
+//		this.recipientSharingStatus = recipientSharingStatus;
+//	}
+//	public Boolean getIsAssignedByRole() {
+//		return isAssignedByRole;
+//	}
+//	public void setIsAssignedByRole(Boolean isAssignedByRole) {
+//		this.isAssignedByRole = isAssignedByRole;
+//	}
 	public Boolean getIsResetable() {
 		return isResetable;
 	}

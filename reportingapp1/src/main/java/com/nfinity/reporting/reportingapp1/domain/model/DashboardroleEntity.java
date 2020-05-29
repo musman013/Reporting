@@ -23,7 +23,6 @@ public class DashboardroleEntity implements Serializable {
 	private Boolean editable;
 	
 	@Id
-  	@GeneratedValue(strategy = GenerationType.IDENTITY)
   	@Column(name = "dashboardId", nullable = false)
   	public Long getDashboardId() {
   		return dashboardId;
@@ -34,7 +33,6 @@ public class DashboardroleEntity implements Serializable {
   	}
 	
   	@Id
-  	@GeneratedValue(strategy = GenerationType.IDENTITY)
   	@Column(name = "roleId", nullable = false)
   	public Long getRoleId() {
   		return roleId;

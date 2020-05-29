@@ -1,14 +1,16 @@
 package com.nfinity.reporting.reportingapp1.domain.dashboard;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
+import com.nfinity.reporting.reportingapp1.application.dashboard.dto.DashboardDetailsOutput;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardRepository;
 import com.querydsl.core.types.Predicate;
 
@@ -19,7 +21,7 @@ public class DashboardManager implements IDashboardManager {
     IDashboardRepository  _dashboardRepository;
     
     @Autowired
-	IReportdashboardRepository  _reportdashboardRepository;
+	IDashboardversionreportRepository  _reportdashboardRepository;
     
     @Autowired
 	IUserRepository  _userRepository;
@@ -59,7 +61,24 @@ public class DashboardManager implements IDashboardManager {
 
 		return _dashboardRepository.findAll(predicate,pageable);
 	}
-  
+	
+	public List<DashboardEntity> findByUserId(Long userId)
+	{
+		return _dashboardRepository.findByUserId(userId);
+	}
+
+	public Page<DashboardDetailsOutput> getDashboards(Long userId, String search, Pageable pageable) throws Exception
+	{
+		Page<DashboardDetailsOutput> list = _dashboardRepository.getAllDashboardsByUserId(userId, search, pageable);
+		return list;
+	}
+	
+	public Page<DashboardDetailsOutput> getSharedDashboards(Long userId, String search, Pageable pageable) throws Exception
+	{
+		Page<DashboardDetailsOutput> list = _dashboardRepository.getSharedDashboardsByUserId(userId, search, pageable);
+		return list;
+	}
+	
    //User
 	public UserEntity getUser(Long dashboardId) {
 		

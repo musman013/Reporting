@@ -14,8 +14,10 @@ public class AddExistingReportToNewDashboardInput {
 
 	private String title;
 
-	private Long userId;
+	private Long ownerId;
 
+	private Boolean isPublished;
+	
 	List<UpdateReportInput> reportDetails= new ArrayList<>();
 
 	public Long getId() {
@@ -26,12 +28,20 @@ public class AddExistingReportToNewDashboardInput {
 		this.id = id;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Boolean getIsPublished() {
+		return isPublished;
 	}
 
-	public void setUserId(Long userId){
-		this.userId = userId;
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId){
+		this.ownerId = ownerId;
 	}
 	public String getDescription() {
 		return description;

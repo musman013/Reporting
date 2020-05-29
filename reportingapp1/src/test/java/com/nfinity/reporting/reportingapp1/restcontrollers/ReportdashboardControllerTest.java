@@ -42,15 +42,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.dto.*;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
-import com.nfinity.reporting.reportingapp1.application.dashboard.DashboardAppService;    
+import com.nfinity.reporting.reportingapp1.application.dashboard.DashboardAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.dto.*;
 import com.nfinity.reporting.reportingapp1.application.report.ReportAppService;    
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardId;
 
@@ -62,7 +62,7 @@ public class ReportdashboardControllerTest {
 	private SortHandlerMethodArgumentResolver sortArgumentResolver;
 
 	@Autowired 
-	private IReportdashboardRepository reportdashboard_repository;
+	private IDashboardversionreportRepository reportdashboard_repository;
 	
 	@Autowired 
 	private IDashboardRepository dashboardRepository;
@@ -71,7 +71,7 @@ public class ReportdashboardControllerTest {
 	private IReportRepository reportRepository;
 	
 	@SpyBean
-	private ReportdashboardAppService reportdashboardAppService;
+	private DashboardversionreportAppService reportdashboardAppService;
     
     @SpyBean
 	private DashboardAppService dashboardAppService;
@@ -141,9 +141,9 @@ public class ReportdashboardControllerTest {
 		return reportdashboard;
 	}
 
-	public CreateReportdashboardInput createReportdashboardInput() {
+	public CreateDashboardversionreportInput createReportdashboardInput() {
 	
-	    CreateReportdashboardInput reportdashboard = new CreateReportdashboardInput();
+	    CreateDashboardversionreportInput reportdashboard = new CreateDashboardversionreportInput();
 		reportdashboard.setDashboardId(2L);
 		reportdashboard.setReportId(2L);
 	    
@@ -199,7 +199,7 @@ public class ReportdashboardControllerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		evictAllCaches();
-		final ReportdashboardController reportdashboardController = new ReportdashboardController(reportdashboardAppService,dashboardAppService,reportAppService,
+		final DashboardversionreportController reportdashboardController = new DashboardversionreportController(reportdashboardAppService,dashboardAppService,reportAppService,
 	logHelper);
 		when(logHelper.getLogger()).thenReturn(loggerMock);
 		doNothing().when(loggerMock).error(anyString());
@@ -239,7 +239,7 @@ public class ReportdashboardControllerTest {
 	}    
 	@Test
 	public void CreateReportdashboard_ReportdashboardDoesNotExist_ReturnStatusOk() throws Exception {
-		CreateReportdashboardInput reportdashboard = createReportdashboardInput();
+		CreateDashboardversionreportInput reportdashboard = createReportdashboardInput();
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(reportdashboard);
 
@@ -284,7 +284,7 @@ public class ReportdashboardControllerTest {
 		
 		entity = reportdashboard_repository.save(entity);
 
-		FindReportdashboardByIdOutput output= new FindReportdashboardByIdOutput();
+		FindDashboardversionreportByIdOutput output= new FindDashboardversionreportByIdOutput();
   		output.setDashboardId(entity.getDashboardId());
   		output.setReportId(entity.getReportId());
 	    Mockito.when(reportdashboardAppService.findById(new ReportdashboardId(entity.getDashboardId(), entity.getReportId()))).thenReturn(output);
@@ -300,7 +300,7 @@ public class ReportdashboardControllerTest {
 
         doReturn(null).when(reportdashboardAppService).findById(new ReportdashboardId(111L, 111L));
 
-		UpdateReportdashboardInput reportdashboard = new UpdateReportdashboardInput();
+		UpdateDashboardversionreportInput reportdashboard = new UpdateDashboardversionreportInput();
 		reportdashboard.setDashboardId(111L);
 		reportdashboard.setReportId(111L);
 
@@ -332,12 +332,12 @@ public class ReportdashboardControllerTest {
 		entity.setReportId(report.getId());
 		entity.setReport(report);
 		entity = reportdashboard_repository.save(entity);
-		FindReportdashboardByIdOutput output= new FindReportdashboardByIdOutput();
+		FindDashboardversionreportByIdOutput output= new FindDashboardversionreportByIdOutput();
   		output.setDashboardId(entity.getDashboardId());
   		output.setReportId(entity.getReportId());
 	    Mockito.when(reportdashboardAppService.findById(new ReportdashboardId(entity.getDashboardId(), entity.getReportId()))).thenReturn(output);
         
-		UpdateReportdashboardInput reportdashboard = new UpdateReportdashboardInput();
+		UpdateDashboardversionreportInput reportdashboard = new UpdateDashboardversionreportInput();
   		reportdashboard.setDashboardId(entity.getDashboardId());
   		reportdashboard.setReportId(entity.getReportId());
 		

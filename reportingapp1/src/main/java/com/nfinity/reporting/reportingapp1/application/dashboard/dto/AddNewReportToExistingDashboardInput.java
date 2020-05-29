@@ -8,12 +8,19 @@ import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportIn
 public class AddNewReportToExistingDashboardInput {
 	
 	private Long id;
-
 	private String description;
-
 	private String title;
+	private Long ownerId;
+private Boolean isPublished;
+	
 
-	private Long userId;
+	public Boolean getIsPublished() {
+		return isPublished;
+	}
+
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
 
 	List<CreateReportInput> reportDetails= new ArrayList<>();
 
@@ -25,12 +32,12 @@ public class AddNewReportToExistingDashboardInput {
 		this.id = id;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Long getOwnerId() {
+		return ownerId;
 	}
 
-	public void setUserId(Long userId){
-		this.userId = userId;
+	public void setOwnerId(Long ownerId){
+		this.ownerId = ownerId;
 	}
 	public String getDescription() {
 		return description;

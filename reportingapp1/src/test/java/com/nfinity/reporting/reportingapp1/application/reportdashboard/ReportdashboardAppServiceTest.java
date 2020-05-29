@@ -29,14 +29,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nfinity.reporting.reportingapp1.domain.reportdashboard.*;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportMapper;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.model.QReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardId;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.dashboard.DashboardManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.*;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.report.ReportManager;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
@@ -48,10 +50,10 @@ public class ReportdashboardAppServiceTest {
 
 	@InjectMocks
 	@Spy
-	ReportdashboardAppService _appService;
+	DashboardversionreportAppService _appService;
 
 	@Mock
-	private ReportdashboardManager _reportdashboardManager;
+	private Dashboardversionreport _reportdashboardManager;
 	
     @Mock
 	private DashboardManager  _dashboardManager;
@@ -60,7 +62,7 @@ public class ReportdashboardAppServiceTest {
 	private ReportManager  _reportManager;
 	
 	@Mock
-	private ReportdashboardMapper _mapper;
+	private DashboardversionreportMapper _mapper;
 
 	@Mock
 	private Logger loggerMock;
@@ -105,7 +107,7 @@ public class ReportdashboardAppServiceTest {
     public void createReportdashboard_ReportdashboardIsNotNullAndReportdashboardDoesNotExist_StoreReportdashboard() { 
  
        ReportdashboardEntity reportdashboardEntity = mock(ReportdashboardEntity.class); 
-       CreateReportdashboardInput reportdashboard = new CreateReportdashboardInput();
+       CreateDashboardversionreportInput reportdashboard = new CreateDashboardversionreportInput();
    
 		DashboardEntity dashboard= mock(DashboardEntity.class);
         reportdashboard.setDashboardId(Long.valueOf(ID));
@@ -116,7 +118,7 @@ public class ReportdashboardAppServiceTest {
 		Mockito.when(_reportManager.findById(
         any(Long.class))).thenReturn(report);
 		
-        Mockito.when(_mapper.createReportdashboardInputToReportdashboardEntity(any(CreateReportdashboardInput.class))).thenReturn(reportdashboardEntity); 
+        Mockito.when(_mapper.createReportdashboardInputToReportdashboardEntity(any(CreateDashboardversionreportInput.class))).thenReturn(reportdashboardEntity); 
         Mockito.when(_reportdashboardManager.create(any(ReportdashboardEntity.class))).thenReturn(reportdashboardEntity);
       
         Assertions.assertThat(_appService.create(reportdashboard)).isEqualTo(_mapper.reportdashboardEntityToCreateReportdashboardOutput(reportdashboardEntity)); 
@@ -125,9 +127,9 @@ public class ReportdashboardAppServiceTest {
 	public void createReportdashboard_ReportdashboardIsNotNullAndReportdashboardDoesNotExistAndChildIsNullAndChildIsNotMandatory_StoreReportdashboard() {
 
 		ReportdashboardEntity reportdashboardEntity = mock(ReportdashboardEntity.class);
-		CreateReportdashboardInput reportdashboard = mock(CreateReportdashboardInput.class);
+		CreateDashboardversionreportInput reportdashboard = mock(CreateDashboardversionreportInput.class);
 		
-		Mockito.when(_mapper.createReportdashboardInputToReportdashboardEntity(any(CreateReportdashboardInput.class))).thenReturn(reportdashboardEntity);
+		Mockito.when(_mapper.createReportdashboardInputToReportdashboardEntity(any(CreateDashboardversionreportInput.class))).thenReturn(reportdashboardEntity);
 		Mockito.when(_reportdashboardManager.create(any(ReportdashboardEntity.class))).thenReturn(reportdashboardEntity);
 		Assertions.assertThat(_appService.create(reportdashboard)).isEqualTo(_mapper.reportdashboardEntityToCreateReportdashboardOutput(reportdashboardEntity));
 
@@ -137,9 +139,9 @@ public class ReportdashboardAppServiceTest {
 	public void updateReportdashboard_ReportdashboardIsNotNullAndReportdashboardDoesNotExistAndChildIsNullAndChildIsNotMandatory_ReturnUpdatedReportdashboard() {
 
 		ReportdashboardEntity reportdashboardEntity = mock(ReportdashboardEntity.class);
-		UpdateReportdashboardInput reportdashboard = mock(UpdateReportdashboardInput.class);
+		UpdateDashboardversionreportInput reportdashboard = mock(UpdateDashboardversionreportInput.class);
 		
-		Mockito.when(_mapper.updateReportdashboardInputToReportdashboardEntity(any(UpdateReportdashboardInput.class))).thenReturn(reportdashboardEntity);
+		Mockito.when(_mapper.updateReportdashboardInputToReportdashboardEntity(any(UpdateDashboardversionreportInput.class))).thenReturn(reportdashboardEntity);
 		Mockito.when(_reportdashboardManager.update(any(ReportdashboardEntity.class))).thenReturn(reportdashboardEntity);
 		Assertions.assertThat(_appService.update(reportdashboardId,reportdashboard)).isEqualTo(_mapper.reportdashboardEntityToUpdateReportdashboardOutput(reportdashboardEntity));
 	}
@@ -149,9 +151,9 @@ public class ReportdashboardAppServiceTest {
 	public void updateReportdashboard_ReportdashboardIdIsNotNullAndIdExists_ReturnUpdatedReportdashboard() {
 
 		ReportdashboardEntity reportdashboardEntity = mock(ReportdashboardEntity.class);
-		UpdateReportdashboardInput reportdashboard= mock(UpdateReportdashboardInput.class);
+		UpdateDashboardversionreportInput reportdashboard= mock(UpdateDashboardversionreportInput.class);
 		
-		Mockito.when(_mapper.updateReportdashboardInputToReportdashboardEntity(any(UpdateReportdashboardInput.class))).thenReturn(reportdashboardEntity);
+		Mockito.when(_mapper.updateReportdashboardInputToReportdashboardEntity(any(UpdateDashboardversionreportInput.class))).thenReturn(reportdashboardEntity);
 		Mockito.when(_reportdashboardManager.update(any(ReportdashboardEntity.class))).thenReturn(reportdashboardEntity);
 		Assertions.assertThat(_appService.update(reportdashboardId,reportdashboard)).isEqualTo(_mapper.reportdashboardEntityToUpdateReportdashboardOutput(reportdashboardEntity));
 	}
@@ -172,7 +174,7 @@ public class ReportdashboardAppServiceTest {
 		List<ReportdashboardEntity> list = new ArrayList<>();
 		Page<ReportdashboardEntity> foundPage = new PageImpl(list);
 		Pageable pageable = mock(Pageable.class);
-		List<FindReportdashboardByIdOutput> output = new ArrayList<>();
+		List<FindDashboardversionreportByIdOutput> output = new ArrayList<>();
 		SearchCriteria search= new SearchCriteria();
 //		search.setType(1);
 //		search.setValue("xyz");
@@ -191,7 +193,7 @@ public class ReportdashboardAppServiceTest {
 		list.add(reportdashboard);
     	Page<ReportdashboardEntity> foundPage = new PageImpl(list);
 		Pageable pageable = mock(Pageable.class);
-		List<FindReportdashboardByIdOutput> output = new ArrayList<>();
+		List<FindDashboardversionreportByIdOutput> output = new ArrayList<>();
         SearchCriteria search= new SearchCriteria();
 //		search.setType(1);
 //		search.setValue("xyz");
