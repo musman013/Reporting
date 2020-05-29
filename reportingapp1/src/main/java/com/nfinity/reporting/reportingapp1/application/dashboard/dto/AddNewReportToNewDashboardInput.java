@@ -8,20 +8,28 @@ import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportIn
 public class AddNewReportToNewDashboardInput {
 	
 	private String description;
-
 	private String title;
+	private Long ownerId;
+	private Boolean isPublished;
 
-	private Long userId;
+	List<CreateReportInput> reportDetails = new ArrayList<>();
 
-	List<CreateReportInput> reportDetails= new ArrayList<>();
-
-	public Long getUserId() {
-		return userId;
+	public Long getOwnerId() {
+		return ownerId;
 	}
 
-	public void setUserId(Long userId){
-		this.userId = userId;
+	public Boolean getIsPublished() {
+		return isPublished;
 	}
+
+	public void setIsPublished(Boolean isPublished) {
+		this.isPublished = isPublished;
+	}
+
+	public void setOwnerId(Long ownerId){
+		this.ownerId = ownerId;
+	}
+	
 	public String getDescription() {
 		return description;
 	}

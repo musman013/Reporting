@@ -48,8 +48,8 @@ import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;    
-import com.nfinity.reporting.reportingapp1.application.authorization.user.UserAppService;    
+import com.nfinity.reporting.reportingapp1.application.authorization.user.UserAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportAppService;    
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -68,7 +68,7 @@ public class ReportControllerTest {
 	private ReportAppService reportAppService;
     
     @SpyBean
-	private ReportdashboardAppService reportdashboardAppService;
+	private DashboardversionreportAppService reportdashboardAppService;
     
     @SpyBean
 	private UserAppService userAppService;

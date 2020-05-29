@@ -25,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardRepository;
@@ -42,7 +42,7 @@ public class DashboardManagerTest {
 	IDashboardRepository  _dashboardRepository;
     
     @Mock
-	IReportdashboardRepository  _reportdashboardRepository;
+	IDashboardversionreportRepository  _reportdashboardRepository;
     
     @Mock
 	IUserRepository  _userRepository;

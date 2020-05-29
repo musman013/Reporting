@@ -13,7 +13,6 @@ import com.nfinity.reporting.reportingapp1.domain.irepository.IRoleRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
-import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportroleRepository;
 import com.querydsl.core.types.Predicate;
 

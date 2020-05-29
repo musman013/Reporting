@@ -1,12 +1,14 @@
 package com.nfinity.reporting.reportingapp1.domain.dashboardversion;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionEntity;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionId;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionRepository;
@@ -19,7 +21,7 @@ public class DashboardversionManager implements IDashboardversionManager {
     IDashboardversionRepository  _dashboardversionRepository;
     
     @Autowired
-	IReportdashboardRepository  _reportdashboardRepository;
+	IDashboardversionreportRepository  _reportdashboardRepository;
     
     @Autowired
 	IUserRepository  _userRepository;
@@ -39,7 +41,7 @@ public class DashboardversionManager implements IDashboardversionManager {
 		return _dashboardversionRepository.save(dashboardversion);
 	}
 
-	public DashboardversionEntity findById(Long dashboardversionId) {
+	public DashboardversionEntity findById(DashboardversionId dashboardversionId) {
     	Optional<DashboardversionEntity> dbDashboardversion= _dashboardversionRepository.findById(dashboardversionId);
 		if(dbDashboardversion.isPresent()) {
 			DashboardversionEntity existingDashboardversion = dbDashboardversion.get();
@@ -50,18 +52,23 @@ public class DashboardversionManager implements IDashboardversionManager {
 
 	}
 	
-	public DashboardversionEntity findByDashboardversionIdAndUserId(Long dashboardversionId, Long userId)
-	{
-		return _dashboardversionRepository.findByDashboardversionIdAndUserId(dashboardversionId, userId);
-	}
+//	public DashboardversionEntity findByDashboardversionIdAndUserId(Long dashboardversionId, Long userId)
+//	{
+//		return _dashboardversionRepository.findByDashboardversionIdAndUserId(dashboardversionId, userId);
+//	}
 
+	public List<DashboardversionEntity> findByUserId(Long userId)
+	{
+		return _dashboardversionRepository.findByUserId(userId);
+	}
+	
 	public Page<DashboardversionEntity> findAll(Predicate predicate, Pageable pageable) {
 
 		return _dashboardversionRepository.findAll(predicate,pageable);
 	}
   
    //User
-	public UserEntity getUser(Long dashboardversionId) {
+	public UserEntity getUser(DashboardversionId dashboardversionId) {
 		
 		Optional<DashboardversionEntity> dbDashboardversion= _dashboardversionRepository.findById(dashboardversionId);
 		if(dbDashboardversion.isPresent()) {

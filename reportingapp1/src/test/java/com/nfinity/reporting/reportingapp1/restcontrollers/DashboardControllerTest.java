@@ -44,11 +44,11 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 import com.nfinity.reporting.reportingapp1.application.dashboard.DashboardAppService;
 import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportAppService;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;    
 import com.nfinity.reporting.reportingapp1.application.authorization.user.UserAppService;    
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,7 +68,7 @@ public class DashboardControllerTest {
 	private DashboardAppService dashboardAppService;
     
     @SpyBean
-	private ReportdashboardAppService reportdashboardAppService;
+	private DashboardversionreportAppService reportdashboardAppService;
     
     @SpyBean
 	private UserAppService userAppService;

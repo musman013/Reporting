@@ -26,14 +26,14 @@ import com.nfinity.reporting.reportingapp1.commons.application.OffsetBasedPageRe
 import com.nfinity.reporting.reportingapp1.commons.domain.EmptyJsonResponse;
 import com.nfinity.reporting.reportingapp1.application.report.ReportAppService;
 import com.nfinity.reporting.reportingapp1.application.report.dto.*;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.ReportdashboardAppService;
-import com.nfinity.reporting.reportingapp1.application.reportdashboard.dto.FindReportdashboardByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.reportuser.ReportuserAppService;
 import com.nfinity.reporting.reportingapp1.application.reportuser.dto.FindReportuserByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.authorization.role.RoleAppService;
 import com.nfinity.reporting.reportingapp1.application.authorization.role.dto.FindRoleByIdOutput;
 import com.nfinity.reporting.reportingapp1.application.authorization.user.UserAppService;
 import com.nfinity.reporting.reportingapp1.application.authorization.user.dto.FindUserByIdOutput;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.DashboardversionreportAppService;
+import com.nfinity.reporting.reportingapp1.application.dashboardversionreport.dto.FindDashboardversionreportByIdOutput;
 
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class ReportController {
 	private RoleAppService _roleAppService;
 
 	@Autowired
-	private ReportdashboardAppService  _reportdashboardAppService;
+	private DashboardversionreportAppService  _reportdashboardAppService;
 
 	@Autowired
 	private UserAppService  _userAppService;
@@ -65,7 +65,7 @@ public class ReportController {
 	@Autowired
 	private Environment env;
 
-	public ReportController(ReportAppService reportAppService, ReportdashboardAppService reportdashboardAppService, UserAppService userAppService,
+	public ReportController(ReportAppService reportAppService, DashboardversionreportAppService reportdashboardAppService, UserAppService userAppService,
 			LoggingHelper helper) {
 		super();
 		this._reportAppService = reportAppService;
@@ -84,7 +84,7 @@ public class ReportController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
-	// ------------ Delete report ------------
+	// ------------ Delete report ------------  
 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_DELETE')")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -104,7 +104,6 @@ public class ReportController {
 		}
 		_reportAppService.delete(Long.valueOf(id));
 	}
-
 
 	// ------------ Update report ------------
 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_UPDATE')")
@@ -143,6 +142,7 @@ public class ReportController {
 
 		report.setIsPublished(false);
         report.setUserId(user.getId());
+        
 		return new ResponseEntity(_reportAppService.update(Long.valueOf(id),report), HttpStatus.OK);
 	}
 
@@ -214,7 +214,7 @@ public class ReportController {
 		}
 		searchCriteria.setJoinColumns(joinColDetails);
 
-		List<FindReportdashboardByIdOutput> output = _reportdashboardAppService.find(searchCriteria,pageable);
+		List<FindDashboardversionreportByIdOutput> output = _reportdashboardAppService.find(searchCriteria,pageable);
 		if (output == null) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
@@ -242,7 +242,7 @@ public class ReportController {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset),50, sort);
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset),Integer.parseInt(limit), sort);
 
 
 		List<GetUserOutput> output = _reportAppService.getUsersAssociatedWithReport(Long.valueOf(id),search,pageable);
@@ -269,7 +269,7 @@ public class ReportController {
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), 50, sort);
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 
 
 		List<GetUserOutput> output = _reportAppService.getAvailableUsers(Long.valueOf(id),search,pageable);

@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import com.nfinity.reporting.reportingapp1.application.report.dto.IReportDetailsOutput;
-import com.nfinity.reporting.reportingapp1.application.report.dto.ReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 

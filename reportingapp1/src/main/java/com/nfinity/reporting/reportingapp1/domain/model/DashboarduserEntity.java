@@ -5,8 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -30,7 +28,6 @@ public class DashboarduserEntity implements Serializable {
 	private Boolean isAssignedByRole; 
 	
 	@Id
-  	@GeneratedValue(strategy = GenerationType.IDENTITY)
   	@Column(name = "dashboardId", nullable = false)
   	public Long getDashboardId() {
   		return dashboardId;
@@ -41,7 +38,7 @@ public class DashboarduserEntity implements Serializable {
   	}
 	
   	@Id
-  	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//  	@GeneratedValue(strategy = GenerationType.IDENTITY)
   	@Column(name = "userId", nullable = false)
   	public Long getUserId() {
   		return userId;

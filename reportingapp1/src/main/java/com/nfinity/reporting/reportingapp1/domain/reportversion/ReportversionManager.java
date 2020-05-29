@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionId;
-import com.nfinity.reporting.reportingapp1.domain.irepository.IReportdashboardRepository;
+import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionreportRepository;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IUserRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportversionRepository;
@@ -21,7 +21,7 @@ public class ReportversionManager implements IReportversionManager {
     IReportversionRepository  _reportversionRepository;
     
     @Autowired
-	IReportdashboardRepository  _reportdashboardRepository;
+	IDashboardversionreportRepository  _reportdashboardRepository;
     
     @Autowired
 	IUserRepository  _userRepository;
