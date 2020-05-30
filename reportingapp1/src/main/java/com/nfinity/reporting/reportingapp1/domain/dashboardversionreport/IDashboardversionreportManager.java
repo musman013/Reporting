@@ -21,7 +21,9 @@ public interface IDashboardversionreportManager {
 
     DashboardversionreportEntity findById(DashboardversionreportId reportdashboardId);
     
-    List<DashboardversionreportEntity> findByDashboardId(Long id);
+    List<DashboardversionreportEntity> findByDashboardIdAndVersion(Long id, String version);
+    
+    public List<DashboardversionreportEntity> findByDashboardIdInDesc(Long id);
 	
     Page<DashboardversionreportEntity> findAll(Predicate predicate, Pageable pageable);
    

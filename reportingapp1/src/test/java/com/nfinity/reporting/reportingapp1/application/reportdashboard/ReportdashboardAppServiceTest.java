@@ -53,7 +53,7 @@ public class ReportdashboardAppServiceTest {
 	DashboardversionreportAppService _appService;
 
 	@Mock
-	private Dashboardversionreport _reportdashboardManager;
+	private DashboardversionreportManager _reportdashboardManager;
 	
     @Mock
 	private DashboardManager  _dashboardManager;

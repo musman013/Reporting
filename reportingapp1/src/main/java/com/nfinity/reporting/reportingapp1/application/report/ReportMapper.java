@@ -65,9 +65,9 @@ public interface ReportMapper {
 
 	@Mappings({ 
 		@Mapping(source = "entity.id", target = "reportId"),
-		@Mapping(source = "user.id", target = "ownerId")
+		@Mapping(source = "entity.user.id", target = "ownerId")
 	}) 
-	FindReportByIdOutput reportEntityToFindReportByIdOutput(ReportEntity entity);
+	FindReportByIdOutput reportEntityToFindReportByIdOutput(ReportEntity entity, ReportversionEntity reportversion);
 
 	@Mappings({
 		@Mapping(source = "user.id", target = "id"),  

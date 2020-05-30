@@ -16,7 +16,7 @@ import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardversionr
 import com.querydsl.core.types.Predicate;
 
 @Repository
-public class Dashboardversionreport implements IDashboardversionreportManager {
+public class DashboardversionreportManager implements IDashboardversionreportManager {
 
     @Autowired
     IDashboardversionreportRepository  _reportdashboardRepository;
@@ -53,9 +53,14 @@ public class Dashboardversionreport implements IDashboardversionreportManager {
 
 	}
 	
-	public List<DashboardversionreportEntity> findByDashboardId(Long id)
+	public List<DashboardversionreportEntity> findByDashboardIdAndVersion(Long id,String version)
 	{
-		return _reportdashboardRepository.findByDashboardId(id);
+		return _reportdashboardRepository.findByDashboardIdAndVersion(id, version);
+	}
+	
+	public List<DashboardversionreportEntity> findByDashboardIdInDesc(Long id)
+	{
+		return _reportdashboardRepository.findByDashboardIdInDesc(id);
 	}
 
 	public Page<DashboardversionreportEntity> findAll(Predicate predicate, Pageable pageable) {

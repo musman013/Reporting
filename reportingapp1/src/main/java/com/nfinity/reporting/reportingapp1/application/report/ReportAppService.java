@@ -119,8 +119,15 @@ public class ReportAppService implements IReportAppService {
 		
 		UpdateReportversionOutput reportversionOutput =  _reportversionAppservice.update(reportversionId, reportversion);
 
-		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
-		for(ReportuserEntity  reportuser : reportuserList)
+//		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
+//		for(ReportuserEntity  reportuser : reportuserList)
+//		{
+//			reportuser.setIsResetted(false);
+//			_reportuserManager.update(reportuser);
+//		}
+		
+		ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, input.getUserId()));
+		if(reportuser !=null)
 		{
 			reportuser.setIsResetted(false);
 			_reportuserManager.update(reportuser);
@@ -177,7 +184,9 @@ public class ReportAppService implements IReportAppService {
 		if (foundReport == null)  
 			return null ; 
 
-		FindReportByIdOutput output=mapper.reportEntityToFindReportByIdOutput(foundReport); 
+		ReportversionEntity reportversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), foundReport.getId(), "running"));
+		
+		FindReportByIdOutput output=mapper.reportEntityToFindReportByIdOutput(foundReport,reportversion); 
 		return output;
 	}
 	//User
@@ -332,7 +341,10 @@ public class ReportAppService implements IReportAppService {
 		foundReport.setIsPublished(true);
 		foundReport = _reportManager.update(foundReport);
 		ReportversionEntity foundReportversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
-
+        
+		ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(foundReportversion, userId, "published");
+		_reportversionManager.update(publishedVersion);
+		
 		return mapper.reportEntitiesToReportDetailsOutput(foundReport,foundReportversion,null);
 	}
 
@@ -383,6 +395,7 @@ public class ReportAppService implements IReportAppService {
 			publishedversion.setUser(foundUser);
 			_reportversionManager.update(publishedversion);
 			foundReportuser.setIsRefreshed(true);
+			foundReportuser.setIsResetted(false);
 			foundReportuser = _reportuserManager.update(foundReportuser);
 			
 			return mapper.reportEntitiesToReportDetailsOutput(foundReport,publishedversion,foundReportuser);

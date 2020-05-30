@@ -11,9 +11,8 @@ public class AddNewReportToExistingDashboardInput {
 	private String description;
 	private String title;
 	private Long ownerId;
-private Boolean isPublished;
+    private Boolean isPublished;
 	
-
 	public Boolean getIsPublished() {
 		return isPublished;
 	}

@@ -140,7 +140,7 @@ public class ReportController {
 		//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		//		}
 
-		report.setIsPublished(false);
+	//	report.setIsPublished(false);
         report.setUserId(user.getId());
         
 		return new ResponseEntity(_reportAppService.update(Long.valueOf(id),report), HttpStatus.OK);

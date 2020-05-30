@@ -25,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
-import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.Dashboardversionreport;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.DashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IDashboardRepository;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.irepository.IReportRepository;
@@ -39,7 +39,7 @@ import com.querydsl.core.types.Predicate;
 public class ReportdashboardManagerTest {
 
 	@InjectMocks
-	Dashboardversionreport _reportdashboardManager;
+	DashboardversionreportManager _reportdashboardManager;
 	
 	@Mock
 	IDashboardversionreportRepository  _reportdashboardRepository;

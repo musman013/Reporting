@@ -16,6 +16,9 @@ import org.javers.spring.annotation.JaversSpringDataAuditable;
 public interface IDashboardversionreportRepository extends JpaRepository<DashboardversionreportEntity, DashboardversionreportId>,QuerydslPredicateExecutor<DashboardversionreportEntity> {
 
 	
-	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1")
-	List<DashboardversionreportEntity> findByDashboardId(Long id);
+	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1 and r.dashboardversion.version =?2")
+	List<DashboardversionreportEntity> findByDashboardIdAndVersion(Long id, String version);
+	
+	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1 ORDER BY r.orderId DESC")
+	List<DashboardversionreportEntity> findByDashboardIdInDesc(Long id);
 }

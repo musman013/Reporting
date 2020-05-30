@@ -80,59 +80,59 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 				.setMaxResults(pageable.getPageSize());
 		List<Object[]> results = query.getResultList();
 		List<ReportDetailsOutput> finalResults = new ArrayList<>();
-		if(results == null || results.isEmpty())
-		{
-			qlString = "SELECT rv.*,r.*," + 
-					"(CASE WHEN rv.report_id NOT IN (Select report_id from reporting.reportuser ru where ru.report_id = rv.report_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
-					"(CASE WHEN rv.user_id IN (Select user_id from reporting.reportuser ru where ru.user_id =rv.user_id and ru.report_id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
-					"FROM reporting.reportversion rv, reporting.report r " + 
-					"where rv.report_id = r.id and rv.user_id =:userId and rv.version = 'running' "+
-					" AND " + 
-					"(:search is null OR rv.title ilike :search)";
-			
-			query = entityManager.createNativeQuery(qlString)
-					.setParameter("userId",userId)
-					.setParameter("search","%" + search + "%")
-					.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-					.setMaxResults(pageable.getPageSize());
-			results = query.getResultList();
-			
-			for(Object[] obj : results){
-				ReportDetailsOutput reportDetails = new ReportDetailsOutput();
-
-				// Here you manually obtain value from object and map to your pojo setters
-				reportDetails.setReportId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
-				reportDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
-				reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
-				reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
-				reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
-				JSONParser parser = new JSONParser();
-				JSONObject json;
-				try {
-					json = (JSONObject) parser.parse(obj[5].toString());
-					reportDetails.setQuery(json);
-				} catch (ParseException e) {
-					e.printStackTrace();
-					throw new Exception("Error occured while parsing query");
-
-				}
-
-				reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
-				reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
-				reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
-				reportDetails.setOwnerId(obj[11]!=null ? Long.parseLong(obj[11].toString()) : null);
-				reportDetails.setSharedWithOthers(Integer.parseInt(obj[12].toString()) == 0 ? false :true);
-				reportDetails.setSharedWithMe(Integer.parseInt(obj[13].toString()) == 0 ? false :true);
-			
-				finalResults.add(reportDetails);
-			}
-		}
+//		if(results == null || results.isEmpty())
+//		{
+//			qlString = "SELECT rv.*,r.*," + 
+//					"(CASE WHEN rv.report_id NOT IN (Select report_id from reporting.reportuser ru where ru.report_id = rv.report_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
+//					"(CASE WHEN rv.user_id IN (Select user_id from reporting.reportuser ru where ru.user_id =rv.user_id and ru.report_id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
+//					"FROM reporting.reportversion rv, reporting.report r " + 
+//					"where rv.report_id = r.id and rv.user_id =:userId and rv.version = 'running' "+
+//					" AND " + 
+//					"(:search is null OR rv.title ilike :search)";
+//			
+//			query = entityManager.createNativeQuery(qlString)
+//					.setParameter("userId",userId)
+//					.setParameter("search","%" + search + "%")
+//					.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+//					.setMaxResults(pageable.getPageSize());
+//			results = query.getResultList();
+//			
+//			for(Object[] obj : results){
+//				ReportDetailsOutput reportDetails = new ReportDetailsOutput();
+//
+//				// Here you manually obtain value from object and map to your pojo setters
+//				reportDetails.setReportId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+//				reportDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
+//				reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
+//				reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
+//				reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
+//				JSONParser parser = new JSONParser();
+//				JSONObject json;
+//				try {
+//					json = (JSONObject) parser.parse(obj[5].toString());
+//					reportDetails.setQuery(json);
+//				} catch (ParseException e) {
+//					e.printStackTrace();
+//					throw new Exception("Error occured while parsing query");
+//
+//				}
+//
+//				reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
+//				reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
+//				reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
+//				reportDetails.setOwnerId(obj[11]!=null ? Long.parseLong(obj[11].toString()) : null);
+//				reportDetails.setSharedWithOthers(Integer.parseInt(obj[12].toString()) == 0 ? false :true);
+//				reportDetails.setSharedWithMe(Integer.parseInt(obj[13].toString()) == 0 ? false :true);
+//			
+//				finalResults.add(reportDetails);
+//			}
+//		}
+//		
+//		else
+//		{
 		
-		else
-		{
 		
-		
-		for(Object[] obj : results){
+		for(Object[] obj : results) {
 			ReportDetailsOutput reportDetails = new ReportDetailsOutput();
 
 			// Here you manually obtain value from object and map to your pojo setters
@@ -172,7 +172,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			
 
 			finalResults.add(reportDetails);
-		}
+//		}
 
 		}
 		int totalRows = results.size();

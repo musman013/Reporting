@@ -37,7 +37,7 @@ import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportdashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
-import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.Dashboardversionreport;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.DashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -53,7 +53,7 @@ public class ReportAppServiceTest {
 	private ReportManager _reportManager;
 	
     @Mock
-	private Dashboardversionreport  _reportdashboardManager;
+	private DashboardversionreportManager  _reportdashboardManager;
 	
     @Mock
 	private UserManager  _userManager;

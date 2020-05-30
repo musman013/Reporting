@@ -30,7 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.nfinity.reporting.reportingapp1.domain.dashboard.*;
-import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.Dashboardversionreport;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.DashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
 import com.nfinity.reporting.reportingapp1.application.dashboard.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.model.QDashboardEntity;
@@ -53,7 +53,7 @@ public class DashboardAppServiceTest {
 	private DashboardManager _dashboardManager;
 	
     @Mock
-	private Dashboardversionreport  _reportdashboardManager;
+	private DashboardversionreportManager  _reportdashboardManager;
 	
     @Mock
 	private UserManager  _userManager;
