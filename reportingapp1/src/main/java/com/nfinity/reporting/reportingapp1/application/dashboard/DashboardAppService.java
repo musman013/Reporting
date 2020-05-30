@@ -152,13 +152,6 @@ public class DashboardAppService implements IDashboardAppService {
 		dashboardversion.setVersion(rv.getVersion());
 
 		UpdateDashboardversionOutput dashboardversionOutput =  _dashboardversionAppservice.update(dashboardversionId, dashboardversion);
-
-//		List<DashboarduserEntity> dashboarduserList = _dashboarduserManager.findByDashboardId(dashboardId);
-//		for(DashboarduserEntity  dashboarduser : dashboarduserList)
-//		{
-//			dashboarduser.setIsResetted(false);
-//			_dashboarduserManager.update(dashboarduser);
-//		}
 		
 		DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, input.getUserId()));
 		if(dashboarduser !=null)
@@ -174,7 +167,17 @@ public class DashboardAppService implements IDashboardAppService {
 			foundDashboard.setIsPublished(false);
 			_dashboardManager.update(foundDashboard);
 		}
-
+ 
+		Long count =0L;
+		for(UpdateReportInput reportInput : input.getReportDetails()) {
+			DashboardversionreportEntity dashboardreport = _reportDashboardManager.findById(new DashboardversionreportId(dashboardId, input.getUserId(),"running", reportInput.getId()));
+		    dashboardreport.setReportWidth(reportInput.getReportWidth());
+		    dashboardreport.setOrderId(count);
+		    count ++;
+		
+		    _reportDashboardManager.update(dashboardreport);
+		}
+		
 		return mapper.dashboardEntityAndUpdateDashboardversionOutputToUpdateDashboardOutput(foundDashboard,dashboardversionOutput);
 	}
 
@@ -221,9 +224,9 @@ public class DashboardAppService implements IDashboardAppService {
 		return output;
 	}
 
-	public List<FindReportByIdOutput> setReportsList(Long id)
+	public List<FindReportByIdOutput> setReportsList(Long dashboardId, Long userId)
 	{
-		List<DashboardversionreportEntity> reportDashboardList = _reportDashboardManager.findByDashboardIdAndVersion(id,"running");
+		List<DashboardversionreportEntity> reportDashboardList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId,"running",userId);
 		
 		List<FindReportByIdOutput> reportDetails = new ArrayList<>();
 		for(DashboardversionreportEntity rd : reportDashboardList)
@@ -245,7 +248,7 @@ public class DashboardAppService implements IDashboardAppService {
 		DashboardEntity foundDashboard = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
 		DashboarduserEntity dashboarduser =  _dashboarduserManager.findById(new DashboarduserId(dashboardId, userId));
 
-		if (foundDashboard == null && dashboardId == null)  
+		if (foundDashboard == null && dashboarduser == null)  
 			return null ; 
 
 		DashboardversionEntity dashboardVersion =_dashboardversionManager.findById(new DashboardversionId(userId, dashboardId, "running"));
@@ -613,9 +616,20 @@ public class DashboardAppService implements IDashboardAppService {
 
 		foundDashboard.setIsPublished(true);
 		foundDashboard = _dashboardManager.update(foundDashboard);
+		
 		DashboardversionEntity foundDashboardversion = _dashboardversionManager.findById(new DashboardversionId(userId, dashboardId, "running"));
 		DashboardversionEntity publishedVersion = dashboardversionMapper.dashboardversionEntityToDashboardversionEntity(foundDashboardversion, userId, "published");
 		_dashboardversionManager.update(publishedVersion);
+		
+		List<DashboardversionreportEntity> dashboardreportList  = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId, "running", userId);
+		
+		for(DashboardversionreportEntity dashboardeport : dashboardreportList)
+		{
+			DashboardversionreportEntity publishedDashboardreport = _reportDashboardManager.findById(new DashboardversionreportId(dashboardId,userId,"published", dashboardeport.getReportId()));
+		    publishedDashboardreport.setOrderId(dashboardeport.getOrderId());
+		    publishedDashboardreport.setReportWidth(dashboardeport.getReportWidth());
+		    _reportDashboardManager.update(publishedDashboardreport);
+		}
 		
 		return mapper.dashboardEntitiesToDashboardDetailsOutput(foundDashboard,foundDashboardversion,null);
 	}
@@ -816,9 +830,10 @@ public class DashboardAppService implements IDashboardAppService {
 		//
 		//		return dashboardOuputDto;
 
+		
+		DashboardversionEntity dashboardversion = _dashboardversionManager.findById(new DashboardversionId(input.getOwnerId(), input.getId(),"running"));
 		DashboardEntity dashboard = _dashboardManager.findById(input.getId());
-		DashboardversionEntity dashboardversion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboard.getId(),"running"));
-
+		
 		CreateDashboardOutput createdDashboard = mapper.dashboardEntityAndDashboardversionEntityToCreateDashboardOutput(dashboard, dashboardversion);
 
 		List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
@@ -839,6 +854,18 @@ public class DashboardAppService implements IDashboardAppService {
 		FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardOutputToFindDashboardByIdOutput(createdDashboard);
 		dashboardOuputDto.setReportDetails(reportsOutput);
 		dashboardOuputDto.setIsResetable(true);
+		
+		DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(input.getId(), input.getOwnerId()));
+		if(dashboarduser !=null)
+		{
+			dashboarduser.setIsResetted(false);
+			_dashboarduserManager.update(dashboarduser);
+		}
+		if(dashboard.getUser() !=null && dashboard.getUser().getId() == input.getOwnerId())
+		{
+			dashboard.setIsPublished(false);
+			_dashboardManager.update(dashboard);
+		}
 		
 		return dashboardOuputDto;
 
@@ -943,11 +970,19 @@ public class DashboardAppService implements IDashboardAppService {
 		FindDashboardByIdOutput dashboardOuputDto = mapper.dashboardOutputToFindDashboardByIdOutput(createdDashboard);
 		dashboardOuputDto.setReportDetails(reportsOutput);
 		dashboardOuputDto.setIsResetable(true);
-	//------	
-		dashboard.setIsPublished(false);
-		_dashboardManager.update(dashboard);
+	
 		
-	//	DashboarduserEntity dashboarduser = _dashboarduserManager.findByDashboardId(new DashboarduserId());
+		DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(input.getId(), input.getOwnerId()));
+		if(dashboarduser !=null)
+		{
+			dashboarduser.setIsResetted(false);
+			_dashboarduserManager.update(dashboarduser);
+		}
+		if(dashboard.getUser() !=null && dashboard.getUser().getId() == input.getOwnerId())
+		{
+			dashboard.setIsPublished(false);
+			_dashboardManager.update(dashboard);
+		}
 		
 		return dashboardOuputDto;
 	}

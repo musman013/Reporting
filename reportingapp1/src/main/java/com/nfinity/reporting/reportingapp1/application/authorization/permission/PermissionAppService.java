@@ -23,7 +23,7 @@ import java.util.*;
 @Service
 @Validated
 public class PermissionAppService implements IPermissionAppService {
-
+ 
     static final int case1=1;
 	static final int case2=2;
 	static final int case3=3;

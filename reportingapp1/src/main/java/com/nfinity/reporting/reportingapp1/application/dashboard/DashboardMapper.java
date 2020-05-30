@@ -52,9 +52,9 @@ public interface DashboardMapper {
 	CreateDashboardOutput dashboardEntityAndCreateDashboardversionOutputToCreateDashboardOutput(DashboardEntity entity, CreateDashboardversionOutput dashboardversion);
 
 	@Mappings({ 
-		@Mapping(source = "dashboard.id", target = "id"), 
-		@Mapping(source = "dashboard.user.id", target = "ownerId"),                   
-		@Mapping(source = "dashboard.user.userName", target = "ownerDescriptiveField")                     
+		@Mapping(source = "dashboardversion.dashboardId", target = "id"), 
+		@Mapping(source = "dashboardversion.userId", target = "ownerId"),                   
+		@Mapping(source = "dashboardversion.user.userName", target = "ownerDescriptiveField")                     
 	}) 
 	CreateDashboardOutput dashboardEntityAndDashboardversionEntityToCreateDashboardOutput(DashboardEntity dashboard, DashboardversionEntity dashboardversion);
 

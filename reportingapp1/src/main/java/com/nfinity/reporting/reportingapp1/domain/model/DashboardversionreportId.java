@@ -5,19 +5,29 @@ import java.io.Serializable;
 public class DashboardversionreportId implements Serializable {
 
 	    private Long dashboardId;
+	    private Long userId;
 	    private String dashboardVersion;
 	    private Long reportId;
 
 	    public DashboardversionreportId() {
 	    }
 	    
-	    public DashboardversionreportId(Long dashboardId,String dashboardVersion,Long reportId) {
+	    public DashboardversionreportId(Long dashboardId,Long userId,String dashboardVersion,Long reportId) {
 	  		this.dashboardId =dashboardId;
+	  		this.userId = userId;
 	  		this.dashboardVersion = dashboardVersion;
 	  		this.reportId =reportId;
 	    }
 	    
-	    public Long getDashboardId() {
+	    public Long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(Long userId) {
+			this.userId = userId;
+		}
+
+		public Long getDashboardId() {
 	        return dashboardId;
 	    }
 	    public void setDashboardId(Long dashboardId){

@@ -1,8 +1,13 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+
+import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
 
 public class UpdateDashboardInput {
 
@@ -13,6 +18,8 @@ public class UpdateDashboardInput {
 	private Long ownerId;
 	private Long userId;
 	private Boolean isPublished;
+	
+	List<UpdateReportInput> reportDetails= new ArrayList<>();
 
 	
 	public Long getUserId() {
@@ -62,4 +69,14 @@ public class UpdateDashboardInput {
 	public void setTitle(String title){
 		this.title = title;
 	}
+
+	public List<UpdateReportInput> getReportDetails() {
+		return reportDetails;
+	}
+
+	public void setReportDetails(List<UpdateReportInput> reportDetails) {
+		this.reportDetails = reportDetails;
+	}
+	
+	
 }

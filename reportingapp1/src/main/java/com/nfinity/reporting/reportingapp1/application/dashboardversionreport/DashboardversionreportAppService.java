@@ -106,9 +106,9 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 			reportdashboard.setDashboardversion(dashboardrunningVersion);
 		}
 
-		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdInDesc(reportdashboard.getDashboardId());
+		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdAndVersionInDesc(reportdashboard.getDashboardId(), "running");
 
-		Long count = 1L;
+		Long count = 0L;
 		if(list != null && !list.isEmpty())
 		{
 			count = list.get(0).getOrderId();
@@ -150,9 +150,9 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 			reportdashboard.setDashboardversion(dashboardPublishedVersion);
 		}
 
-		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdInDesc(reportdashboard.getDashboardId());
+		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdAndVersionInDesc(reportdashboard.getDashboardId(),"published");
 
-		Long count = 1L;
+		Long count = 0L;
 		if(list != null && !list.isEmpty())
 		{
 			count = list.get(0).getOrderId();

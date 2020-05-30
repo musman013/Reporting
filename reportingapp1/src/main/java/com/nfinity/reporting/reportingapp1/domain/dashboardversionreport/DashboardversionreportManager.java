@@ -53,14 +53,14 @@ public class DashboardversionreportManager implements IDashboardversionreportMan
 
 	}
 	
-	public List<DashboardversionreportEntity> findByDashboardIdAndVersion(Long id,String version)
+	public List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserId(Long dashboardId,String version, Long userId)
 	{
-		return _reportdashboardRepository.findByDashboardIdAndVersion(id, version);
+		return _reportdashboardRepository.findByDashboardIdAndVersionAndUserId(dashboardId, version,userId);
 	}
 	
-	public List<DashboardversionreportEntity> findByDashboardIdInDesc(Long id)
+	public List<DashboardversionreportEntity> findByDashboardIdAndVersionInDesc(Long id, String version)
 	{
-		return _reportdashboardRepository.findByDashboardIdInDesc(id);
+		return _reportdashboardRepository.findByDashboardIdAndVersionInDesc(id,version);
 	}
 
 	public Page<DashboardversionreportEntity> findAll(Predicate predicate, Pageable pageable) {
