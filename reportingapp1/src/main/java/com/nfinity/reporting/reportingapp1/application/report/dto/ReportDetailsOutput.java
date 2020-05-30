@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 public class ReportDetailsOutput {
 
-	private Long reportId;
+	private Long id;
 	private Boolean isPublished;
 	private String ctype;
 	private String description;
@@ -42,11 +42,11 @@ public class ReportDetailsOutput {
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
 	}
-	public Long getReportId() {
-		return reportId;
+	public Long getId() {
+		return id;
 	}
-	public void setReportId(Long reportId) {
-		this.reportId = reportId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public Boolean getIsPublished() {
 		return isPublished;

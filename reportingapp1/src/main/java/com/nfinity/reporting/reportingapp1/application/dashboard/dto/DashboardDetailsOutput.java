@@ -3,7 +3,7 @@ package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 public class DashboardDetailsOutput {
 
 	private Long userId;
-	private Long dashboardId;
+	private Long id;
 	private String description;
 	private String version;
 	private Boolean isPublished;
@@ -24,11 +24,11 @@ public class DashboardDetailsOutput {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	public Long getDashboardId() {
-		return dashboardId;
+	public Long getId() {
+		return id;
 	}
-	public void setDashboardId(Long dashboardId) {
-		this.dashboardId = dashboardId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getDescription() {
 		return description;

@@ -38,9 +38,9 @@ public interface ReportMapper {
 	}) 
 	CreateReportOutput reportEntityAndReportversionEntityToCreateReportOutput(ReportEntity report, ReportversionEntity reportversion);
 
-	@Mappings({ 
-		@Mapping(source = "id", target = "reportId")
-	})
+//	@Mappings({ 
+//		@Mapping(source = "id", target = "reportId")
+//	})
 	FindReportByIdOutput createReportOutputToFindReportByIdOutput(CreateReportOutput report);
 
 	ReportEntity updateReportInputToReportEntity(UpdateReportInput reportDto);
@@ -59,12 +59,12 @@ public interface ReportMapper {
 	@Mappings({
 		@Mapping(source = "reportversion.userId", target = "userId"), 
 		@Mapping(source = "report.user.id", target = "ownerId"),
-		@Mapping(source = "reportversion.reportId", target = "reportId"),
+		@Mapping(source = "reportversion.reportId", target = "id"),
 	})
 	FindReportByIdOutput reportEntitiesToFindReportByIdOutput(ReportEntity report, ReportversionEntity reportversion, ReportuserEntity reportuser);
 
 	@Mappings({ 
-		@Mapping(source = "entity.id", target = "reportId"),
+		//@Mapping(source = "entity.id", target = "id"),
 		@Mapping(source = "entity.user.id", target = "ownerId")
 	}) 
 	FindReportByIdOutput reportEntityToFindReportByIdOutput(ReportEntity entity, ReportversionEntity reportversion);
@@ -84,11 +84,8 @@ public interface ReportMapper {
 	@Mappings({
 		@Mapping(source = "reportversion.userId", target = "userId"),  
 		@Mapping(source = "report.user.id", target = "ownerId"),
-		@Mapping(source = "reportversion.reportId", target = "reportId"),
+		@Mapping(source = "reportversion.reportId", target = "id"),
 	})
 	ReportDetailsOutput reportEntitiesToReportDetailsOutput(ReportEntity report, ReportversionEntity reportversion, ReportuserEntity reportuser);
-
-	
-	ReportDetailsOutput mapInterfaceToDto(Object reportDetails);
 	
 }

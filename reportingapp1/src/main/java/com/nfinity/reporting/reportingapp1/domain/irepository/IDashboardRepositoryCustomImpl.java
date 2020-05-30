@@ -120,7 +120,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			DashboardDetailsOutput dashboardDetails = new DashboardDetailsOutput();
 
 			// Here you manually obtain value from object and map to your pojo setters
-			dashboardDetails.setDashboardId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+			dashboardDetails.setId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
 			dashboardDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
 			dashboardDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);
@@ -177,7 +177,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			DashboardDetailsOutput dashboardDetails = new DashboardDetailsOutput();
 
 			// Here you manually obtain value from object and map to your pojo setters
-			dashboardDetails.setDashboardId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+			dashboardDetails.setId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
 			dashboardDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
 			dashboardDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);

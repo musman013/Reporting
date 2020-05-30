@@ -793,6 +793,7 @@ public class DashboardAppService implements IDashboardAppService {
 			report.setIsPublished(true);
 			report.setOwnerId(createdDashboard.getOwnerId());
 			CreateReportOutput createdReport = _reportAppService.create(report);
+			createdReport.setReportWidth(report.getReportWidth());
 			reportList.add(createdReport);
 			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(createdReport));
 		}
@@ -844,6 +845,7 @@ public class DashboardAppService implements IDashboardAppService {
 			report.setIsPublished(true);
 			report.setOwnerId(createdDashboard.getOwnerId());
 			CreateReportOutput createdReport = _reportAppService.create(report);
+			createdReport.setReportWidth(report.getReportWidth());
 			reportList.add(createdReport);
 			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(createdReport));
 		}
@@ -911,6 +913,7 @@ public class DashboardAppService implements IDashboardAppService {
 			ReportversionEntity reportversionEntity = _reportversionManager.findById(new ReportversionId(reportEntity.getUser().getId(),reportEntity.getId(),"running"));
 			
 			CreateReportOutput reportOutput = reportMapper.reportEntityAndReportversionEntityToCreateReportOutput(reportEntity, reportversionEntity);
+			reportOutput.setReportWidth(report.getReportWidth());
 			reportList.add(reportOutput);
 			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(reportOutput));
 		}
@@ -960,6 +963,7 @@ public class DashboardAppService implements IDashboardAppService {
 			ReportversionEntity reportversionEntity = _reportversionManager.findById(new ReportversionId(reportEntity.getUser().getId(),reportEntity.getId(),"running"));
 			
 			CreateReportOutput reportOutput = reportMapper.reportEntityAndReportversionEntityToCreateReportOutput(reportEntity, reportversionEntity);
+			reportOutput.setReportWidth(report.getReportWidth());
 			reportList.add(reportOutput);
 			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(reportOutput));
 		}

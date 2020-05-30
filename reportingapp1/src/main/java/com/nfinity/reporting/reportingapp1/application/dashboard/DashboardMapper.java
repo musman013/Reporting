@@ -77,28 +77,28 @@ public interface DashboardMapper {
 
 	@Mappings({ 
 		@Mapping(source = "user.id", target = "ownerId"),  
-		@Mapping(source = "entity.id", target = "dashboardId"),
+	//	@Mapping(source = "entity.id", target = "dashboardId"),
 		@Mapping(source = "user.userName", target = "ownerDescriptiveField")                 
 	}) 
 	FindDashboardByIdOutput dashboardEntityToFindDashboardByIdOutput(DashboardEntity entity);
 	
 	@Mappings({ 
-		@Mapping(source = "ownerId", target = "userId"),  
-		@Mapping(source = "entity.id", target = "dashboardId")                
+		@Mapping(source = "ownerId", target = "userId") 
+		//@Mapping(source = "entity.id", target = "dashboardId")                
 	}) 
 	FindDashboardByIdOutput dashboardOutputToFindDashboardByIdOutput(CreateDashboardOutput entity);
 
 	@Mappings({
 		@Mapping(source = "dashboardversion.userId", target = "userId"), 
 		@Mapping(source = "dashboard.user.id", target = "ownerId"),
-		@Mapping(source = "dashboardversion.dashboardId", target = "dashboardId"),
+		@Mapping(source = "dashboardversion.dashboardId", target = "id"),
 	})
 	FindDashboardByIdOutput dashboardEntitiesToFindDashboardByIdOutput(DashboardEntity dashboard, DashboardversionEntity dashboardversion, DashboarduserEntity dashboarduser);
 
 	@Mappings({
 		@Mapping(source = "dashboardversion.userId", target = "userId"),  
 		@Mapping(source = "dashboard.user.id", target = "ownerId"),
-		@Mapping(source = "dashboardversion.dashboardId", target = "dashboardId"),
+		@Mapping(source = "dashboardversion.dashboardId", target = "id"),
 	})
 	DashboardDetailsOutput dashboardEntitiesToDashboardDetailsOutput(DashboardEntity dashboard, DashboardversionEntity dashboardversion, DashboarduserEntity dashboarduser);
 

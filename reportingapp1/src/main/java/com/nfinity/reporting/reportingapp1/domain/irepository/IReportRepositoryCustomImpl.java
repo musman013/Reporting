@@ -136,7 +136,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			ReportDetailsOutput reportDetails = new ReportDetailsOutput();
 
 			// Here you manually obtain value from object and map to your pojo setters
-			reportDetails.setReportId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+			reportDetails.setId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
 			reportDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
@@ -213,7 +213,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			ReportDetailsOutput reportDetails = new ReportDetailsOutput();
 
 			// Here you manually obtain value from object and map to your pojo setters
-			reportDetails.setReportId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+			reportDetails.setId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
 			reportDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);

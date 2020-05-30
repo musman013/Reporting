@@ -1,14 +1,10 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
-import java.util.Date;
-
 import org.json.simple.JSONObject;
-
-import com.nfinity.reporting.reportingapp1.application.reportversion.dto.FindReportversionByIdOutput;
 
 public class FindReportByIdOutput {
 
-	private Long reportId;
+	private Long id;
 	private Boolean isPublished;
 	private String ctype;
 	private String description;
@@ -27,18 +23,17 @@ public class FindReportByIdOutput {
 	private Boolean isAssignedByRole;
 	private Boolean isResetable;
 	
-
 	public Long getOwnerId() {
 		return ownerId;
 	}
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
 	}
-	public Long getReportId() {
-		return reportId;
+	public Long getId() {
+		return id;
 	}
-	public void setReportId(Long reportId) {
-		this.reportId = reportId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public Boolean getIsPublished() {
 		return isPublished;

@@ -8,7 +8,7 @@ public class FindDashboardByIdOutput {
 	private String description;
 	private String title;
 	private Long userId;
-	private Long dashboardId;
+	private Long id;
 	private Boolean editable;
 	private Boolean isResetted;
 	private Boolean isRefreshed;
@@ -38,12 +38,12 @@ public class FindDashboardByIdOutput {
 		this.isPublished = isPublished;
 	}
 
-	public Long getDashboardId() {
-		return dashboardId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setDashboardId(Long dashboardId) {
-		this.dashboardId = dashboardId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Long getUserId() {
