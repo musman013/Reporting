@@ -27,7 +27,7 @@ public class ReportversionEntity implements Serializable {
   	private JSONObject query;
   	private String reportType;
   	private String title;
-  	private String reportWidth;
+  //	private String reportWidth;
   	private String version;
 
 	public ReportversionEntity() {
@@ -85,15 +85,15 @@ public class ReportversionEntity implements Serializable {
   		this.description = description;
   	}
   
-  	@Basic
-  	@Column(name = "reportWidth" , nullable= true, length = 255)
-  	public String getReportWidth() {
-		return reportWidth;
-	}
-
-	public void setReportWidth(String reportWidth) {
-		this.reportWidth = reportWidth;
-	}
+//  	@Basic
+//  	@Column(name = "reportWidth" , nullable= true, length = 255)
+//  	public String getReportWidth() {
+//		return reportWidth;
+//	}
+//
+//	public void setReportWidth(String reportWidth) {
+//		this.reportWidth = reportWidth;
+//	}
   
   	@Basic
   	@Column(columnDefinition = "TEXT",name = "query", nullable = true, length =255)

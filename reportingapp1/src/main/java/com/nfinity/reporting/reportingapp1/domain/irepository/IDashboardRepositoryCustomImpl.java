@@ -28,13 +28,39 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 
 	@Override
 	public Page<DashboardDetailsOutput> getAllDashboardsByUserId(Long userId, String search, Pageable pageable) throws Exception {
-		String qlString = "SELECT DISTINCT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status,r.*, " + 
-				"(CASE WHEN rv.dashboard_id NOT IN (Select dashboard_id from reporting.dashboarduser ru where ru.dashboard_id = rv.dashboard_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
-				"(CASE WHEN rv.user_id IN (Select user_id from reporting.dashboarduser ru where ru.user_id =rv.user_id and ru.dashboard_id = rv.dashboard_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
-				"FROM reporting.dashboardversion rv, reporting.dashboarduser u, reporting.dashboard r " + 
-				"where rv.dashboard_id = r.id and u.user_id =:userId and rv.user_id =:userId and rv.version = 'running' "+
-				" AND " + 
-				"(:search is null OR rv.title ilike :search)";
+		String qlString = ""
+				+ "SELECT rep.*, "
+				+ "       ru.is_resetted, "
+				+ "       ru.owner_sharing_status, "
+				+ "       ru.recipient_sharing_status, "
+				+ "       ru.editable, "
+				+ "       ru.is_assigned_by_role, "
+				+ "       ru.is_refreshed "
+				+ "FROM reporting.dashboarduser ru "
+				+ "RIGHT OUTER JOIN "
+				+ "  (SELECT rv.*, r.*, "
+				+ "          (CASE "
+				+ "               WHEN rv.dashboard_id NOT IN "
+				+ "                      (SELECT dashboard_id "
+				+ "                       FROM reporting.dashboarduser ru "
+				+ "                       WHERE ru.rdashboard_id = rv.dashboard_id) THEN 0 "
+				+ "               ELSE 1 "
+				+ "           END) AS shared_with_others, "
+				+ "          (CASE "
+				+ "               WHEN rv.user_id IN "
+				+ "                      (SELECT user_id "
+				+ "                       FROM reporting.dashboarduser ru "
+				+ "                       WHERE ru.user_id =rv.user_id "
+				+ "                         AND ru.dashboard_id = rv.dashboard_id) THEN 1 "
+				+ "               ELSE 0 "
+				+ "           END) AS shared_with_me "
+				+ "   FROM reporting.dashboard r, "
+				+ "        reporting.dashboardversion rv "
+				+ "   WHERE rv.dashboard_id = r.id "
+				+ "     AND rv.user_id = :userId "
+				+ "     AND (:search is null OR rv.title ilike :search) "
+				+ "     AND rv.version = 'running' ) AS rep ON ru.dashboard_id = rep.id and ru.user_id = rep.user_id";
+		
 		
 //		"SELECT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status, (CASE WHEN rv.user_id IN "
 //		+ "(Select owner_id from "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".report r where r.owner_id =rv.user_id and r.id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_others, "
@@ -52,43 +78,43 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 				.setMaxResults(pageable.getPageSize());
 		List<Object[]> results = query.getResultList();
 		List<DashboardDetailsOutput> finalResults = new ArrayList<>();
-		if(results == null || results.isEmpty())
-		{
-			qlString = "SELECT rv.*,r.*," + 
-					"(CASE WHEN rv.dashboard_id NOT IN (Select dashboard_id from reporting.dashboarduser ru where ru.dashboard_id = rv.dashboard_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
-					"(CASE WHEN rv.user_id IN (Select user_id from reporting.dashboarduser ru where ru.user_id =rv.user_id and ru.dashboard_id = rv.dashboard_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
-					"FROM reporting.dashboardversion rv, reporting.dashboard r " + 
-					"where rv.dashboard_id = r.id and rv.user_id =:userId and rv.version = 'running' "+
-					" AND " + 
-					"(:search is null OR rv.title ilike :search)";
-			
-			query = entityManager.createNativeQuery(qlString)
-					.setParameter("userId",userId)
-					.setParameter("search","%" + search + "%")
-					.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-					.setMaxResults(pageable.getPageSize());
-			results = query.getResultList();
-			
-			for(Object[] obj : results){
-				DashboardDetailsOutput dashboardDetails = new DashboardDetailsOutput();
-
-				// Here you manually obtain value from object and map to your pojo setters
-				dashboardDetails.setDashboardId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
-				dashboardDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
-				dashboardDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
-			    dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);
-				dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
-				dashboardDetails.setOwnerId(obj[7]!=null ? Long.parseLong(obj[7].toString()) : null);
-				dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[8].toString()) == 0 ? false :true);
-				dashboardDetails.setSharedWithMe(Integer.parseInt(obj[9].toString()) == 0 ? false :true);
-			
-				finalResults.add(dashboardDetails);
-			}
-		}
-		
-		else
-		{
-		
+//		if(results == null || results.isEmpty())
+//		{
+//			qlString = "SELECT rv.*,r.*," + 
+//					"(CASE WHEN rv.dashboard_id NOT IN (Select dashboard_id from reporting.dashboarduser ru where ru.dashboard_id = rv.dashboard_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
+//					"(CASE WHEN rv.user_id IN (Select user_id from reporting.dashboarduser ru where ru.user_id =rv.user_id and ru.dashboard_id = rv.dashboard_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
+//					"FROM reporting.dashboardversion rv, reporting.dashboard r " + 
+//					"where rv.dashboard_id = r.id and rv.user_id =:userId and rv.version = 'running' "+
+//					" AND " + 
+//					"(:search is null OR rv.title ilike :search)";
+//			
+//			query = entityManager.createNativeQuery(qlString)
+//					.setParameter("userId",userId)
+//					.setParameter("search","%" + search + "%")
+//					.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+//					.setMaxResults(pageable.getPageSize());
+//			results = query.getResultList();
+//			
+//			for(Object[] obj : results){
+//				DashboardDetailsOutput dashboardDetails = new DashboardDetailsOutput();
+//
+//				// Here you manually obtain value from object and map to your pojo setters
+//				dashboardDetails.setDashboardId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
+//				dashboardDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
+//				dashboardDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
+//			    dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);
+//				dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
+//				dashboardDetails.setOwnerId(obj[7]!=null ? Long.parseLong(obj[7].toString()) : null);
+//				dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[8].toString()) == 0 ? false :true);
+//				dashboardDetails.setSharedWithMe(Integer.parseInt(obj[9].toString()) == 0 ? false :true);
+//			
+//				finalResults.add(dashboardDetails);
+//			}
+//		}
+//		
+//		else
+//		{
+//		
 		
 		for(Object[] obj : results){
 			DashboardDetailsOutput dashboardDetails = new DashboardDetailsOutput();
@@ -110,7 +136,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setSharedWithMe(Integer.parseInt(obj[15].toString()) == 0 ? false :true);
 
 			finalResults.add(dashboardDetails);
-		}
+//		}
 
 		}
 		int totalRows = results.size();
