@@ -43,7 +43,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 				+ "               WHEN rv.dashboard_id NOT IN "
 				+ "                      (SELECT dashboard_id "
 				+ "                       FROM reporting.dashboarduser ru "
-				+ "                       WHERE ru.rdashboard_id = rv.dashboard_id) THEN 0 "
+				+ "                       WHERE ru.dashboard_id = rv.dashboard_id) THEN 0 "
 				+ "               ELSE 1 "
 				+ "           END) AS shared_with_others, "
 				+ "          (CASE "
@@ -125,15 +125,21 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);
 			dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
-			dashboardDetails.setEditable(obj[5].toString() == "true" ? true : false);
-			dashboardDetails.setIsAssignedByRole(obj[6].toString() == "true" ? true : false);
-			dashboardDetails.setIsRefreshed(obj[7].toString() == "true" ? true : false);
-			dashboardDetails.setIsResetted(obj[8].toString() == "true" ? true : false);
-			dashboardDetails.setOwnerSharingStatus(obj[9].toString() == "true" ? true : false);
-			dashboardDetails.setRecipientSharingStatus(obj[10].toString() == "true" ? true : false);
-			dashboardDetails.setOwnerId(obj[13]!=null ? Long.parseLong(obj[13].toString()) : null);
-			dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[14].toString()) == 0 ? false :true);
-			dashboardDetails.setSharedWithMe(Integer.parseInt(obj[15].toString()) == 0 ? false :true);
+	
+			dashboardDetails.setIsPublished(obj[6].toString() == "true" ? true : false);
+			dashboardDetails.setOwnerId(obj[7]!=null ? Long.parseLong(obj[7].toString()) : null);
+			
+			dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[8].toString()) == 0 ? false :true);
+			dashboardDetails.setSharedWithMe(Integer.parseInt(obj[9].toString()) == 0 ? false :true);
+			
+			
+			dashboardDetails.setIsResetted(obj[10] != null && obj[10].toString() == "true" ? true : false);
+			dashboardDetails.setOwnerSharingStatus(obj[11] != null && obj[11].toString() == "true" ? true : false);
+			dashboardDetails.setRecipientSharingStatus(obj[12] != null && obj[12].toString() == "true" ? true : false);
+			dashboardDetails.setEditable(obj[13] != null && obj[13].toString() == "true" ? true : false);
+			dashboardDetails.setIsAssignedByRole(obj[14] != null && obj[14].toString() == "true" ? true : false);
+			dashboardDetails.setIsRefreshed(obj[15] != null && obj[15].toString() == "true" ? true : false);
+			
 
 			finalResults.add(dashboardDetails);
 //		}
