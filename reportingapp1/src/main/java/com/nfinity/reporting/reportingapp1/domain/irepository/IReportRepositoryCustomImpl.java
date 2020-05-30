@@ -31,13 +31,38 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 
 	@Override
 	public Page<ReportDetailsOutput> getAllReportsByUserId(Long userId, String search, Pageable pageable) throws Exception {
-		String qlString = "SELECT DISTINCT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status,r.*, " + 
-				"(CASE WHEN rv.report_id NOT IN (Select report_id from reporting.reportuser ru where ru.report_id = rv.report_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
-				"(CASE WHEN rv.user_id IN (Select user_id from reporting.reportuser ru where ru.user_id =rv.user_id and ru.report_id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
-				"FROM reporting.reportversion rv, reporting.reportuser u, reporting.report r " + 
-				"where rv.report_id = r.id and u.user_id =:userId and rv.user_id =:userId and rv.version = 'running' "+
-				" AND " + 
-				"(:search is null OR rv.title ilike :search)";
+		String qlString = ""
+				+ "SELECT rep.*, "
+				+ "       ru.is_resetted, "
+				+ "       ru.owner_sharing_status, "
+				+ "       ru.recipient_sharing_status, "
+				+ "       ru.editable, "
+				+ "       ru.is_assigned_by_role, "
+				+ "       ru.is_refreshed "
+				+ "FROM reporting.reportuser ru "
+				+ "RIGHT OUTER JOIN "
+				+ "  (SELECT rv.*, r.*, "
+				+ "          (CASE "
+				+ "               WHEN rv.report_id NOT IN "
+				+ "                      (SELECT report_id "
+				+ "                       FROM reporting.reportuser ru "
+				+ "                       WHERE ru.report_id = rv.report_id) THEN 0 "
+				+ "               ELSE 1 "
+				+ "           END) AS shared_with_others, "
+				+ "          (CASE "
+				+ "               WHEN rv.user_id IN "
+				+ "                      (SELECT user_id "
+				+ "                       FROM reporting.reportuser ru "
+				+ "                       WHERE ru.user_id =rv.user_id "
+				+ "                         AND ru.report_id = rv.report_id) THEN 1 "
+				+ "               ELSE 0 "
+				+ "           END) AS shared_with_me "
+				+ "   FROM reporting.report r, "
+				+ "        reporting.reportversion rv "
+				+ "   WHERE rv.report_id = r.id "
+				+ "     AND rv.user_id = :userId "
+				+ "     AND (:search is null OR rv.title ilike :search) "
+				+ "     AND rv.version = 'running' ) AS rep ON ru.report_id = rep.id and ru.user_id = rep.user_id";
 		
 //		"SELECT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status, (CASE WHEN rv.user_id IN "
 //		+ "(Select owner_id from "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".report r where r.owner_id =rv.user_id and r.id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_others, "
@@ -130,15 +155,21 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
 			reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
 			reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
-			reportDetails.setEditable(obj[9].toString() == "true" ? true : false);
-			reportDetails.setIsAssignedByRole(obj[10].toString() == "true" ? true : false);
-			reportDetails.setIsRefreshed(obj[11].toString() == "true" ? true : false);
-			reportDetails.setIsResetted(obj[12].toString() == "true" ? true : false);
-			reportDetails.setOwnerSharingStatus(obj[13].toString() == "true" ? true : false);
-			reportDetails.setRecipientSharingStatus(obj[14].toString() == "true" ? true : false);
-			reportDetails.setOwnerId(obj[17]!=null ? Long.parseLong(obj[17].toString()) : null);
-			reportDetails.setSharedWithOthers(Integer.parseInt(obj[18].toString()) == 0 ? false :true);
-			reportDetails.setSharedWithMe(Integer.parseInt(obj[19].toString()) == 0 ? false :true);
+			
+			reportDetails.setIsPublished(obj[10].toString() == "true" ? true : false);
+			reportDetails.setOwnerId(obj[11]!=null ? Long.parseLong(obj[11].toString()) : null);
+			
+			reportDetails.setSharedWithOthers(Integer.parseInt(obj[12].toString()) == 0 ? false :true);
+			reportDetails.setSharedWithMe(Integer.parseInt(obj[13].toString()) == 0 ? false :true);
+			
+			
+			reportDetails.setIsResetted(obj[14] != null && obj[14].toString() == "true" ? true : false);
+			reportDetails.setOwnerSharingStatus(obj[15] != null && obj[15].toString() == "true" ? true : false);
+			reportDetails.setRecipientSharingStatus(obj[16] != null && obj[16].toString() == "true" ? true : false);
+			reportDetails.setEditable(obj[17] != null && obj[17].toString() == "true" ? true : false);
+			reportDetails.setIsAssignedByRole(obj[18] != null && obj[18].toString() == "true" ? true : false);
+			reportDetails.setIsRefreshed(obj[19] != null && obj[19].toString() == "true" ? true : false);
+			
 
 			finalResults.add(reportDetails);
 		}
