@@ -151,8 +151,8 @@ public class ReportAppService implements IReportAppService {
 
 		ReportEntity existing = _reportManager.findById(reportId) ; 
 		
-	//	_reportversionAppservice.delete(new ReportversionId(existing.getUser().getId(), existing.getId(), "running"));
-	//	_reportversionAppservice.delete(new ReportversionId(existing.getUser().getId(), existing.getId(), "published"));
+		_reportversionAppservice.delete(new ReportversionId(existing.getUser().getId(), existing.getId(), "running"));
+		_reportversionAppservice.delete(new ReportversionId(existing.getUser().getId(), existing.getId(), "published"));
 	
 		List<ReportuserEntity> reportUserList = _reportuserManager.findByReportId(existing.getId());
 		for(ReportuserEntity reportuser : reportUserList)
@@ -297,7 +297,7 @@ public class ReportAppService implements IReportAppService {
 
 		ReportversionEntity reportVersion =_reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
 		FindReportByIdOutput output  = mapper.reportEntitiesToFindReportByIdOutput(foundReport, reportVersion, reportuser); 
-		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
+		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
 		if(publishedversion == null)
 		{
 			output.setIsResetable(false);

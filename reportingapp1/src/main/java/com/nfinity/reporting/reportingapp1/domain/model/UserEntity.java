@@ -258,7 +258,11 @@ public class UserEntity implements Serializable {
  
   	public void setReportversionSet(Set<ReportversionEntity> reportversion) { 
     	this.reportversionSet = reportversion; 
-  	} 
+  	}
+  	
+  	public void removeReportVersion(ReportversionEntity rv) {
+        this.reportversionSet.remove(rv);
+    }
  
   	private Set<ReportversionEntity> reportversionSet = new HashSet<ReportversionEntity>(); 
   	
