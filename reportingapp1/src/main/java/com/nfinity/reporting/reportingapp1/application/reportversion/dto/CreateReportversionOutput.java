@@ -6,7 +6,6 @@ public class CreateReportversionOutput {
 
 	private String ctype;
 	private String description;
-//	private Long id;
 	private JSONObject query;
 	private String reportType;
 	private String title;
@@ -14,17 +13,28 @@ public class CreateReportversionOutput {
 	private Long userId;
 	private String userDescriptiveField;
 	private String reportWidth;
-    private Long reportId;
-	
-  	public Long getReportId() {
+	private Long reportId;
+	private Boolean isCreatedInDashboard;
+
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
+
+
+	public Long getReportId() {
 		return reportId;
 	}
 
 	public void setReportId(Long reportId) {
 		this.reportId = reportId;
 	}
-	 
-  	public String getReportWidth() {
+
+	public String getReportWidth() {
 		return reportWidth;
 	}
 
@@ -64,13 +74,13 @@ public class CreateReportversionOutput {
 		this.description = description;
 	}
 
-//	public Long getId() {
-//		return id;
-//	}
-//
-//	public void setId(Long id){
-//		this.id = id;
-//	}
+	//	public Long getId() {
+	//		return id;
+	//	}
+	//
+	//	public void setId(Long id){
+	//		this.id = id;
+	//	}
 
 	public JSONObject getQuery() {
 		return query;
@@ -95,7 +105,7 @@ public class CreateReportversionOutput {
 	public void setTitle(String title){
 		this.title = title;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}

@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 
 
 public class CreateReportversionInput {
-	
+
 	private String ctype;
 	private String description;
 	private JSONObject query;
@@ -15,8 +15,19 @@ public class CreateReportversionInput {
 	private Long userId;
 	private String reportWidth;
 	private Long reportId;
-	
-  	public Long getReportId() {
+	private Boolean isCreatedInDashboard;
+
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
+
+
+	public Long getReportId() {
 		return reportId;
 	}
 

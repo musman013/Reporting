@@ -73,6 +73,12 @@ public class DashboardManager implements IDashboardManager {
 		return list;
 	}
 	
+	public Page<DashboardDetailsOutput> getAvailableDashboards(Long userId, Long reportId, String search, Pageable pageable) throws Exception
+	{
+		Page<DashboardDetailsOutput> list = _dashboardRepository.getAvailableDashboardsByUserId(userId,reportId, search, pageable);
+		return list;
+	}
+	
 	public Page<DashboardDetailsOutput> getSharedDashboards(Long userId, String search, Pageable pageable) throws Exception
 	{
 		Page<DashboardDetailsOutput> list = _dashboardRepository.getSharedDashboardsByUserId(userId, search, pageable);

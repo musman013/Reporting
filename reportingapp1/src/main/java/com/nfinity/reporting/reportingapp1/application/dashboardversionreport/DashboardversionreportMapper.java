@@ -33,12 +33,7 @@ public interface DashboardversionreportMapper {
    }) 
    UpdateDashboardversionreportOutput reportdashboardEntityToUpdateReportdashboardOutput(DashboardversionreportEntity entity);
 
-   @Mappings({ 
-	   @Mapping(source = "dashboardId", target = "dashboardId"),
-	   @Mapping(source = "reportId", target = "reportId"),
-//   @Mapping(source = "dashboard.title", target = "dashboardDescriptiveField"),                    
-//   @Mapping(source = "report.title", target = "reportDescriptiveField"),                    
-   }) 
+
    FindDashboardversionreportByIdOutput reportdashboardEntityToFindReportdashboardByIdOutput(DashboardversionreportEntity entity);
 
 

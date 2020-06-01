@@ -4,7 +4,6 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Date;
 
 @Entity
 @Table(name = "dashboard", schema = "reporting")
@@ -12,6 +11,7 @@ public class DashboardEntity implements Serializable {
 
 	private Long id;
 	private Boolean isPublished;
+	private Boolean isSharable;
 
   	public DashboardEntity() {
   	}
@@ -26,8 +26,8 @@ public class DashboardEntity implements Serializable {
   	public void setId(Long id) {
   		this.id = id;
   	}
-  	
-  	@Basic
+
+	@Basic
 	@Column(name = "isPublished", nullable = false)
   	public Boolean getIsPublished() {
 		return isPublished;
@@ -35,6 +35,16 @@ public class DashboardEntity implements Serializable {
 
 	public void setIsPublished(Boolean isPublished) {
 		this.isPublished = isPublished;
+	}
+	
+	@Basic
+	@Column(name = "isSharable", nullable = false)
+  	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
 	}
   	
   	@ManyToOne
@@ -81,6 +91,19 @@ public class DashboardEntity implements Serializable {
   	} 
  
   	private Set<DashboardroleEntity> dashboardroleSet = new HashSet<DashboardroleEntity>(); 
+  	
+  	public void removeDashboardVersion(DashboardversionEntity rv) {
+        this.dashboardversionSet.remove(rv);
+    }
+  	
+  	public void removeDashboardrole(DashboardroleEntity rv) {
+        this.dashboardroleSet.remove(rv);
+    }
+  	
+  	public void removeDashboarduser(DashboarduserEntity rv) {
+        this.dashboarduserSet.remove(rv);
+    }
+  	
 
 }
 

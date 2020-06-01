@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -128,5 +129,20 @@ public class ReportuserEntity implements Serializable {
   	}
   
   	private UserEntity user;
+  	
+  	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.user != null) {
+  	this.user.removeReportuser(this);
+  	this.user = null;
+  	}
+
+  	if(this.report != null) {
+  	this.report.removeReportUser(this);
+  	this.report = null;
+  	}
+
+  	}
 	
 }

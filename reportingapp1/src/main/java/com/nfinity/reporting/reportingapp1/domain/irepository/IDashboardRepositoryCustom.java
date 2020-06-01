@@ -11,4 +11,6 @@ public interface IDashboardRepositoryCustom {
 
 	Page<DashboardDetailsOutput> getSharedDashboardsByUserId(Long userId, String search, Pageable pageable) throws Exception;
 	
+	Page<DashboardDetailsOutput> getAvailableDashboardsByUserId(Long userId,Long reportId, String search, Pageable pageable) throws Exception;
+
 }

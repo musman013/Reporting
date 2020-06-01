@@ -16,8 +16,16 @@ public class CreateReportOutput {
 	private String reportWidth;
 	private Long ownerId;
 	private String ownerDescriptiveField;
+	private Boolean isCreatedInDashboard;
 
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
 
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -41,7 +49,7 @@ public class CreateReportOutput {
 	public void setReportWidth(String reportWidth) {
 		this.reportWidth = reportWidth;
 	}
-	
+
 	public String getCtype() {
 		return ctype;
 	}
@@ -81,7 +89,7 @@ public class CreateReportOutput {
 	public void setTitle(String title){
 		this.title = title;
 	}
-	
+
 	public Long getOwnerId() {
 		return ownerId;
 	}

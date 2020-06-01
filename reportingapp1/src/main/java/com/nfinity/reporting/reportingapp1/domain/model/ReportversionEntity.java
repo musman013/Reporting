@@ -28,14 +28,12 @@ public class ReportversionEntity implements Serializable {
   	private JSONObject query;
   	private String reportType;
   	private String title;
-  //	private String reportWidth;
   	private String version;
+  	private Boolean isCreatedInDashboard;
 
 	public ReportversionEntity() {
   	}
-	
-	
-  //	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	@Id
   	@Column(name = "userId", nullable = false)
   	public Long getUserId() {
@@ -85,18 +83,8 @@ public class ReportversionEntity implements Serializable {
   	public void setDescription(String description) {
   		this.description = description;
   	}
-  
-//  	@Basic
-//  	@Column(name = "reportWidth" , nullable= true, length = 255)
-//  	public String getReportWidth() {
-//		return reportWidth;
-//	}
-//
-//	public void setReportWidth(String reportWidth) {
-//		this.reportWidth = reportWidth;
-//	}
-  
-  	@Basic
+  	
+	@Basic
   	@Column(columnDefinition = "TEXT",name = "query", nullable = true, length =255)
   	@Convert(converter= JSONObjectConverter.class)
   	public JSONObject getQuery() {
@@ -118,7 +106,7 @@ public class ReportversionEntity implements Serializable {
   	}
  
   	@Basic
-  	@Column(name = "title", nullable = true, length =255)
+  	@Column(name = "title", nullable = false, length =255)
   	public String getTitle() {
   		return title;
   	}
@@ -126,6 +114,17 @@ public class ReportversionEntity implements Serializable {
   	public void setTitle(String title) {
   		this.title = title;
   	}
+  	
+  	@Basic
+	@Column(name = "isCreatedInDashboard" , nullable= false)
+  	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
   	
   	@ManyToOne
   	@JoinColumn(name = "reportId", referencedColumnName = "id", insertable = false, updatable = false)
@@ -163,6 +162,5 @@ public class ReportversionEntity implements Serializable {
   		}
         
     }
-  	
 
 }

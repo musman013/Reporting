@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -72,5 +73,20 @@ public class DashboardroleEntity implements Serializable {
   	}
   
   	private RoleEntity role;
+  	
+  	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.dashboard != null) {
+  	this.dashboard.removeDashboardrole(this);
+  	this.dashboard = null;
+  	}
+
+  	if(this.role != null) {
+  	this.role.removeDashboardrole(this);
+  	this.role = null;
+  	}
+
+  	}
 
 }

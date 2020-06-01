@@ -62,15 +62,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 				+ "   WHERE rv.report_id = r.id "
 				+ "     AND rv.user_id = :userId "
 				+ "     AND (:search is null OR rv.title ilike :search) "
-				+ "     AND rv.version = 'running' ) AS rep ON ru.report_id = rep.id and ru.user_id = rep.user_id";
-		
-//		"SELECT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status, (CASE WHEN rv.user_id IN "
-//		+ "(Select owner_id from "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".report r where r.owner_id =rv.user_id and r.id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_others, "
-//		+ "(CASE WHEN rv.user_id IN (Select user_id from "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser ru where ru.user_id =rv.user_id and ru.report_id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_me "
-//		+ "FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportversion rv, "
-//		+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser u where rv.report_id = u.report_id and rv.user_id =:userId and rv.version = 'running'"
-//		+"	AND " + 
-//		"(:search is null OR rv.title ilike :search)";
+				+ "     AND rv.version = 'running' AND rv.is_created_in_dashboard = false ) AS rep ON ru.report_id = rep.id and ru.user_id = rep.user_id";
 
 		Query query = 
 				entityManager.createNativeQuery(qlString)
@@ -80,57 +72,6 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 				.setMaxResults(pageable.getPageSize());
 		List<Object[]> results = query.getResultList();
 		List<ReportDetailsOutput> finalResults = new ArrayList<>();
-//		if(results == null || results.isEmpty())
-//		{
-//			qlString = "SELECT rv.*,r.*," + 
-//					"(CASE WHEN rv.report_id NOT IN (Select report_id from reporting.reportuser ru where ru.report_id = rv.report_id) THEN 0 ELSE 1 END) AS shared_with_others, " + 
-//					"(CASE WHEN rv.user_id IN (Select user_id from reporting.reportuser ru where ru.user_id =rv.user_id and ru.report_id = rv.report_id) THEN 1 ELSE 0 END) AS shared_with_me " + 
-//					"FROM reporting.reportversion rv, reporting.report r " + 
-//					"where rv.report_id = r.id and rv.user_id =:userId and rv.version = 'running' "+
-//					" AND " + 
-//					"(:search is null OR rv.title ilike :search)";
-//			
-//			query = entityManager.createNativeQuery(qlString)
-//					.setParameter("userId",userId)
-//					.setParameter("search","%" + search + "%")
-//					.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-//					.setMaxResults(pageable.getPageSize());
-//			results = query.getResultList();
-//			
-//			for(Object[] obj : results){
-//				ReportDetailsOutput reportDetails = new ReportDetailsOutput();
-//
-//				// Here you manually obtain value from object and map to your pojo setters
-//				reportDetails.setReportId(obj[0]!=null ? Long.parseLong(obj[0].toString()) : null);
-//				reportDetails.setUserId(obj[1]!=null ? Long.parseLong(obj[1].toString()) : null);
-//				reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
-//				reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
-//				reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
-//				JSONParser parser = new JSONParser();
-//				JSONObject json;
-//				try {
-//					json = (JSONObject) parser.parse(obj[5].toString());
-//					reportDetails.setQuery(json);
-//				} catch (ParseException e) {
-//					e.printStackTrace();
-//					throw new Exception("Error occured while parsing query");
-//
-//				}
-//
-//				reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
-//				reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
-//				reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
-//				reportDetails.setOwnerId(obj[11]!=null ? Long.parseLong(obj[11].toString()) : null);
-//				reportDetails.setSharedWithOthers(Integer.parseInt(obj[12].toString()) == 0 ? false :true);
-//				reportDetails.setSharedWithMe(Integer.parseInt(obj[13].toString()) == 0 ? false :true);
-//			
-//				finalResults.add(reportDetails);
-//			}
-//		}
-//		
-//		else
-//		{
-		
 		
 		for(Object[] obj : results) {
 			ReportDetailsOutput reportDetails = new ReportDetailsOutput();
@@ -141,10 +82,12 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
 			reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
+			reportDetails.setIsCreatedInDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
+			
 			JSONParser parser = new JSONParser();
 			JSONObject json;
 			try {
-				json = (JSONObject) parser.parse(obj[5].toString());
+				json = (JSONObject) parser.parse(obj[6].toString());
 				reportDetails.setQuery(json);
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -152,8 +95,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 
 			}
 
-			reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
-			reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
+			reportDetails.setReportType(obj[7]!=null ? (obj[7].toString()) : null);
 			reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
 			
 			reportDetails.setIsPublished(obj[10].toString() == "true" ? true : false);
@@ -161,7 +103,6 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			
 			reportDetails.setSharedWithOthers(Integer.parseInt(obj[12].toString()) == 0 ? false :true);
 			reportDetails.setSharedWithMe(Integer.parseInt(obj[13].toString()) == 0 ? false :true);
-			
 			
 			reportDetails.setIsResetted(obj[14] != null && obj[14].toString() == "true" ? true : false);
 			reportDetails.setOwnerSharingStatus(obj[15] != null && obj[15].toString() == "true" ? true : false);
@@ -218,18 +159,20 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
 			reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
+			reportDetails.setIsCreatedInDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
+			
 			JSONParser parser = new JSONParser();
 			JSONObject json;
 			try {
-				json = (JSONObject) parser.parse(obj[5].toString());
+				json = (JSONObject) parser.parse(obj[6].toString());
 				reportDetails.setQuery(json);
 			} catch (ParseException e) {
 				e.printStackTrace();
 				throw new Exception("Error occured while parsing query");
 
 			}
-			reportDetails.setReportType(obj[6]!=null ? (obj[6].toString()) : null);
-			reportDetails.setReportWidth(obj[7]!=null ? (obj[7].toString()) : null);
+
+			reportDetails.setReportType(obj[7]!=null ? (obj[7].toString()) : null);
 			reportDetails.setTitle(obj[8]!=null ? (obj[8].toString()) : null);
 			reportDetails.setEditable(obj[9].toString() == "true" ? true : false);
 			reportDetails.setIsAssignedByRole(obj[10].toString() == "true" ? true : false);

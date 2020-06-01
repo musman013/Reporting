@@ -19,8 +19,18 @@ public class FindDashboardByIdOutput {
 	private Boolean isPublished;
 	private Long ownerId;
 	private String ownerDescriptiveField;
+	private Boolean sharedWithMe;
+	private Boolean sharedWithOthers;
 	private List<FindReportByIdOutput> reportDetails;
+	private Boolean isSharable;
 
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
 	public List<FindReportByIdOutput> getReportDetails() {
 		return reportDetails;
 	}
@@ -29,7 +39,22 @@ public class FindDashboardByIdOutput {
 		this.reportDetails = reportDetails;
 	}
 
-	
+	public Boolean getSharedWithMe() {
+		return sharedWithMe;
+	}
+
+	public void setSharedWithMe(Boolean sharedWithMe) {
+		this.sharedWithMe = sharedWithMe;
+	}
+
+	public Boolean getSharedWithOthers() {
+		return sharedWithOthers;
+	}
+
+	public void setSharedWithOthers(Boolean sharedWithOthers) {
+		this.sharedWithOthers = sharedWithOthers;
+	}
+
 	public Boolean getIsPublished() {
 		return isPublished;
 	}

@@ -1,11 +1,23 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class CreateDashboardInput {
 
 	private String description;
 	private Boolean isPublished;
+	@NotNull
 	private String title;
 	private Long ownerId;
+	private Boolean isSharable;
+	
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
 
 	public Long getOwnerId() {
 		return ownerId;

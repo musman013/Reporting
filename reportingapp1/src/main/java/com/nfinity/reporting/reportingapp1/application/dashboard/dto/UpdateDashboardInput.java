@@ -1,12 +1,9 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
-
 import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
 
 public class UpdateDashboardInput {
@@ -14,14 +11,22 @@ public class UpdateDashboardInput {
 	private String description;
 	@NotNull(message = "id Should not be null")
 	private Long id;
+	@NotNull
 	private String title;
 	private Long ownerId;
 	private Long userId;
 	private Boolean isPublished;
-	
 	List<UpdateReportInput> reportDetails= new ArrayList<>();
+	private Boolean isSharable;
 
-	
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -77,6 +82,6 @@ public class UpdateDashboardInput {
 	public void setReportDetails(List<UpdateReportInput> reportDetails) {
 		this.reportDetails = reportDetails;
 	}
-	
-	
+
+
 }

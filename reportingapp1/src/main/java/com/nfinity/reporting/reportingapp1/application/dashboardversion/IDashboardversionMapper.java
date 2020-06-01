@@ -6,6 +6,7 @@ import org.mapstruct.Mappings;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.application.dashboardversion.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
 
 @Mapper(componentModel = "spring")
@@ -39,6 +40,12 @@ public interface IDashboardversionMapper {
 	}) 
 	DashboardversionEntity dashboardversionEntityToDashboardversionEntity(DashboardversionEntity entity,Long userId, String version);
 
+   @Mappings({ 
+		@Mapping(source = "userId", target = "userId"),
+		@Mapping(source = "version", target = "dashboardVersion")
+	}) 
+    DashboardversionreportEntity dashboardversionreportEntityToDashboardversionreportEntity(DashboardversionreportEntity dashboardreport,Long userId,String version);
+   
    @Mappings({
 		@Mapping(source = "user.id", target = "id"),                  
 		@Mapping(source = "dashboardversion.version", target = "dashboardVersion"),

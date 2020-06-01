@@ -259,10 +259,6 @@ public class UserEntity implements Serializable {
   	public void setReportversionSet(Set<ReportversionEntity> reportversion) { 
     	this.reportversionSet = reportversion; 
   	}
-  	
-  	public void removeReportVersion(ReportversionEntity rv) {
-        this.reportversionSet.remove(rv);
-    }
  
   	private Set<ReportversionEntity> reportversionSet = new HashSet<ReportversionEntity>(); 
   	
@@ -331,6 +327,21 @@ public class UserEntity implements Serializable {
  
   	private Set<DashboarduserEntity> dashboarduserSet = new HashSet<DashboarduserEntity>(); 
   	
+  	public void removeReportVersion(ReportversionEntity rv) {
+        this.reportversionSet.remove(rv);
+    }
+  	
+  	public void removeDashboardVersion(DashboardversionEntity dv) {
+        this.dashboardversionSet.remove(dv);
+    }
+  	
+  	public void removeReportuser(ReportuserEntity rv) {
+        this.reportuserSet.remove(rv);
+    }
+  	
+  	public void removeDashboarduser(DashboarduserEntity rv) {
+        this.dashboarduserSet.remove(rv);
+    }
 
 }
 

@@ -12,7 +12,7 @@ public interface IReportAppService {
 
 	CreateReportOutput create(CreateReportInput report);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 
     UpdateReportOutput update(Long id, UpdateReportInput input);
 

@@ -41,7 +41,7 @@ public interface ReportMapper {
 //	@Mappings({ 
 //		@Mapping(source = "id", target = "reportId")
 //	})
-	FindReportByIdOutput createReportOutputToFindReportByIdOutput(CreateReportOutput report);
+	FindReportByIdOutput createReportOutputToFindReportByIdOutput(CreateReportOutput report, ReportuserEntity reportuser);
 
 	ReportEntity updateReportInputToReportEntity(UpdateReportInput reportDto);
 	

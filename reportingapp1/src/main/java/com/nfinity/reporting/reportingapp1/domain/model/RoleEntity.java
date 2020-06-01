@@ -104,5 +104,13 @@ public class RoleEntity implements Serializable {
     public RoleEntity() {
     }
     
+    public void removeDashboardrole(DashboardroleEntity dr) {
+        this.dashboardroleSet.remove(dr);
+    }
+  	
+  	public void removeReportrole(ReportroleEntity rr) {
+        this.reportroleSet.remove(rr);
+    }
+    
 
 }
