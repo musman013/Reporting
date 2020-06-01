@@ -22,7 +22,22 @@ public class FindReportByIdOutput {
 	private Boolean recipientSharingStatus;
 	private Boolean isAssignedByRole;
 	private Boolean isResetable;
+	private Boolean sharedWithMe;
+	private Boolean sharedWithOthers;
 	
+	
+	public Boolean getSharedWithMe() {
+		return sharedWithMe;
+	}
+	public void setSharedWithMe(Boolean sharedWithMe) {
+		this.sharedWithMe = sharedWithMe;
+	}
+	public Boolean getSharedWithOthers() {
+		return sharedWithOthers;
+	}
+	public void setSharedWithOthers(Boolean sharedWithOthers) {
+		this.sharedWithOthers = sharedWithOthers;
+	}
 	public Long getOwnerId() {
 		return ownerId;
 	}

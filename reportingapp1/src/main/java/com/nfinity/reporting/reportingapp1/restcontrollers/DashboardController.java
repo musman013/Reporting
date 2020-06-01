@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nfinity.reporting.reportingapp1.commons.search.SearchCriteria;
 import com.nfinity.reporting.reportingapp1.commons.search.SearchUtils;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserId;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportId;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.commons.application.OffsetBasedPageRequest;
 import com.nfinity.reporting.reportingapp1.commons.domain.EmptyJsonResponse;
@@ -192,7 +194,7 @@ public class DashboardController {
 		UserEntity user = _userAppService.getUser();
 		FindDashboarduserByIdOutput dashboarduser = _dashboarduserAppService.findById(new DashboarduserId(Long.valueOf(input.getId()), user.getId()));
 
-		if(dashboard.getOwnerId() != user.getId() &&  dashboarduser == null) {
+		if(dashboard.getOwnerId() != user.getId() &&  (dashboarduser == null || !dashboarduser.getEditable())) {
 			logHelper.getLogger().error("You do not have access to add report to dashboard with id=%s", input.getId());
 			throw new EntityNotFoundException(
 					String.format("You do not have access to add report to dashboard dashboard with id=%s", input.getId()));
@@ -200,7 +202,7 @@ public class DashboardController {
 		
 		input.setOwnerId(user.getId());
     	FindDashboardByIdOutput output = _dashboardAppService.addNewReportsToExistingDashboard(input);
-    	
+    
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
@@ -237,18 +239,29 @@ public class DashboardController {
 
 		if (dashboard.getOwnerId() == null) {
 			logHelper.getLogger().error("Unable to add report to orphan dashboard with id {}.", input.getId());
-			throw new EntityNotFoundException(
+			throw new EntityNotFoundException (
 					String.format("Unable to add report to orphan dashboard with id {}.", input.getId()));
 		}
 
 		UserEntity user = _userAppService.getUser();
 		FindDashboarduserByIdOutput dashboarduser = _dashboarduserAppService.findById(new DashboarduserId(Long.valueOf(input.getId()), user.getId()));
 
-		if(dashboard.getOwnerId() != user.getId() &&  dashboarduser == null) {
+		if(dashboard.getOwnerId() != user.getId() &&  (dashboarduser == null || !dashboarduser.getEditable())) {
 			logHelper.getLogger().error("You do not have access to add report to dashboard with id=%s", input.getId());
 			throw new EntityNotFoundException(
 					String.format("You do not have access to add report to dashboard dashboard with id=%s", input.getId()));
 		}
+		
+        for(FindReportByIdOutput reportInput :dashboard.getReportDetails())
+        {
+        	FindDashboardversionreportByIdOutput dashboardreport = _reportdashboardAppService.findById(new DashboardversionreportId(Long.valueOf(input.getId()), user.getId(), "running", reportInput.getId()));
+            if(dashboardreport !=null) {
+            	logHelper.getLogger().error("Report already exist in dashboard with a id=%s", reportInput.getId());
+    			throw new EntityNotFoundException(
+    					String.format("Report already exist in dashboard with a id=%s", reportInput.getId()));
+            }
+        
+        }
 		
 		input.setOwnerId(user.getId());
 		FindDashboardByIdOutput output  = _dashboardAppService.addExistingReportsToExistingDashboard(input);

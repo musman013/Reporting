@@ -298,6 +298,17 @@ public class ReportAppService implements IReportAppService {
 		ReportversionEntity reportVersion =_reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
 		FindReportByIdOutput output  = mapper.reportEntitiesToFindReportByIdOutput(foundReport, reportVersion, reportuser); 
 		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
+		
+		if(reportuser != null)
+		{
+			output.setSharedWithMe(true);
+		}
+		
+		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
+		if(reportuserList !=null && !reportuserList.isEmpty()) {
+			output.setSharedWithOthers(true);
+		}
+		
 		if(publishedversion == null)
 		{
 			output.setIsResetable(false);
@@ -398,7 +409,8 @@ public class ReportAppService implements IReportAppService {
 			foundReportuser.setIsResetted(false);
 			foundReportuser = _reportuserManager.update(foundReportuser);
 			
-			return mapper.reportEntitiesToReportDetailsOutput(foundReport,publishedversion,foundReportuser);
+			ReportversionEntity runningversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
+			return mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
 		}
 
 		return null;
@@ -417,7 +429,7 @@ public class ReportAppService implements IReportAppService {
 		{
 			ReportversionEntity runningversion = reportversionMapper.reportversionEntityToReportversionEntity(publishedversion, userId, "running");
 		//	runningversion.setVersion("running");
-			_reportversionManager.update(runningversion);
+			runningversion=_reportversionManager.update(runningversion);
 			if(!foundReportuser.getEditable()) {
 				_reportversionManager.delete(publishedversion);
 			}
@@ -425,7 +437,7 @@ public class ReportAppService implements IReportAppService {
 			foundReportuser.setIsResetted(true);
 			foundReportuser = _reportuserManager.update(foundReportuser);
 
-			return mapper.reportEntitiesToReportDetailsOutput(foundReport,publishedversion,foundReportuser);
+			return mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
 		}
 
 		return null;

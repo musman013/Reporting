@@ -214,7 +214,7 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Reportdashboard", key = "#p0")
+//	@Cacheable(value = "Reportdashboard", key = "#p0")
 	public FindDashboardversionreportByIdOutput findById(DashboardversionreportId reportdashboardId) {
 
 		DashboardversionreportEntity foundReportdashboard = _reportdashboardManager.findById(reportdashboardId);
