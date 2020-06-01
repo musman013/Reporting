@@ -24,8 +24,26 @@ public class FindReportByIdOutput {
 	private Boolean isResetable;
 	private Boolean sharedWithMe;
 	private Boolean sharedWithOthers;
+	private Boolean isCreatedInDashboard;
+	private Long orderId;
 	
-	
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
+
 	public Boolean getSharedWithMe() {
 		return sharedWithMe;
 	}
@@ -146,5 +164,5 @@ public class FindReportByIdOutput {
 	public void setIsResetable(Boolean isResetable) {
 		this.isResetable = isResetable;
 	} 
- 
+
 }

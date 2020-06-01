@@ -1,13 +1,9 @@
 package com.nfinity.reporting.reportingapp1.application.reportversion.dto;
 
-import java.util.Date;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 import org.json.simple.JSONObject;
 
 public class UpdateReportversionInput {
-
-	private Long id;
+	
 	private String ctype;
 	private String description;
 	private JSONObject query;
@@ -18,6 +14,15 @@ public class UpdateReportversionInput {
 	private String userDescriptiveField;
 	private String reportWidth;
 	private Long reportId;
+	private Boolean isCreatedInDashboard;
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
 
 	public Long getReportId() {
 		return reportId;
@@ -66,15 +71,7 @@ public class UpdateReportversionInput {
 	public void setDescription(String description){
 		this.description = description;
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
-	}
-
+	
 	public JSONObject getQuery() {
 		return query;
 	}
@@ -98,7 +95,7 @@ public class UpdateReportversionInput {
 	public void setTitle(String title){
 		this.title = title;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}

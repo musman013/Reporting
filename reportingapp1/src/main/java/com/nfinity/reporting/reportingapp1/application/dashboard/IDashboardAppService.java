@@ -1,7 +1,6 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard;
 
 import java.util.List;
-import javax.validation.constraints.Positive;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.nfinity.reporting.reportingapp1.commons.search.SearchCriteria;
@@ -12,7 +11,7 @@ public interface IDashboardAppService {
 
 	CreateDashboardOutput create(CreateDashboardInput dashboard);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 
     UpdateDashboardOutput update(Long id, UpdateDashboardInput input);
 

@@ -15,6 +15,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -69,7 +70,7 @@ public class DashboardversionEntity implements Serializable {
   	}
  
   	@Basic
-  	@Column(name = "title", nullable = true, length =255)
+  	@Column(name = "title", nullable = false, length =255)
   	public String getTitle() {
   		return title;
   	}
@@ -111,4 +112,22 @@ public class DashboardversionEntity implements Serializable {
  
   	private Set<DashboardversionreportEntity> dashboardversionreportSet = new HashSet<DashboardversionreportEntity>(); 
 
+  	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.user != null) {
+  	this.user.removeDashboardVersion(this);
+  	this.user = null;
+  	}
+
+  	if(this.dashboard != null) {
+  	this.dashboard.removeDashboardVersion(this);
+  	this.dashboard = null;
+  	}
+
+  	}
+  	
+  	public void removeDashboardversionreport(DashboardversionreportEntity rv) {
+        this.dashboardversionreportSet.remove(rv);
+    }
 }

@@ -17,7 +17,16 @@ public class DashboardDetailsOutput {
 	private Boolean isAssignedByRole;
 	private Boolean sharedWithMe;
 	private Boolean sharedWithOthers;
-	
+	private Boolean isSharable;
+
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -108,5 +117,5 @@ public class DashboardDetailsOutput {
 	public void setSharedWithOthers(Boolean sharedWithOthers) {
 		this.sharedWithOthers = sharedWithOthers;
 	} 
-    
+
 }

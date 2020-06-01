@@ -1,5 +1,7 @@
 package com.nfinity.reporting.reportingapp1.application.report.dto;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 import org.json.simple.JSONObject;
 
@@ -12,8 +14,20 @@ public class CreateReportInput {
 	private JSONObject query;
 	@Length(max = 255, message = "reportType must be less than 255 characters")
 	private String reportType;
+	
+	@NotNull
 	private String title;
 	private String reportWidth;
+	private Boolean isCreatedInDashboard;
+	
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
 
 	public Long getOwnerId() {
 		return ownerId;

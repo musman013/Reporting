@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 
 public class UpdateReportversionOutput {
 
-//	private Long id;
 	private String ctype;
 	private String description;
 	private JSONObject query;
@@ -15,6 +14,16 @@ public class UpdateReportversionOutput {
 	private Long userId;
 	private String userDescriptiveField;
 	private Long reportId;
+	private Boolean isCreatedInDashboard;
+
+	public Boolean getIsCreatedInDashboard() {
+		return isCreatedInDashboard;
+	}
+
+	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
+		this.isCreatedInDashboard = isCreatedInDashboard;
+	}
+
 
 	public Long getReportId() {
 		return reportId;
@@ -23,7 +32,7 @@ public class UpdateReportversionOutput {
 	public void setReportId(Long reportId) {
 		this.reportId = reportId;
 	}
-	
+
 	public String getReportWidth() {
 		return reportWidth;
 	}
@@ -63,14 +72,6 @@ public class UpdateReportversionOutput {
 	public void setDescription(String description){
 		this.description = description;
 	}
-
-//	public Long getId() {
-//		return id;
-//	}
-//
-//	public void setId(Long id){
-//		this.id = id;
-//	}
 
 	public JSONObject getQuery() {
 		return query;

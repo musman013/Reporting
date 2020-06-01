@@ -1,16 +1,23 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
-import java.util.Date;
 public class UpdateDashboardOutput {
 
-  private String description;
-  private Long id;
-  private String title;
-  private Long ownerId;
-  private String ownerDescriptiveField;
-	
+	private String description;
+	private Long id;
+	private String title;
+	private Long ownerId;
+	private String ownerDescriptiveField;
+	private Boolean isSharable;
 
-  public Long getOwnerId() {
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
+
+	public Long getOwnerId() {
 		return ownerId;
 	}
 
@@ -24,30 +31,30 @@ public class UpdateDashboardOutput {
 	public void setOwnerDescriptiveField(String ownerDescriptiveField){
 		this.ownerDescriptiveField = ownerDescriptiveField;
 	}
- 
-  public String getDescription() {
-  	return description;
-  }
 
-  public void setDescription(String description){
-  	this.description = description;
-  }
-  
-  public Long getId() {
-  	return id;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  public void setId(Long id){
-  	this.id = id;
-  }
-  
-  public String getTitle() {
-  	return title;
-  }
+	public void setDescription(String description){
+		this.description = description;
+	}
 
-  public void setTitle(String title){
-  	this.title = title;
-  }
-  
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id){
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title){
+		this.title = title;
+	}
+
 
 }

@@ -8,6 +8,15 @@ public class CreateDashboardOutput {
 	private Boolean isPublished;
 	private Long ownerId;
 	private String ownerDescriptiveField;
+	private Boolean isSharable;
+
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
 
 	public Long getOwnerId() {
 		return ownerId;
@@ -17,7 +26,7 @@ public class CreateDashboardOutput {
 		this.ownerId = ownerId;
 	}
 
-	
+
 	public Boolean getIsPublished() {
 		return isPublished;
 	}

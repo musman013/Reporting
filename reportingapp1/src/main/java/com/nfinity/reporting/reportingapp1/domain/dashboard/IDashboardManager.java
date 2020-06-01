@@ -24,6 +24,8 @@ public interface IDashboardManager {
     
     public Page<DashboardDetailsOutput> getDashboards(Long userId,String search, Pageable pageable) throws Exception;
     
+    public Page<DashboardDetailsOutput> getAvailableDashboards(Long userId,Long reportId, String search, Pageable pageable) throws Exception;
+    
     public Page<DashboardDetailsOutput> getSharedDashboards(Long userId,String search, Pageable pageable) throws Exception;
     
     List<DashboardEntity> findByUserId(Long userId);

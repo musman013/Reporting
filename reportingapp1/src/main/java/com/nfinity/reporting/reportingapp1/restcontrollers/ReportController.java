@@ -80,6 +80,7 @@ public class ReportController {
 		UserEntity user = _userAppService.getUser();
 		report.setOwnerId(user.getId());
 		report.setIsPublished(true);
+		report.setIsCreatedInDashboard(false);
 		CreateReportOutput output=_reportAppService.create(report);
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -96,13 +97,22 @@ public class ReportController {
 			throw new EntityNotFoundException(
 					String.format("There does not exist a report with a id=%s", id));
 		}
-		if(!user.getId().equals(output.getOwnerId()))
-		{
-			logHelper.getLogger().error("You have not access to delete a report with a id=%s", id);
+		
+		FindReportuserByIdOutput reportuser = _reportuserAppService.findById(new ReportuserId(Long.valueOf(id), user.getId()));
+		
+		if(output.getOwnerId() != user.getId() &&  reportuser == null) {
+			logHelper.getLogger().error("You do not have access to update a report with a id=%s", id);
 			throw new EntityNotFoundException(
-					String.format("You have not access to delete a report with a id=%s", id));
+					String.format("You do not have access to update a report with a id=%s", id));
 		}
-		_reportAppService.delete(Long.valueOf(id));
+//		if(!user.getId().equals(output.getOwnerId()))
+//		{
+//			logHelper.getLogger().error("You have not access to delete a report with a id=%s", id);
+//			throw new EntityNotFoundException(
+//					String.format("You have not access to delete a report with a id=%s", id));
+//		}
+		
+		_reportAppService.delete(Long.valueOf(id), user.getId());
 	}
 
 	// ------------ Update report ------------
@@ -118,11 +128,11 @@ public class ReportController {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 
-		if (currentReport.getOwnerId() == null) {
-			logHelper.getLogger().error("Unable to update orphan report with id {}.", id);
-			throw new EntityNotFoundException(
-					String.format("Unable to update orphan report with id {}.", id));
-		}
+//		if (currentReport.getOwnerId() == null) {
+//			logHelper.getLogger().error("Unable to update orphan report with id {}.", id);
+//			throw new EntityNotFoundException(
+//					String.format("Unable to update orphan report with id {}.", id));
+//		}
 
 		FindReportuserByIdOutput reportuser = _reportuserAppService.findById(new ReportuserId(Long.valueOf(id), user.getId()));
 

@@ -10,6 +10,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -114,5 +115,20 @@ public class DashboardversionreportEntity implements Serializable {
 
 	private ReportEntity report;
 
+	
+	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.report != null) {
+  	this.report.removeDashboardversionreport(this);
+  	this.report = null;
+  	}
+
+  	if(this.dashboardversion != null) {
+  	this.dashboardversion.removeDashboardversionreport(this);
+  	this.dashboardversion = null;
+  	}
+
+  	}
 
 }

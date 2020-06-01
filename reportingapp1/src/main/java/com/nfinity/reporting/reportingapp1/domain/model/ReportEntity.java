@@ -94,6 +94,21 @@ public class ReportEntity implements Serializable {
   	private Set<ReportroleEntity> reportroleSet = new HashSet<ReportroleEntity>(); 
   	
  
+  	public void removeReportUser(ReportuserEntity rv) {
+        this.reportuserSet.remove(rv);
+    }
+  	
+  	public void removeReportRole(ReportroleEntity rv) {
+        this.reportroleSet.remove(rv);
+    }
+  	
+  	public void removeReportVersion(ReportversionEntity rv) {
+        this.reportversionSet.remove(rv);
+    }
+  	
+  	public void removeDashboardversionreport(DashboardversionreportEntity rv) {
+        this.reportdashboardSet.remove(rv);
+    }
 
 //  @Override
 //  public boolean equals(Object o) {

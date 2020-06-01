@@ -22,7 +22,15 @@ public class FindDashboardByIdOutput {
 	private Boolean sharedWithMe;
 	private Boolean sharedWithOthers;
 	private List<FindReportByIdOutput> reportDetails;
-	
+	private Boolean isSharable;
+
+	public Boolean getIsSharable() {
+		return isSharable;
+	}
+
+	public void setIsSharable(Boolean isSharable) {
+		this.isSharable = isSharable;
+	}
 	public List<FindReportByIdOutput> getReportDetails() {
 		return reportDetails;
 	}
@@ -30,7 +38,7 @@ public class FindDashboardByIdOutput {
 	public void setReportDetails(List<FindReportByIdOutput> reportDetails) {
 		this.reportDetails = reportDetails;
 	}
-	
+
 	public Boolean getSharedWithMe() {
 		return sharedWithMe;
 	}

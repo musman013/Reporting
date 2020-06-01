@@ -18,7 +18,7 @@ public class AddExistingReportToNewDashboardInput {
 
 	private Boolean isPublished;
 	
-	List<UpdateReportInput> reportDetails= new ArrayList<>();
+	List<ExistingReportInput> reportDetails= new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -59,11 +59,11 @@ public class AddExistingReportToNewDashboardInput {
 		this.title = title;
 	}
 
-	public List<UpdateReportInput> getReportDetails() {
+	public List<ExistingReportInput> getReportDetails() {
 		return reportDetails;
 	}
 
-	public void setReportDetails(List<UpdateReportInput> reportDetails) {
+	public void setReportDetails(List<ExistingReportInput> reportDetails) {
 		this.reportDetails = reportDetails;
 	}
 

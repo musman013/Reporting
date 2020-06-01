@@ -23,7 +23,7 @@ public interface IDashboardversionreportManager {
     
     List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserId(Long dashboardId, String version, Long userId);
     
-    public List<DashboardversionreportEntity> findByDashboardIdAndVersionInDesc(Long id, String version);
+     List<DashboardversionreportEntity> findByDashboardIdAndVersionInDesc(Long id, String version);
 	
     Page<DashboardversionreportEntity> findAll(Predicate predicate, Pageable pageable);
    
