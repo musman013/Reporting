@@ -10,7 +10,7 @@ import java.util.List;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IReportRepository extends JpaRepository<ReportEntity, Long> ,
 QuerydslPredicateExecutor<ReportEntity> , IReportRepositoryCustom {

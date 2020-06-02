@@ -12,7 +12,7 @@ import com.nfinity.reporting.reportingapp1.domain.model.DashboardroleEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardroleId;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportroleEntity;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IDashboardroleRepository extends JpaRepository<DashboardroleEntity, DashboardroleId>,
         QuerydslPredicateExecutor<DashboardroleEntity>,IDashboardroleRepositoryCustom {

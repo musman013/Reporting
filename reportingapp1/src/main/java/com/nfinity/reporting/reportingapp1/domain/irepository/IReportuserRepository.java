@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserId;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IReportuserRepository extends JpaRepository<ReportuserEntity, ReportuserId>,
 QuerydslPredicateExecutor<ReportuserEntity> ,IReportuserRepositoryCustom {

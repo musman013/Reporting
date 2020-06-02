@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserId;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserEntity;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IDashboarduserRepository extends JpaRepository<DashboarduserEntity, DashboarduserId>,
       QuerydslPredicateExecutor<DashboarduserEntity> , IDashboarduserRepositoryCustom{

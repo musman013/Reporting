@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.PermissionEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IPermissionRepository extends JpaRepository<PermissionEntity, Long>, QuerydslPredicateExecutor<PermissionEntity> {
 

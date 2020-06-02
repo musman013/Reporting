@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IUserroleRepository extends JpaRepository<UserroleEntity, UserroleId>,QuerydslPredicateExecutor<UserroleEntity> {
     

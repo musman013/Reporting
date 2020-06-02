@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IUserRepository extends JpaRepository<UserEntity, Long>,QuerydslPredicateExecutor<UserEntity> {
 

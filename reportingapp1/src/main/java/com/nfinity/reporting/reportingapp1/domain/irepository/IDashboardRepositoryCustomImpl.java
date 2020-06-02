@@ -80,9 +80,9 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setDescription(obj[3]!=null ? (obj[3].toString()) : null);
 			dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
 	
-			dashboardDetails.setIsPublished(obj[6].toString() == "true" ? true : false);
-			dashboardDetails.setOwnerId(obj[7]!=null ? Long.parseLong(obj[7].toString()) : null);
-			dashboardDetails.setIsSharable(Integer.parseInt(obj[8].toString()) == 0 ? false :true);
+			dashboardDetails.setIsPublished(obj[6] != null && obj[6].toString() == "true" ? true : false);
+			dashboardDetails.setIsSharable(obj[7] != null && obj[7].toString() == "true" ? true : false);
+			dashboardDetails.setOwnerId(obj[8]!=null ? Long.parseLong(obj[8].toString()) : null);
 			
 			dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[9].toString()) == 0 ? false :true);
 			dashboardDetails.setSharedWithMe(Integer.parseInt(obj[10].toString()) == 0 ? false :true);

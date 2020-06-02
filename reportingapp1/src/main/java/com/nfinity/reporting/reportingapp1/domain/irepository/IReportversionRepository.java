@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionId;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IReportversionRepository extends JpaRepository<ReportversionEntity, ReportversionId>,QuerydslPredicateExecutor<ReportversionEntity> {
 

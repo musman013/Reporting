@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IDashboardRepository extends JpaRepository<DashboardEntity, Long>,
         QuerydslPredicateExecutor<DashboardEntity>, IDashboardRepositoryCustom {

@@ -11,7 +11,7 @@ import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEn
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportId;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IDashboardversionreportRepository extends JpaRepository<DashboardversionreportEntity, DashboardversionreportId>,QuerydslPredicateExecutor<DashboardversionreportEntity> {
 

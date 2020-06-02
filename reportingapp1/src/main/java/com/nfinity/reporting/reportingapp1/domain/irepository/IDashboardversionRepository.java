@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionId;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IDashboardversionRepository extends JpaRepository<DashboardversionEntity, DashboardversionId>,QuerydslPredicateExecutor<DashboardversionEntity> {
 

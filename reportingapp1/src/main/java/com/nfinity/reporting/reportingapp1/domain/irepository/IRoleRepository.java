@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import org.javers.spring.annotation.JaversSpringDataAuditable;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IRoleRepository extends JpaRepository<RoleEntity, Long>, QuerydslPredicateExecutor<RoleEntity> {
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportroleEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportroleId;
 
-@JaversSpringDataAuditable
+//@JaversSpringDataAuditable
 @Repository
 public interface IReportroleRepository extends JpaRepository<ReportroleEntity, ReportroleId>,
 				QuerydslPredicateExecutor<ReportroleEntity>, IReportroleRepositoryCustom {
