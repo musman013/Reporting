@@ -90,7 +90,7 @@ public class DashboardController {
 		UserEntity user = _userAppService.getUser();
 		dashboard.setOwnerId(user.getId());
 		dashboard.setIsPublished(true);
-		dashboard.setIsSharable(true);
+		dashboard.setIsShareable(true);
 		CreateDashboardOutput output=_dashboardAppService.create(dashboard);
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -273,16 +273,27 @@ public class DashboardController {
 					String.format("You do not have access to add report to dashboard dashboard with id=%s", input.getId()));
 		}
 		
+		dashboard.setReportDetails(_dashboardAppService.setReportsList(input.getId(), user.getId()));
+		
         for(FindReportByIdOutput reportInput :dashboard.getReportDetails())
         {
-        	FindDashboardversionreportByIdOutput dashboardreport = _reportdashboardAppService.findById(new DashboardversionreportId(Long.valueOf(input.getId()), user.getId(), "running", reportInput.getId()));
-            if(dashboardreport !=null) {
+        	 if(input.getReportDetails().stream().filter(o -> o.getId().equals(reportInput.getId())).findFirst().isPresent()) {
             	logHelper.getLogger().error("Report already exist in dashboard with a id=%s", reportInput.getId());
     			throw new EntityNotFoundException(
     					String.format("Report already exist in dashboard with a id=%s", reportInput.getId()));
             }
         
         }
+        
+        for(ExistingReportInput reportInput : input.getReportDetails())
+		{
+			FindReportByIdOutput report = _reportAppService.findById(reportInput.getId());
+			if(report == null) {
+				logHelper.getLogger().error("There does not exist a report with a id=%s", reportInput.getId());
+				throw new EntityNotFoundException(
+						String.format("There does not exist a report with a id=%s", reportInput.getId()));
+			}
+		}
 		
 		input.setOwnerId(user.getId());
 		FindDashboardByIdOutput output  = _dashboardAppService.addExistingReportsToExistingDashboard(input);

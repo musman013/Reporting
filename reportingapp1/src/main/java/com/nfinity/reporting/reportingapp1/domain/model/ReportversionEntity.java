@@ -29,7 +29,7 @@ public class ReportversionEntity implements Serializable {
   	private String reportType;
   	private String title;
   	private String version;
-  	private Boolean isCreatedInDashboard;
+  	private Boolean isAssignedByDashboard;
 
 	public ReportversionEntity() {
   	}
@@ -116,14 +116,14 @@ public class ReportversionEntity implements Serializable {
   	}
   	
   	@Basic
-	@Column(name = "isCreatedInDashboard" , nullable= false)
-  	public Boolean getIsCreatedInDashboard() {
-		return isCreatedInDashboard;
+	@Column(name = "isAssignedByDashboard" , nullable= false)
+  	public Boolean getIsAssignedByDashboard() {
+		return isAssignedByDashboard;
 	}
 
 
-	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
-		this.isCreatedInDashboard = isCreatedInDashboard;
+	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
+		this.isAssignedByDashboard = isAssignedByDashboard;
 	}
   	
   	@ManyToOne

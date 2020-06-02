@@ -14,19 +14,18 @@ public class CreateReportInput {
 	private JSONObject query;
 	@Length(max = 255, message = "reportType must be less than 255 characters")
 	private String reportType;
-	
 	@NotNull
 	private String title;
 	private String reportWidth;
-	private Boolean isCreatedInDashboard;
+	private Boolean isAssignedByDashboard;
 	
 
-	public Boolean getIsCreatedInDashboard() {
-		return isCreatedInDashboard;
+	public Boolean getIsAssignedByDashboard() {
+		return isAssignedByDashboard;
 	}
 
-	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
-		this.isCreatedInDashboard = isCreatedInDashboard;
+	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
+		this.isAssignedByDashboard = isAssignedByDashboard;
 	}
 
 	public Long getOwnerId() {

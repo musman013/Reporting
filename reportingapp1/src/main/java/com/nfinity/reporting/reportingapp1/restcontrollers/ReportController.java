@@ -80,7 +80,7 @@ public class ReportController {
 		UserEntity user = _userAppService.getUser();
 		report.setOwnerId(user.getId());
 		report.setIsPublished(true);
-		report.setIsCreatedInDashboard(false);
+		report.setIsAssignedByDashboard(false);
 		CreateReportOutput output=_reportAppService.create(report);
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -411,7 +411,7 @@ public class ReportController {
 			}
 		}
 
-		ReportDetailsOutput output = _reportAppService.shareReport(Long.valueOf(id), usersList, rolesList);
+		ReportDetailsOutput output = _reportAppService.shareReport(Long.valueOf(id),false, usersList, rolesList);
 
 		return new ResponseEntity(output, HttpStatus.OK);
 	}

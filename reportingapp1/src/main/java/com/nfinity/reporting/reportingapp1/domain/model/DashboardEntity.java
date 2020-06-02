@@ -11,7 +11,7 @@ public class DashboardEntity implements Serializable {
 
 	private Long id;
 	private Boolean isPublished;
-	private Boolean isSharable;
+	private Boolean isShareable;
 
   	public DashboardEntity() {
   	}
@@ -38,13 +38,13 @@ public class DashboardEntity implements Serializable {
 	}
 	
 	@Basic
-	@Column(name = "isSharable", nullable = false)
-  	public Boolean getIsSharable() {
-		return isSharable;
+	@Column(name = "isShareable", nullable = false)
+  	public Boolean getIsShareable() {
+		return isShareable;
 	}
 
-	public void setIsSharable(Boolean isSharable) {
-		this.isSharable = isSharable;
+	public void setIsShareable(Boolean isShareable) {
+		this.isShareable = isShareable;
 	}
   	
   	@ManyToOne

@@ -24,7 +24,7 @@ public class FindReportByIdOutput {
 	private Boolean isResetable;
 	private Boolean sharedWithMe;
 	private Boolean sharedWithOthers;
-	private Boolean isCreatedInDashboard;
+	private Boolean isAssignedByDashboard;
 	private Long orderId;
 	
 
@@ -36,12 +36,12 @@ public class FindReportByIdOutput {
 		this.orderId = orderId;
 	}
 
-	public Boolean getIsCreatedInDashboard() {
-		return isCreatedInDashboard;
+	public Boolean getIsAssignedByDashboard() {
+		return isAssignedByDashboard;
 	}
 
-	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
-		this.isCreatedInDashboard = isCreatedInDashboard;
+	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
+		this.isAssignedByDashboard = isAssignedByDashboard;
 	}
 
 	public Boolean getSharedWithMe() {

@@ -7,14 +7,14 @@ public class UpdateDashboardOutput {
 	private String title;
 	private Long ownerId;
 	private String ownerDescriptiveField;
-	private Boolean isSharable;
+	private Boolean isShareable;
 
-	public Boolean getIsSharable() {
-		return isSharable;
+	public Boolean getIsShareable() {
+		return isShareable;
 	}
 
-	public void setIsSharable(Boolean isSharable) {
-		this.isSharable = isSharable;
+	public void setIsShareable(Boolean isShareable) {
+		this.isShareable = isShareable;
 	}
 
 	public Long getOwnerId() {

@@ -14,14 +14,14 @@ public class UpdateReportversionInput {
 	private String userDescriptiveField;
 	private String reportWidth;
 	private Long reportId;
-	private Boolean isCreatedInDashboard;
+	private Boolean isAssignedByDashboard;
 
-	public Boolean getIsCreatedInDashboard() {
-		return isCreatedInDashboard;
+	public Boolean getIsAssignedByDashboard() {
+		return isAssignedByDashboard;
 	}
 
-	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
-		this.isCreatedInDashboard = isCreatedInDashboard;
+	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
+		this.isAssignedByDashboard = isAssignedByDashboard;
 	}
 
 	public Long getReportId() {

@@ -232,7 +232,7 @@ public class DashboardAppService implements IDashboardAppService {
 
 		if(sharable) {
 			DashboardEntity dashboard = _dashboardManager.findByDashboardIdAndUserId(dashboardId, userId);
-			dashboard.setIsSharable(sharable);
+			dashboard.setIsShareable(sharable);
 			dashboard.setIsPublished(false);
 			_dashboardManager.update(dashboard);
 		}
@@ -427,6 +427,8 @@ public class DashboardAppService implements IDashboardAppService {
 		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
 		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboard.getId(), "published"));
 
+		List<DashboardversionreportEntity> dashboardReportsList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId, "published", dashboard.getUser().getId());
+		List<ShareReportInput> reportUsers = new ArrayList<ShareReportInput>();
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{
@@ -442,7 +444,7 @@ public class DashboardAppService implements IDashboardAppService {
 				usersWithSharedReportsByRole.add(userrole.getUserId());
 				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userrole.getUserId()));
 
-				if(dashboarduser !=null ) {
+				if(dashboarduser != null ) {
 					dashboarduser.setEditable(roleInput.getEditable());
 					dashboarduser.setIsAssignedByRole(true);
 					dashboarduser = _dashboarduserManager.update(dashboarduser);
@@ -454,6 +456,12 @@ public class DashboardAppService implements IDashboardAppService {
 					createDashboarduserAndDashboardVersion(ownerPublishedVersion,userrole.getUserId(), roleInput.getEditable(),true);
 
 				}
+
+				ShareReportInput reportInput = new ShareReportInput();
+				reportInput.setId(userrole.getUserId());
+				reportInput.setEditable(roleInput.getEditable());
+				reportUsers.add(reportInput);
+
 			}
 
 		}
@@ -475,9 +483,22 @@ public class DashboardAppService implements IDashboardAppService {
 				else {
 					createDashboarduserAndDashboardVersion(ownerPublishedVersion,userInput.getId(),userInput.getEditable(),false);
 				}
+
+				ShareReportInput reportInput = new ShareReportInput();
+				reportInput.setId(userInput.getId());
+				reportInput.setEditable(userInput.getEditable());
+				reportUsers.add(reportInput);
 			}
 		}
 
+		for(DashboardversionreportEntity dvr :dashboardReportsList)
+		{
+			_reportAppService.shareReport(dvr.getReportId(),true, reportUsers, new ArrayList<>());
+			for(ShareReportInput reportuser : reportUsers) {
+			_reportDashboardManager.create(dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "published"));
+			_reportDashboardManager.create(dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "running"));
+			}
+		}
 		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
 		dashboardDetails.setSharedWithOthers(true);
 		return dashboardDetails;
@@ -846,6 +867,7 @@ public class DashboardAppService implements IDashboardAppService {
 	public FindDashboardByIdOutput addNewReportsToNewDashboard(AddNewReportToNewDashboardInput input)
 	{
 		CreateDashboardInput dashboardInput = mapper.addNewReportToNewDashboardInputTocreatDashboardInput(input);
+		dashboardInput.setIsShareable(true);
 		CreateDashboardOutput createdDashboard = create(dashboardInput);
 
 		List<FindReportByIdOutput> reportsOutput =new ArrayList<>();
@@ -855,7 +877,7 @@ public class DashboardAppService implements IDashboardAppService {
 		{
 			report.setIsPublished(true);
 			report.setOwnerId(createdDashboard.getOwnerId());
-			report.setIsCreatedInDashboard(true);
+			report.setIsAssignedByDashboard(true);
 			CreateReportOutput createdReport = _reportAppService.create(report);
 			if(report.getReportWidth() !=null) {
 				createdReport.setReportWidth(report.getReportWidth());
@@ -863,7 +885,9 @@ public class DashboardAppService implements IDashboardAppService {
 			else
 				createdReport.setReportWidth("mediumchart");
 			reportList.add(createdReport);
-			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(createdReport,null));
+			FindReportByIdOutput output = reportMapper.createReportOutputToFindReportByIdOutput(createdReport,null);
+			output.setReportWidth(report.getReportWidth());
+			reportsOutput.add(output);
 		}
 
 		_reportDashboardAppService.addReportsToDashboardRunningversion(createdDashboard, reportList);
@@ -890,7 +914,7 @@ public class DashboardAppService implements IDashboardAppService {
 		{
 			report.setIsPublished(true);
 			report.setOwnerId(createdDashboard.getOwnerId());
-			report.setIsCreatedInDashboard(true);
+			report.setIsAssignedByDashboard(true);
 			CreateReportOutput createdReport = _reportAppService.create(report);
 			if(report.getReportWidth() !=null) {
 				createdReport.setReportWidth(report.getReportWidth());
@@ -899,7 +923,9 @@ public class DashboardAppService implements IDashboardAppService {
 				createdReport.setReportWidth("mediumchart");
 
 			reportList.add(createdReport);
-			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(createdReport,null));
+			FindReportByIdOutput output = reportMapper.createReportOutputToFindReportByIdOutput(createdReport,null);
+			output.setReportWidth(report.getReportWidth());
+			reportsOutput.add(output);
 		}
 
 		_reportDashboardAppService.addReportsToDashboardRunningversion(createdDashboard, reportList);
@@ -919,6 +945,7 @@ public class DashboardAppService implements IDashboardAppService {
 		if(dashboard.getUser() !=null && dashboard.getUser().getId() == input.getOwnerId())
 		{
 			dashboard.setIsPublished(false);
+			dashboard.setIsShareable(true);
 			_dashboardManager.update(dashboard);
 		}
 
@@ -955,11 +982,14 @@ public class DashboardAppService implements IDashboardAppService {
 			else
 				reportOutput.setReportWidth("mediumchart");
 			reportList.add(reportOutput);
-			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(reportOutput, reportuser));
+
+			FindReportByIdOutput output = reportMapper.createReportOutputToFindReportByIdOutput(reportOutput, reportuser);
+			output.setReportWidth(reportOutput.getReportWidth());
+			reportsOutput.add(output);
 		}
 
 		CreateDashboardInput dashboardInput = mapper.addExistingReportToNewDashboardInputTocreatDashboardInput(input);
-		dashboardInput.setIsSharable(sharable);
+		dashboardInput.setIsShareable(sharable);
 		CreateDashboardOutput createdDashboard = create(dashboardInput);
 
 		_reportDashboardAppService.addReportsToDashboardRunningversion(createdDashboard, reportList);
@@ -995,7 +1025,7 @@ public class DashboardAppService implements IDashboardAppService {
 			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(report.getId(), input.getOwnerId()));
 
 			if(reportuser !=null && dashboarduser !=null) {
-				dashboard.setIsSharable(false);
+				dashboard.setIsShareable(false);
 				dashboarduser.setOwnerSharingStatus(false);
 			}
 
@@ -1006,7 +1036,10 @@ public class DashboardAppService implements IDashboardAppService {
 			else
 				reportOutput.setReportWidth("mediumchart");
 			reportList.add(reportOutput);
-			reportsOutput.add(reportMapper.createReportOutputToFindReportByIdOutput(reportOutput,reportuser));
+
+			FindReportByIdOutput output = reportMapper.createReportOutputToFindReportByIdOutput(reportOutput, reportuser);
+			output.setReportWidth(reportOutput.getReportWidth());
+			reportsOutput.add(output);
 		}
 
 		_reportDashboardAppService.addReportsToDashboardRunningversion(createdDashboard, reportList);

@@ -62,7 +62,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 				+ "   WHERE rv.report_id = r.id "
 				+ "     AND rv.user_id = :userId "
 				+ "     AND (:search is null OR rv.title ilike :search) "
-				+ "     AND rv.version = 'running' AND rv.is_created_in_dashboard = false ) AS rep ON ru.report_id = rep.id and ru.user_id = rep.user_id";
+				+ "     AND rv.version = 'running' AND rv.is_assigned_by_dashboard = false ) AS rep ON ru.report_id = rep.id and ru.user_id = rep.user_id";
 
 		Query query = 
 				entityManager.createNativeQuery(qlString)
@@ -82,7 +82,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
 			reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
-			reportDetails.setIsCreatedInDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
+			reportDetails.setIsAssignedByDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
 			
 			JSONParser parser = new JSONParser();
 			JSONObject json;
@@ -159,7 +159,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 			reportDetails.setVersion(obj[2]!=null ? (obj[2].toString()) : null);
 			reportDetails.setCtype(obj[3]!=null ? (obj[3].toString()) : null);
 			reportDetails.setDescription(obj[4]!=null ? (obj[4].toString()) : null);
-			reportDetails.setIsCreatedInDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
+			reportDetails.setIsAssignedByDashboard(obj[5] != null && obj[5].toString() == "true" ? true : false);
 			
 			JSONParser parser = new JSONParser();
 			JSONObject json;

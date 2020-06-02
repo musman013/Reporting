@@ -81,7 +81,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
 	
 			dashboardDetails.setIsPublished(obj[6] != null && obj[6].toString() == "true" ? true : false);
-			dashboardDetails.setIsSharable(obj[7] != null && obj[7].toString() == "true" ? true : false);
+			dashboardDetails.setIsShareable(obj[7] != null && obj[7].toString() == "true" ? true : false);
 			dashboardDetails.setOwnerId(obj[8]!=null ? Long.parseLong(obj[8].toString()) : null);
 			
 			dashboardDetails.setSharedWithOthers(Integer.parseInt(obj[9].toString()) == 0 ? false :true);
@@ -111,7 +111,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 	@Override
 	public Page<DashboardDetailsOutput> getSharedDashboardsByUserId(Long userId, String search, Pageable pageable) throws Exception {
 			
-		String qlString = "SELECT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status,r.owner_id, r.is_sharable FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboardversion rv, "
+		String qlString = "SELECT rv.*,u.editable,u.is_assigned_by_role,u.is_refreshed,u.is_resetted,u.owner_sharing_status,u.recipient_sharing_status,r.owner_id, r.is_shareable FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboardversion rv, "
 				+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboarduser u, " + env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboard r "
 				+ "WHERE rv.dashboard_id IN " + 
 				"(SELECT dashboard_id FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboarduser WHERE user_id= rv.user_id and rv.dashboard_id= dashboard_id) " 
@@ -144,7 +144,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setOwnerSharingStatus(obj[9].toString() == "true" ? true : false);
 			dashboardDetails.setRecipientSharingStatus(obj[10].toString() == "true" ? true : false);
 			dashboardDetails.setOwnerId(obj[11]!=null ? Long.parseLong(obj[11].toString()) : null);
-			dashboardDetails.setIsSharable(obj[12].toString() == "true" ? true : false);
+			dashboardDetails.setIsShareable(obj[12].toString() == "true" ? true : false);
 			dashboardDetails.setSharedWithMe(true);
 
 			finalResults.add(dashboardDetails);
@@ -180,7 +180,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 				+ "                  dashboard_id)) "
 				+ "     AND dv.version = 'running' " 
 				+ "	   AND (:search is null OR dv.title ilike :search)) AS dash ON du.dashboard_id = dash.id "
-				+ "AND du.user_id = dash.user_id";
+				+ "AND du.user_id = dash.user_id AND du.editable = true";
 		
 		Query query = 
 				entityManager.createNativeQuery(qlString)
@@ -203,7 +203,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 			dashboardDetails.setTitle(obj[4]!=null ? (obj[4].toString()) : null);
 	
 			dashboardDetails.setIsPublished(obj[6].toString() == "true" ? true : false);
-			dashboardDetails.setIsSharable(obj[7].toString() == "true" ? true : false);
+			dashboardDetails.setIsShareable(obj[7].toString() == "true" ? true : false);
 			dashboardDetails.setOwnerId(obj[8]!=null ? Long.parseLong(obj[8].toString()) : null);
 
 			finalResults.add(dashboardDetails);

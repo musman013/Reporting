@@ -23,14 +23,14 @@ public class ReportDetailsOutput {
 	private Boolean isAssignedByRole;
 	private Boolean sharedWithMe;
 	private Boolean sharedWithOthers;
-	private Boolean isCreatedInDashboard;
+	private Boolean isAssignedByDashboard;
 
-	public Boolean getIsCreatedInDashboard() {
-		return isCreatedInDashboard;
+	public Boolean getIsAssignedByDashboard() {
+		return isAssignedByDashboard;
 	}
 
-	public void setIsCreatedInDashboard(Boolean isCreatedInDashboard) {
-		this.isCreatedInDashboard = isCreatedInDashboard;
+	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
+		this.isAssignedByDashboard = isAssignedByDashboard;
 	}
 	
 	public Boolean getSharedWithMe() {

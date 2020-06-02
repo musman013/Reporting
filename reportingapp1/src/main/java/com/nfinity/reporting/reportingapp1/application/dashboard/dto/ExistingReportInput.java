@@ -7,6 +7,7 @@ public class ExistingReportInput {
 	@NotNull
 	private Long id;
 	private String reportWidth;
+	
 	public Long getId() {
 		return id;
 	}

@@ -119,13 +119,6 @@ public class ReportAppService implements IReportAppService {
 		
 		UpdateReportversionOutput reportversionOutput =  _reportversionAppservice.update(reportversionId, reportversion);
 
-//		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
-//		for(ReportuserEntity  reportuser : reportuserList)
-//		{
-//			reportuser.setIsResetted(false);
-//			_reportuserManager.update(reportuser);
-//		}
-		
 		ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, input.getUserId()));
 		if(reportuser !=null)
 		{
@@ -444,7 +437,7 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public ReportDetailsOutput shareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+	public ReportDetailsOutput shareReport(Long reportId, Boolean isAssignedByDashboard, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
 		ReportEntity report = _reportManager.findById(reportId);
 		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 
@@ -472,25 +465,10 @@ public class ReportAppService implements IReportAppService {
 				}
 
 				else {
-					createReportuserAndReportVersion(ownerPublishedVersion,userrole.getUserId(), roleInput.getEditable(),true);
-					//					CreateReportuserInput createReportuserInput = new CreateReportuserInput();
-					//					createReportuserInput.setReportId(reportId);
-					//					createReportuserInput.setUserId(userrole.getUserId());
-					//					createReportuserInput.setEditable(roleInput.getEditable());
-					//					createReportuserInput.setIsAssignedByRole(true);
-					//					createReportuserInput.setIsResetted(true);
-					//					createReportuserInput.setIsRefreshed(true);
-					//					createReportuserInput.setOwnerSharingStatus(true);
-					//					createReportuserInput.setRecipientSharingStatus(true);
-					//
-					//					_reportuserAppservice.create(createReportuserInput);
-
-
+					createReportuserAndReportVersion(ownerPublishedVersion,userrole.getUserId(), roleInput.getEditable(),true, isAssignedByDashboard);
 				}
 			}
 			
-			
-
 		}
 
 		for(ShareReportInput userInput : usersList)
@@ -508,7 +486,7 @@ public class ReportAppService implements IReportAppService {
 				}
 
 				else {
-					createReportuserAndReportVersion(ownerPublishedVersion,userInput.getId(),userInput.getEditable(),false);
+					createReportuserAndReportVersion(ownerPublishedVersion,userInput.getId(),userInput.getEditable(),false,isAssignedByDashboard);
 				}
 			}
 		}
@@ -519,9 +497,8 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public void createReportuserAndReportVersion(ReportversionEntity ownerReportversion, Long userId, Boolean editable, Boolean isAssigByRole)
+	public void createReportuserAndReportVersion(ReportversionEntity ownerReportversion, Long userId, Boolean editable, Boolean isAssigByRole, Boolean isAssignedByDashboard)
 	{
-
 		CreateReportuserInput createReportuserInput = new CreateReportuserInput();
 		createReportuserInput.setReportId(ownerReportversion.getReportId());
 		createReportuserInput.setUserId(userId);
@@ -537,15 +514,17 @@ public class ReportAppService implements IReportAppService {
 		if(editable) {
 			ReportversionEntity publishedreportversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerReportversion, user.getId(), "published"); 
 			publishedreportversion.setUser(user);
+			publishedreportversion.setIsAssignedByDashboard(isAssignedByDashboard);
 			_reportversionManager.create(publishedreportversion);
 			ReportversionEntity runningreportversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerReportversion, user.getId(), "running"); 
 			runningreportversion.setUser(user);
+			runningreportversion.setIsAssignedByDashboard(isAssignedByDashboard);
 			_reportversionManager.create(runningreportversion);
 		}
 		else {
 			ReportversionEntity runningreportversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerReportversion, user.getId(), "running"); 
-
 			runningreportversion.setUser(user);
+			runningreportversion.setIsAssignedByDashboard(isAssignedByDashboard);
 			_reportversionManager.create(runningreportversion);
 		}
 	}
