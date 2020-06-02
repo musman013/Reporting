@@ -283,6 +283,7 @@ public class DashboardAppService implements IDashboardAppService {
 			}
 
 			output.setOrderId(rd.getOrderId());
+			output.setReportWidth(rd.getReportWidth());
 			reportDetails.add(output);
 		}
 
