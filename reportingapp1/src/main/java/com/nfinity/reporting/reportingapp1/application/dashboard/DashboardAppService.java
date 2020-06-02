@@ -494,9 +494,18 @@ public class DashboardAppService implements IDashboardAppService {
 		for(DashboardversionreportEntity dvr :dashboardReportsList)
 		{
 			_reportAppService.shareReport(dvr.getReportId(),true, reportUsers, new ArrayList<>());
+			
 			for(ShareReportInput reportuser : reportUsers) {
-			_reportDashboardManager.create(dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "published"));
-			_reportDashboardManager.create(dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "running"));
+				if(reportuser.getEditable()) {
+					DashboardversionreportEntity published = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "published");
+					if(published !=null) {
+				    _reportDashboardManager.create(published);
+					}
+				}
+				DashboardversionreportEntity running = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "running");
+				if(running !=null) {
+			    _reportDashboardManager.create(running);
+				}
 			}
 		}
 		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
@@ -541,7 +550,10 @@ public class DashboardAppService implements IDashboardAppService {
 	{
 		UserEntity user = _userManager.findById(dashboarduser.getUserId());
 		DashboardversionEntity dashboardPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(user.getId(),dashboarduser.getDashboardId(),"published"));
-
+		//        if(dashboardPublishedVersion ==null)
+		//        {
+		//        	_dashboardversionManager.findById(new DashboardversionId(user.getId(),dashboarduser.getDashboardId(),"running"));
+		//        }
 		if(dashboarduser.getEditable() && !editable) {
 
 			if(dashboarduser.getIsResetted()) {

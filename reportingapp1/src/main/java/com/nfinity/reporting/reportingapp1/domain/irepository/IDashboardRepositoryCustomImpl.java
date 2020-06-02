@@ -169,9 +169,9 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 				+ "  (SELECT dv.*, "
 				+ "          d.* "
 				+ "   FROM reporting.dashboard d, "
-				+ "        reporting.dashboardversion dv "
+				+ "        reporting.dashboardversion dv, reporting.dashboarduser du "
 				+ "   WHERE dv.dashboard_id = d.id "
-				+ "     AND dv.user_id = :userId "
+				+ "     AND dv.user_id = :userId AND du.editable = true"
 				+ "     AND dv.dashboard_id NOT IN "
 				+ "       (SELECT dashboard_id AS id "
 				+ "        FROM reporting.dashboardversionreport "
@@ -180,7 +180,7 @@ public class IDashboardRepositoryCustomImpl implements IDashboardRepositoryCusto
 				+ "                  dashboard_id)) "
 				+ "     AND dv.version = 'running' " 
 				+ "	   AND (:search is null OR dv.title ilike :search)) AS dash ON du.dashboard_id = dash.id "
-				+ "AND du.user_id = dash.user_id AND du.editable = true";
+				+ "AND du.user_id = dash.user_id";
 		
 		Query query = 
 				entityManager.createNativeQuery(qlString)
