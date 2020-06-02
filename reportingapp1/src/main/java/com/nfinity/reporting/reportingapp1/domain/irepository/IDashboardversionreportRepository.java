@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportId;
-import org.javers.spring.annotation.JaversSpringDataAuditable;
 
 //@JaversSpringDataAuditable
 @Repository
@@ -21,4 +20,8 @@ public interface IDashboardversionreportRepository extends JpaRepository<Dashboa
 	
 	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1 and r.dashboardversion.version =?2 and r.dashboardversion.userId = ?3 ORDER BY r.orderId DESC")
 	List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserIdInDesc(Long id, String version, Long userId);
+
+	@Query("select r from DashboardversionreportEntity r where r.report.id = ?1 ")
+	List<DashboardversionreportEntity> findByReportId(Long reportId);
+	
 }

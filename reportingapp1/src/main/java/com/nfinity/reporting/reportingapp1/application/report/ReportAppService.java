@@ -15,6 +15,7 @@ import com.nfinity.reporting.reportingapp1.domain.report.IReportManager;
 import com.nfinity.reporting.reportingapp1.domain.reportrole.IReportroleManager;
 import com.nfinity.reporting.reportingapp1.domain.reportuser.IReportuserManager;
 import com.nfinity.reporting.reportingapp1.domain.reportversion.IReportversionManager;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.QReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserEntity;
@@ -24,6 +25,7 @@ import com.nfinity.reporting.reportingapp1.domain.model.ReportversionId;
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
 import com.nfinity.reporting.reportingapp1.domain.authorization.userrole.UserroleManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.IDashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserroleEntity;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
@@ -59,6 +61,9 @@ public class ReportAppService implements IReportAppService {
 
 	@Autowired
 	private UserManager _userManager;
+
+	@Autowired
+	private IDashboardversionreportManager _reportDashboardManager;
 
 	@Autowired
 	private ReportversionAppService _reportversionAppservice;
@@ -105,18 +110,18 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-//	@CacheEvict(value="Report", key = "#p0")
+	//	@CacheEvict(value="Report", key = "#p0")
 	public UpdateReportOutput update(Long  reportId, UpdateReportInput input) {
 
-	//	ReportEntity report = mapper.updateReportInputToReportEntity(input);
-		
+		//	ReportEntity report = mapper.updateReportInputToReportEntity(input);
+
 		ReportversionId reportversionId = new ReportversionId(input.getUserId(), reportId, "running");
 
 		ReportversionEntity rv = _reportversionManager.findById(reportversionId);
 		UpdateReportversionInput reportversion = mapper.updateReportInputToUpdateReportversionInput(input);
 		reportversion.setReportId(rv.getReport().getId());
 		reportversion.setVersion(rv.getVersion());
-		
+
 		UpdateReportversionOutput reportversionOutput =  _reportversionAppservice.update(reportversionId, reportversion);
 
 		ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, input.getUserId()));
@@ -125,35 +130,35 @@ public class ReportAppService implements IReportAppService {
 			reportuser.setIsResetted(false);
 			_reportuserManager.update(reportuser);
 		}
-		
+
 		ReportEntity foundReport = _reportManager.findById(reportId);
 		if(foundReport.getUser() !=null && foundReport.getUser().getId() == input.getUserId())
 		{
 			foundReport.setIsPublished(false);
 			_reportManager.update(foundReport);
 		}
-		
+
 
 		return mapper.reportEntityAndUpdateReportversionOutputToUpdateReportOutput(foundReport,reportversionOutput);
-	
+
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-//	@CacheEvict(value="Report", key = "#p0")
+	//	@CacheEvict(value="Report", key = "#p0")
 	public void delete(Long reportId, Long userId) {
 
 		ReportEntity existing = _reportManager.findById(reportId) ; 
-		
+
 		_reportversionAppservice.delete(new ReportversionId(userId, reportId, "running"));
 		_reportversionAppservice.delete(new ReportversionId(userId, reportId, "published"));
-	
+
 		List<ReportuserEntity> reportUserList = _reportuserManager.findByReportId(existing.getId());
 		for(ReportuserEntity reportuser : reportUserList)
 		{
 			reportuser.setOwnerSharingStatus(false);
 			_reportuserManager.update(reportuser);
 		}
-	
+
 		existing.setUser(null);
 		existing.setIsPublished(true);
 		_reportManager.update(existing);
@@ -170,7 +175,7 @@ public class ReportAppService implements IReportAppService {
 	//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public FindReportByIdOutput findById(Long reportId) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -178,14 +183,14 @@ public class ReportAppService implements IReportAppService {
 			return null ; 
 
 		ReportversionEntity reportversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), foundReport.getId(), "running"));
-		
+
 		FindReportByIdOutput output=mapper.reportEntityToFindReportByIdOutput(foundReport,reportversion); 
 		return output;
 	}
 	//User
 	// ReST API Call - GET /report/1/user
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable (value = "Report", key="#p0")
+	//	@Cacheable (value = "Report", key="#p0")
 	public GetUserOutput getUser(Long reportId) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -200,7 +205,7 @@ public class ReportAppService implements IReportAppService {
 	//User
 	// ReST API Call - GET /report/1/user
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable (value = "Report", key="#p0")
+	//	@Cacheable (value = "Report", key="#p0")
 	public List<GetUserOutput> getUsersAssociatedWithReport(Long reportId, String search, Pageable pageable) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -220,7 +225,7 @@ public class ReportAppService implements IReportAppService {
 	//User
 	// ReST API Call - GET /report/1/user
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable (value = "Report", key="#p0")
+	//	@Cacheable (value = "Report", key="#p0")
 	public List<GetUserOutput> getAvailableUsers(Long reportId, String search, Pageable pageable) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -239,7 +244,7 @@ public class ReportAppService implements IReportAppService {
 
 	//Role
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable (value = "Report", key="#p0")
+	//	@Cacheable (value = "Report", key="#p0")
 	public List<GetRoleOutput> getRolesAssociatedWithReport(Long reportId, String search, Pageable pageable) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -259,7 +264,7 @@ public class ReportAppService implements IReportAppService {
 	//User
 	// ReST API Call - GET /report/1/user
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable (value = "Report", key="#p0")
+	//	@Cacheable (value = "Report", key="#p0")
 	public List<GetRoleOutput> getAvailableRoles(Long reportId, String search, Pageable pageable) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -278,7 +283,7 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public FindReportByIdOutput findByReportIdAndUserId(Long reportId, Long userId) {
 
 		ReportEntity foundReport = _reportManager.findByReportIdAndUserId(reportId, userId);
@@ -292,12 +297,12 @@ public class ReportAppService implements IReportAppService {
 		FindReportByIdOutput output  = mapper.reportEntitiesToFindReportByIdOutput(foundReport, reportVersion, reportuser); 
 		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
 
-		
+
 		if(reportuser != null)
 		{
 			output.setSharedWithMe(true);
 		}
-		
+
 		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
 		if(reportuserList !=null && !reportuserList.isEmpty()) {
 			output.setSharedWithOthers(true);
@@ -313,12 +318,12 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public ReportDetailsOutput updateRecipientSharingStatus (Long userId, Long reportId, Boolean status) {
 
 		ReportuserEntity foundReportuser = _reportuserManager.findById(new ReportuserId(reportId, userId));
-        if(foundReportuser ==null)
-        	return null;
+		if(foundReportuser ==null)
+			return null;
 		foundReportuser.setRecipientSharingStatus(status);
 		foundReportuser = _reportuserManager.update(foundReportuser);
 
@@ -329,31 +334,31 @@ public class ReportAppService implements IReportAppService {
 
 	}
 
-//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	//	@Cacheable(value = "Report", key = "#p0")
 	public ReportDetailsOutput publishReport(Long userId, Long reportId) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
-		
+
 		List<ReportuserEntity> reportuserList = _reportuserManager.findByReportId(reportId);
 		for(ReportuserEntity reportuser: reportuserList)
 		{
 			reportuser.setIsRefreshed(false);
 			_reportuserManager.update(reportuser);
 		}
-		
+
 		foundReport.setIsPublished(true);
 		foundReport = _reportManager.update(foundReport);
 		ReportversionEntity foundReportversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
-        
+
 		ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(foundReportversion, userId, "published");
 		_reportversionManager.update(publishedVersion);
-		
+
 		return mapper.reportEntitiesToReportDetailsOutput(foundReport,foundReportversion,null);
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public ReportDetailsOutput changeOwner(Long ownerId, Long reportId, Long newOwnerId) {
 
 		ReportEntity foundReport = _reportManager.findById(reportId);
@@ -363,45 +368,51 @@ public class ReportAppService implements IReportAppService {
 		ReportversionEntity foundOwnerReportPublishedversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "published"));
 		ReportversionEntity reportRunningversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportRunningversion, foundUser.getId(), "running");
 		reportRunningversion.setUser(foundUser);
-	   _reportversionManager.create(reportRunningversion);
+		_reportversionManager.create(reportRunningversion);
 
-	    ReportversionEntity reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportPublishedversion, foundUser.getId(), "published");
-		
+		ReportversionEntity reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportPublishedversion, foundUser.getId(), "published");
+
 		reportPublishedversion.setUser(foundUser);
-		 _reportversionManager.create(reportPublishedversion);
+		_reportversionManager.create(reportPublishedversion);
 
-	
+
 		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "running"));
-	    _reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "published"));
-				
+		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "published"));
 
-	    foundReport.setUser(foundUser);
+		List<DashboardversionreportEntity> dvrList = _reportDashboardManager.findByReportId(reportId);
+
+		for(DashboardversionreportEntity dvr : dvrList)
+		{
+			_reportDashboardManager.delete(dvr);
+		}
 		
-		 _reportManager.update(foundReport);
-		 
-		
+		foundReport.setUser(foundUser);
+
+		_reportManager.update(foundReport);
+
+
 		return mapper.reportEntitiesToReportDetailsOutput(foundReport,reportRunningversion,null);
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public ReportDetailsOutput refreshReport(Long userId, Long reportId) {
 
 		ReportuserEntity foundReportuser = _reportuserManager.findById(new ReportuserId(reportId, userId));
 		ReportEntity foundReport = _reportManager.findById(reportId);
-		
+
 		if(foundReportuser.getOwnerSharingStatus()) {
-			
+
 			ReportversionEntity ownerPublishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
 			UserEntity foundUser = _userManager.findById(userId);
-			
+
 			ReportversionEntity publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
 			publishedversion.setUser(foundUser);
 			_reportversionManager.update(publishedversion);
 			foundReportuser.setIsRefreshed(true);
 			foundReportuser.setIsResetted(false);
 			foundReportuser = _reportuserManager.update(foundReportuser);
-			
+
 			ReportversionEntity runningversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
 			return mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
 		}
@@ -410,18 +421,18 @@ public class ReportAppService implements IReportAppService {
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
+	//	@Cacheable(value = "Report", key = "#p0")
 	public ReportDetailsOutput resetReport(Long userId, Long reportId) {
 
 		ReportuserEntity foundReportuser = _reportuserManager.findById(new ReportuserId(reportId, userId));
 		ReportEntity foundReport = _reportManager.findById(reportId);
 
 
-		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
+		ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
 		if(publishedversion !=null)
 		{
 			ReportversionEntity runningversion = reportversionMapper.reportversionEntityToReportversionEntity(publishedversion, userId, "running");
-		//	runningversion.setVersion("running");
+			//	runningversion.setVersion("running");
 			runningversion=_reportversionManager.update(runningversion);
 			if(!foundReportuser.getEditable()) {
 				_reportversionManager.delete(publishedversion);
@@ -468,7 +479,7 @@ public class ReportAppService implements IReportAppService {
 					createReportuserAndReportVersion(ownerPublishedVersion,userrole.getUserId(), roleInput.getEditable(),true, isAssignedByDashboard);
 				}
 			}
-			
+
 		}
 
 		for(ShareReportInput userInput : usersList)
@@ -542,14 +553,14 @@ public class ReportAppService implements IReportAppService {
 				if (reportPublishedVersion != null) {
 					_reportversionManager.delete(reportPublishedVersion);	
 				}
-				
+
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "running"); 
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
 			else if(!reportuser.getIsResetted()) {
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
-				
+
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
@@ -567,7 +578,7 @@ public class ReportAppService implements IReportAppService {
 					_reportversionManager.delete(reportPublishedVersion);	
 				}
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "running"); 
-				
+
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
@@ -576,7 +587,7 @@ public class ReportAppService implements IReportAppService {
 		} else if(reportuser.getEditable() && editable) {
 			//	ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 			ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
-			
+
 			publishedVersion.setUser(user);
 			//publishedVersion.setUserId(user.getId());
 			_reportversionManager.update(publishedVersion);
@@ -586,7 +597,7 @@ public class ReportAppService implements IReportAppService {
 			if(reportPublishedVersion !=null && !reportuser.getIsResetted()) {
 				//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
-				
+
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
@@ -597,7 +608,7 @@ public class ReportAppService implements IReportAppService {
 				//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
 				publishedVersion.setUser(user);
-			//	publishedVersion.setUserId(user.getId());
+				//	publishedVersion.setUserId(user.getId());
 				_reportversionManager.create(publishedVersion);
 			}
 
@@ -609,10 +620,10 @@ public class ReportAppService implements IReportAppService {
 	public ReportDetailsOutput unshareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
 		ReportEntity report = _reportManager.findById(reportId);
 		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), reportId, "published"));
-        if(ownerPublishedVersion==null)
-        {
-        	return null;
-        }
+		if(ownerPublishedVersion==null)
+		{
+			return null;
+		}
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{	
@@ -653,7 +664,7 @@ public class ReportAppService implements IReportAppService {
 		reportDetails.setSharedWithOthers(false);
 		return reportDetails;
 	}
-	
+
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<ReportDetailsOutput> getReports(Long userId,String search, Pageable pageable) throws Exception
 	{ 
@@ -662,7 +673,7 @@ public class ReportAppService implements IReportAppService {
 
 		return reportList ;
 	}
-	
+
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<ReportDetailsOutput> getSharedReports(Long userId,String search, Pageable pageable) throws Exception
 	{ 

@@ -278,9 +278,9 @@ public class DashboardController {
         for(FindReportByIdOutput reportInput :dashboard.getReportDetails())
         {
         	 if(input.getReportDetails().stream().filter(o -> o.getId().equals(reportInput.getId())).findFirst().isPresent()) {
-            	logHelper.getLogger().error("Report already exist in dashboard with a id=%s", reportInput.getId());
+            	logHelper.getLogger().error("Report already exist in dashboard with a id=%s", input.getId());
     			throw new EntityNotFoundException(
-    					String.format("Report already exist in dashboard with a id=%s", reportInput.getId()));
+    					String.format("Report already exist in dashboard with a id=%s", input.getId()));
             }
         
         }
@@ -650,9 +650,15 @@ public class DashboardController {
 		FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
 
 		if (currentDashboard == null) {
-			logHelper.getLogger().error("Unable to update. Dashboard with id {} not found.", id);
+			logHelper.getLogger().error("Unable to publish. Dashboard with id {} not found.", id);
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
+		
+		if (!currentDashboard.getIsShareable()) {
+			logHelper.getLogger().error("Unable to publish. Dashboard have shared reports.");
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+		
 
 		if(!user.getId().equals(currentDashboard.getOwnerId())) {
 			logHelper.getLogger().error("You do not have access to publish a dashboard with a id=%s", id);
