@@ -401,7 +401,7 @@ public class ReportAppService implements IReportAppService {
 		ReportuserEntity foundReportuser = _reportuserManager.findById(new ReportuserId(reportId, userId));
 		ReportEntity foundReport = _reportManager.findById(reportId);
 
-		if(foundReportuser.getOwnerSharingStatus()) {
+		if(foundReportuser !=null && foundReportuser.getOwnerSharingStatus()) {
 
 			ReportversionEntity ownerPublishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
 			UserEntity foundUser = _userManager.findById(userId);

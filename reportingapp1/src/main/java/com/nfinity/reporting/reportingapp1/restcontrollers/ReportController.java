@@ -369,6 +369,7 @@ public class ReportController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
+	
 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/share", method = RequestMethod.PUT)
 	public ResponseEntity<ReportDetailsOutput> shareReport(@PathVariable String id, @RequestBody @Valid Map<String, List<ShareReportInput>> input) {

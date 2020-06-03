@@ -138,7 +138,7 @@ public class IReportRepositoryCustomImpl implements IReportRepositoryCustom {
 				+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser u, " + env.getProperty("spring.jpa.properties.hibernate.default_schema")+".report r "
 				+ "WHERE rv.report_id IN " + 
 				"(SELECT report_id FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser WHERE user_id= rv.user_id and rv.report_id= report_id) " 
-				+ "and rv.report_id = u.report_id and rv.report_id = r.id and rv.user_id =:userId and rv.version = 'running' "
+				+ "and rv.report_id = u.report_id and rv.report_id = r.id and rv.user_id =:userId and rv.version = 'running' AND rv.is_assigned_by_dashboard = false "
 				+ "AND " + 
 				"(:search is null OR rv.title ilike :search)";
 

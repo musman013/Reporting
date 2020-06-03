@@ -24,4 +24,8 @@ public interface IDashboardversionreportRepository extends JpaRepository<Dashboa
 	@Query("select r from DashboardversionreportEntity r where r.report.id = ?1 ")
 	List<DashboardversionreportEntity> findByReportId(Long reportId);
 	
+	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1")
+	List<DashboardversionreportEntity> findByDashboardId(Long dashboardId);
+	
+	
 }

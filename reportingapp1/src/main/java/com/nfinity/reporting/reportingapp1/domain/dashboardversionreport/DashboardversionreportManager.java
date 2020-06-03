@@ -58,6 +58,11 @@ public class DashboardversionreportManager implements IDashboardversionreportMan
 		return _reportdashboardRepository.findByReportId(reportId);
 	}
 	
+	public List<DashboardversionreportEntity> findByDashboardId(Long dashboardId)
+	{
+		return _reportdashboardRepository.findByDashboardId(dashboardId);
+	}
+	
 	public List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserId(Long dashboardId,String version, Long userId)
 	{
 		return _reportdashboardRepository.findByDashboardIdAndVersionAndUserId(dashboardId, version,userId);

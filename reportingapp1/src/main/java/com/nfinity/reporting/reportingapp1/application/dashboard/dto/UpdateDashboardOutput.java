@@ -1,5 +1,9 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
+import java.util.List;
+
+import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
+
 public class UpdateDashboardOutput {
 
 	private String description;
@@ -8,6 +12,16 @@ public class UpdateDashboardOutput {
 	private Long ownerId;
 	private String ownerDescriptiveField;
 	private Boolean isShareable;
+	private List<FindReportByIdOutput> reportDetails;
+
+
+	public List<FindReportByIdOutput> getReportDetails() {
+		return reportDetails;
+	}
+
+	public void setReportDetails(List<FindReportByIdOutput> reportDetails) {
+		this.reportDetails = reportDetails;
+	}
 
 	public Boolean getIsShareable() {
 		return isShareable;

@@ -23,6 +23,8 @@ public interface IDashboardversionreportManager {
     
     List<DashboardversionreportEntity> findByReportId(Long reportId);
     
+    List<DashboardversionreportEntity> findByDashboardId(Long dashboardId);
+    
     List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserId(Long dashboardId, String version, Long userId);
     
     List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserIdInDesc(Long id, String version, Long userId);

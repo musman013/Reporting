@@ -178,8 +178,9 @@ public class DashboardController {
 		
 		dashboard.setUserId(user.getId());
 	//	dashboard.setIsPublished(false);
-		
-		return new ResponseEntity(_dashboardAppService.update(Long.valueOf(id),dashboard), HttpStatus.OK);
+		UpdateDashboardOutput output =_dashboardAppService.update(Long.valueOf(id),dashboard);
+		output.setReportDetails(_dashboardAppService.setReportsList(Long.valueOf(id), user.getId()));
+		return new ResponseEntity(output, HttpStatus.OK);
 		
 	}
 
@@ -645,7 +646,7 @@ public class DashboardController {
 
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/publish", method = RequestMethod.PUT)
-	public ResponseEntity<DashboardDetailsOutput> publishDashboard(@PathVariable String id) {
+	public ResponseEntity<FindDashboardByIdOutput> publishDashboard(@PathVariable String id) {
 		UserEntity user = _userAppService.getUser();
 		FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
 
@@ -674,7 +675,8 @@ public class DashboardController {
 
 		}
 
-		DashboardDetailsOutput output = _dashboardAppService.publishDashboard(user.getId(), Long.valueOf(id));
+		FindDashboardByIdOutput output = _dashboardAppService.publishDashboard(user.getId(), Long.valueOf(id));
+		output.setReportDetails(_dashboardAppService.setReportsList(output.getId(),user.getId()));
 
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -715,7 +717,7 @@ public class DashboardController {
 
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/refresh", method = RequestMethod.PUT)
-	public ResponseEntity<DashboardDetailsOutput> refreshDashboard(@PathVariable String id) {
+	public ResponseEntity<FindDashboardByIdOutput> refreshDashboard(@PathVariable String id) {
 		UserEntity user = _userAppService.getUser();
 
 		FindDashboarduserByIdOutput dashboarduser = _dashboarduserAppService.findById(new DashboarduserId(Long.valueOf(id), user.getId()));
@@ -726,7 +728,7 @@ public class DashboardController {
 					String.format("No Dashboard is shared with id=%s", id));
 		}
 
-		DashboardDetailsOutput output = _dashboardAppService.refreshDashboard(user.getId(), Long.valueOf(id));
+		FindDashboardByIdOutput output = _dashboardAppService.refreshDashboard(user.getId(), Long.valueOf(id));
 
 		if(output == null)
 		{
@@ -734,13 +736,15 @@ public class DashboardController {
 			throw new EntityNotFoundException(
 					String.format("No updates available. Dashboard can not be refreshed"));
 		}
+		
+		output.setReportDetails(_dashboardAppService.setReportsList(output.getId(),user.getId()));
 
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/reset", method = RequestMethod.PUT)
-	public ResponseEntity<DashboardDetailsOutput> resetDashboard(@PathVariable String id) {
+	public ResponseEntity<FindDashboardByIdOutput> resetDashboard(@PathVariable String id) {
 		UserEntity user = _userAppService.getUser();
 
 		FindDashboarduserByIdOutput dashboarduser = _dashboarduserAppService.findById(new DashboarduserId(Long.valueOf(id), user.getId()));
@@ -751,13 +755,15 @@ public class DashboardController {
 					String.format("No Dashboard is shared with id=%s", id));
 		}
 
-		DashboardDetailsOutput output = _dashboardAppService.resetDashboard(user.getId(), Long.valueOf(id));
+		FindDashboardByIdOutput output = _dashboardAppService.resetDashboard(user.getId(), Long.valueOf(id));
+
 		if(output == null) {
 			logHelper.getLogger().error("Dashboard can not be resetted");
 			throw new EntityNotFoundException(
 					String.format("Dashboard can not be resetted"));
 		}
 
+		output.setReportDetails(_dashboardAppService.setReportsList(output.getId(),user.getId()));
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
