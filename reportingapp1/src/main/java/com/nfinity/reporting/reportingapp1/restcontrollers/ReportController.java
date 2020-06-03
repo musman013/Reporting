@@ -369,6 +369,52 @@ public class ReportController {
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasAnyAuthority('REPORTENTITY_UPDATE')")
+	@RequestMapping(value = "/{id}/editAccess", method = RequestMethod.PUT)
+	public ResponseEntity<ReportDetailsOutput> editReportAccess(@PathVariable String id, @RequestBody @Valid Map<String, List<ShareReportInput>> input) {
+		UserEntity user = _userAppService.getUser();
+		FindReportByIdOutput currentReport = _reportAppService.findById(Long.valueOf(id));
+		
+		if (currentReport == null) {
+			logHelper.getLogger().error("Report with id%s not found.", id);
+			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+		}
+
+		if (currentReport.getOwnerId() == null || user.getId() != currentReport.getOwnerId()) {
+			logHelper.getLogger().error("Unable to share report with id '{}'.", id);
+			throw new EntityNotFoundException(
+					String.format("Unable to share report with id {}.", id));
+		}
+
+		List<ShareReportInput> usersList = input.get("users");
+		List<ShareReportInput> rolesList = input.get("roles");
+
+		for(ShareReportInput roleInput : rolesList)
+		{
+			FindRoleByIdOutput foundRole = _roleAppService.findById(roleInput.getId());
+			if(foundRole == null)
+			{
+				logHelper.getLogger().error("Role not found with id=%s", roleInput.getId());
+				throw new EntityNotFoundException(
+						String.format("Role not found with id=%s", roleInput.getId()));
+			}
+		}
+
+		for(ShareReportInput userInput : usersList)
+		{
+			FindUserByIdOutput foundUser = _userAppService.findById(userInput.getId());
+			if(foundUser == null)
+			{
+				logHelper.getLogger().error("User not found with id=%s", userInput.getId());
+				throw new EntityNotFoundException(
+						String.format("User not found with id=%s", userInput.getId()));
+			}
+		}
+		
+	//	ReportDetailsOutput output = _reportAppService.shareReport(Long.valueOf(id),false, usersList, rolesList);
+
+		return new ResponseEntity(null, HttpStatus.OK);
+	}
 	
 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/share", method = RequestMethod.PUT)

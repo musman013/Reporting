@@ -183,6 +183,7 @@ public class DashboardAppService implements IDashboardAppService {
 			else {
 				dashboardreport.setReportWidth("mediumchart");
 			}
+			dashboardreport.setOrderId(count);
 			count ++;
 
 			_reportDashboardManager.update(dashboardreport);

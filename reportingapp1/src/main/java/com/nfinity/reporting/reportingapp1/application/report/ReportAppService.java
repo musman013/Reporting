@@ -18,6 +18,8 @@ import com.nfinity.reporting.reportingapp1.domain.reportversion.IReportversionMa
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.QReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportroleEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportroleId;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserId;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
@@ -446,6 +448,8 @@ public class ReportAppService implements IReportAppService {
 
 		return null;
 	}
+	
+
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public ReportDetailsOutput shareReport(Long reportId, Boolean isAssignedByDashboard, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
