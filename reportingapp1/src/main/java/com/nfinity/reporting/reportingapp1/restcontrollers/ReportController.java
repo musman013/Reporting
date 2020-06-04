@@ -411,9 +411,9 @@ public class ReportController {
 			}
 		}
 		
-	//	ReportDetailsOutput output = _reportAppService.shareReport(Long.valueOf(id),false, usersList, rolesList);
+		ReportDetailsOutput output = _reportAppService.editReportAccess(Long.valueOf(id),usersList, rolesList);
 
-		return new ResponseEntity(null, HttpStatus.OK);
+		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('REPORTENTITY_UPDATE')")

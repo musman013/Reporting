@@ -15,7 +15,10 @@ import com.nfinity.reporting.reportingapp1.domain.report.IReportManager;
 import com.nfinity.reporting.reportingapp1.domain.reportrole.IReportroleManager;
 import com.nfinity.reporting.reportingapp1.domain.reportuser.IReportuserManager;
 import com.nfinity.reporting.reportingapp1.domain.reportversion.IReportversionManager;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserId;
 import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportId;
 import com.nfinity.reporting.reportingapp1.domain.model.QReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportroleEntity;
@@ -27,6 +30,7 @@ import com.nfinity.reporting.reportingapp1.domain.model.ReportversionId;
 import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.UserManager;
 import com.nfinity.reporting.reportingapp1.domain.authorization.userrole.UserroleManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboarduser.IDashboarduserManager;
 import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.IDashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserroleEntity;
@@ -57,6 +61,9 @@ public class ReportAppService implements IReportAppService {
 
 	@Autowired
 	private IReportuserManager _reportuserManager;
+	
+	@Autowired
+	private IDashboarduserManager _dashboarduserManager;
 
 	@Autowired
 	private IReportversionManager _reportversionManager;
@@ -201,6 +208,7 @@ public class ReportAppService implements IReportAppService {
 			return null;
 		}
 		UserEntity re = _reportManager.getUser(reportId);
+		
 		return mapper.userEntityToGetUserOutput(re, foundReport);
 	}
 
@@ -218,7 +226,13 @@ public class ReportAppService implements IReportAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			usersList.add(mapper.userEntityToGetUserOutput(user, foundReport));
+			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
+			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
+			if(reportuser != null)
+			{
+				output.setEditable(reportuser.getEditable());
+			}
+			usersList.add(output);
 		}
 
 		return usersList;
@@ -238,7 +252,13 @@ public class ReportAppService implements IReportAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			usersList.add(mapper.userEntityToGetUserOutput(user, foundReport));
+			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
+			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
+			if(reportuser != null)
+			{
+				output.setEditable(reportuser.getEditable());
+			}
+			usersList.add(output);
 		}
 
 		return usersList;
@@ -257,7 +277,13 @@ public class ReportAppService implements IReportAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			rolesList.add(mapper.roleEntityToGetRoleOutput(role, foundReport));
+			ReportroleEntity reportrole = _reportroleManager.findById(new ReportroleId(reportId, role.getId()));
+			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundReport);
+			if(reportrole != null)
+			{
+				output.setEditable(reportrole.getEditable());
+			}
+			rolesList.add(output);
 		}
 
 		return rolesList;
@@ -277,7 +303,13 @@ public class ReportAppService implements IReportAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			rolesList.add(mapper.roleEntityToGetRoleOutput(role, foundReport));
+			ReportroleEntity reportrole = _reportroleManager.findById(new ReportroleId(reportId, role.getId()));
+			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundReport);
+			if(reportrole != null)
+			{
+				output.setEditable(reportrole.getEditable());
+			}
+			rolesList.add(output);
 		}
 
 		return rolesList;
@@ -366,26 +398,57 @@ public class ReportAppService implements IReportAppService {
 		ReportEntity foundReport = _reportManager.findById(reportId);
 		UserEntity foundUser = _userManager.findById(newOwnerId);
 
-		ReportversionEntity foundOwnerReportRunningversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "running"));
-		ReportversionEntity foundOwnerReportPublishedversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "published"));
-		ReportversionEntity reportRunningversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportRunningversion, foundUser.getId(), "running");
-		reportRunningversion.setUser(foundUser);
-		_reportversionManager.create(reportRunningversion);
+		ReportuserEntity ru = _reportuserManager.findById(new ReportuserId(reportId, newOwnerId));
+		ReportversionEntity reportRunningversion;
+		if(ru != null) {
+			
+		    reportRunningversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "running"));
+		    ReportversionEntity reportPublishedversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "published"));
+			if(reportPublishedversion == null) {
+			reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(reportRunningversion, newOwnerId, "published");
+			reportPublishedversion.setUser(foundUser);
+			_reportversionManager.create(reportPublishedversion);
+			}
+			
+			_reportuserManager.delete(ru);
+		}
+		else
+		{
+			ReportversionEntity foundOwnerReportRunningversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "running"));
+			ReportversionEntity foundOwnerReportPublishedversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "published"));
+			 reportRunningversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportRunningversion, foundUser.getId(), "running");
+			reportRunningversion.setUser(foundUser);
+			_reportversionManager.create(reportRunningversion);
 
-		ReportversionEntity reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportPublishedversion, foundUser.getId(), "published");
+			ReportversionEntity reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportPublishedversion, foundUser.getId(), "published");
 
-		reportPublishedversion.setUser(foundUser);
-		_reportversionManager.create(reportPublishedversion);
-
-
+			reportPublishedversion.setUser(foundUser);
+			_reportversionManager.create(reportPublishedversion);			
+		}
+		
 		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "running"));
 		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "published"));
 
-		List<DashboardversionreportEntity> dvrList = _reportDashboardManager.findByReportId(reportId);
+		List<DashboardversionreportEntity> dvrRunningversionsList = _reportDashboardManager.findByReportIdAndUserIdAndVersion(reportId,ownerId, "running");
 
-		for(DashboardversionreportEntity dvr : dvrList)
+		for(DashboardversionreportEntity dvr : dvrRunningversionsList)
 		{
+			
+			List<DashboardversionreportEntity> sharedDashboardReportList = _reportDashboardManager.findByIdIfUserIdIsNotSame(dvr.getDashboardId(), reportId,ownerId, "running");
+			for(DashboardversionreportEntity shared : sharedDashboardReportList)
+			{
+				DashboarduserEntity du = _dashboarduserManager.findById(new DashboarduserId(shared.getDashboardId(), shared.getUserId()));
+			    if(du !=null) {
+				du.setIsRefreshed(false);
+			    _dashboarduserManager.update(du);
+			    }
+			}
+			
+			DashboardversionreportEntity ownerPublishedDashboardReport = _reportDashboardManager.findById(new DashboardversionreportId(dvr.getDashboardId(), ownerId, "published", reportId));
+			
 			_reportDashboardManager.delete(dvr);
+			if(ownerPublishedDashboardReport !=null)
+				_reportDashboardManager.delete(ownerPublishedDashboardReport);
 		}
 		
 		foundReport.setUser(foundUser);
@@ -449,7 +512,93 @@ public class ReportAppService implements IReportAppService {
 		return null;
 	}
 	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public ReportDetailsOutput editReportAccess(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+	
+		ReportEntity report = _reportManager.findById(reportId);
+		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
+		if(ownerPublishedVersion==null)
+		{
+			return null;
+		}
+		
+		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
+		for(ShareReportInput roleInput : rolesList)
+		{
+			ReportroleEntity reportRole= _reportroleManager.findById(new ReportroleId(reportId, roleInput.getId()));
+			if(roleInput.getEditable() != null)
+		    {
+		    	reportRole.setEditable(roleInput.getEditable());
+		    	_reportroleManager.update(reportRole);
+		    }
+			
+			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
+			for(UserroleEntity userrole : userroleList)
+			{
+				usersWithSharedReportsByRole.add(userrole.getUserId());
+				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
 
+				if(reportuser !=null && roleInput.getEditable() !=null) {
+					
+					reportuser.setEditable(roleInput.getEditable());
+					reportuser.setIsAssignedByRole(true);
+					reportuser = _reportuserManager.update(reportuser);
+					shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
+
+				}
+				else if (roleInput.getEditable() == null && reportuser !=null) {
+					if(reportuser.getIsAssignedByRole())
+					{
+						reportuser.setOwnerSharingStatus(false);
+						reportuser = _reportuserManager.update(reportuser);
+					}
+				}
+			}
+			
+		
+		}
+		
+		for(ShareReportInput userInput : usersList)
+		{
+			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
+				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
+
+				if(reportuser !=null && userInput.getEditable() !=null) {
+					
+					reportuser.setEditable(userInput.getEditable());
+					reportuser.setIsAssignedByRole(false);
+					reportuser = _reportuserManager.update(reportuser);
+					shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
+
+				}
+				else if (userInput.getEditable() == null && reportuser !=null) {
+					if(reportuser.getIsAssignedByRole())
+					{
+							reportuser.setOwnerSharingStatus(false);
+							reportuser = _reportuserManager.update(reportuser);
+					}
+			}
+			}
+
+		}
+	
+		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
+		return reportDetails;
+	}
+	
+//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	public void deleteAccessFromUser(Long userId, Long reportId)
+//	{
+//		ReportversionEntity reportRunningVersion = _reportversionManager.findById(new ReportversionId(userId,reportId,"running"));
+//        ReportversionEntity reportPublishedVersion = _reportversionManager.findById(new ReportversionId(userId,reportId,"published"));
+//	
+//        if(reportPublishedVersion !=null)
+//        	_reportversionManager.delete(reportPublishedVersion);
+//        
+//        _reportversionManager.delete(reportRunningVersion);
+//        
+//        
+//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public ReportDetailsOutput shareReport(Long reportId, Boolean isAssignedByDashboard, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
@@ -641,9 +790,6 @@ public class ReportAppService implements IReportAppService {
 					reportuser.setOwnerSharingStatus(false);
 					reportuser = _reportuserManager.update(reportuser);
 				}
-				//				else {
-				//                     return null;
-				//				}
 			}
 
 		}
@@ -658,9 +804,6 @@ public class ReportAppService implements IReportAppService {
 					reportuser.setOwnerSharingStatus(false);
 					reportuser = _reportuserManager.update(reportuser);
 				}
-				//				else {
-				//					return null;
-				//				}
 			}
 		}
 

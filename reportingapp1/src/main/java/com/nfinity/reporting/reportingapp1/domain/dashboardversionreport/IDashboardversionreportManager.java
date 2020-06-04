@@ -21,7 +21,9 @@ public interface IDashboardversionreportManager {
 
     DashboardversionreportEntity findById(DashboardversionreportId reportdashboardId);
     
-    List<DashboardversionreportEntity> findByReportId(Long reportId);
+    List<DashboardversionreportEntity> findByIdIfUserIdIsNotSame(Long dashboardId, Long reportId, Long userId, String version);
+    
+    List<DashboardversionreportEntity> findByReportIdAndUserIdAndVersion(Long reportId, Long userId, String version);
     
     List<DashboardversionreportEntity> findByDashboardId(Long dashboardId);
     

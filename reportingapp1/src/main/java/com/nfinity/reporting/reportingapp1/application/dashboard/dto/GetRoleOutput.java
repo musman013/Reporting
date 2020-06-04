@@ -6,6 +6,15 @@ public class GetRoleOutput {
 	private String displayName;
 	private String name;
 	private Long dashboardId;
+	private Boolean editable;
+	
+	public Boolean getEditable() {
+		return editable;
+	}
+
+	public void setEditable(Boolean editable) {
+		this.editable = editable;
+	}
 
 	public Long getId() {
 		return id;

@@ -53,9 +53,15 @@ public class DashboardversionreportManager implements IDashboardversionreportMan
 
 	}
 	
-	public List<DashboardversionreportEntity> findByReportId(Long reportId)
+	public List<DashboardversionreportEntity> findByIdIfUserIdIsNotSame(Long dashboardId, Long reportId, Long userId, String version)
 	{
-		return _reportdashboardRepository.findByReportId(reportId);
+		return _reportdashboardRepository.findByIdIfUserIdNotSame(dashboardId, reportId, userId, version);
+	}
+	
+	
+	public List<DashboardversionreportEntity> findByReportIdAndUserIdAndVersion(Long reportId, Long userId, String version)
+	{
+		return _reportdashboardRepository.findByReportIdAndUserIdAndVersion(reportId, userId, version);
 	}
 	
 	public List<DashboardversionreportEntity> findByDashboardId(Long dashboardId)

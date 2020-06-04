@@ -17,6 +17,7 @@ import com.nfinity.reporting.reportingapp1.application.report.ReportMapper;
 import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportInput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.CreateReportOutput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportByIdOutput;
+import com.nfinity.reporting.reportingapp1.application.report.dto.ReportDetailsOutput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.ShareReportInput;
 import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
 import com.nfinity.reporting.reportingapp1.domain.dashboard.DashboardManager;
@@ -27,6 +28,11 @@ import com.nfinity.reporting.reportingapp1.domain.dashboardversion.IDashboardver
 import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.IDashboardversionreportManager;
 import com.nfinity.reporting.reportingapp1.domain.model.QDashboardEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardroleEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardroleId;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportroleEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportroleId;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportuserId;
 import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
@@ -358,8 +364,13 @@ public class DashboardAppService implements IDashboardAppService {
 		List<GetUserOutput> usersList = new ArrayList<>();
 
 		while (userIterator.hasNext()) {
-			UserEntity user = userIterator.next();
-			usersList.add(mapper.userEntityToGetUserOutput(user, foundDashboard));
+			UserEntity user = userIterator.next();DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, user.getId()));
+			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundDashboard);
+			if(dashboarduser != null)
+			{
+				output.setEditable(dashboarduser.getEditable());
+			}
+			usersList.add(output);
 		}
 
 		return usersList;
@@ -379,7 +390,14 @@ public class DashboardAppService implements IDashboardAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			usersList.add(mapper.userEntityToGetUserOutput(user, foundDashboard));
+			DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, user.getId()));
+			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundDashboard);
+			if(dashboarduser != null)
+			{
+				output.setEditable(dashboarduser.getEditable());
+			}
+			usersList.add(output);
+			
 		}
 
 		return usersList;
@@ -398,7 +416,13 @@ public class DashboardAppService implements IDashboardAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			rolesList.add(mapper.roleEntityToGetRoleOutput(role, foundDashboard));
+			DashboardroleEntity dashboardrole = _dashboardroleManager.findById(new DashboardroleId(dashboardId, role.getId()));
+			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundDashboard);
+			if(dashboardrole != null)
+			{
+				output.setEditable(dashboardrole.getEditable());
+			}
+			rolesList.add(output);
 		}
 
 		return rolesList;
@@ -418,7 +442,13 @@ public class DashboardAppService implements IDashboardAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			rolesList.add(mapper.roleEntityToGetRoleOutput(role, foundDashboard));
+			DashboardroleEntity dashboardrole = _dashboardroleManager.findById(new DashboardroleId(dashboardId, role.getId()));
+			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundDashboard);
+			if(dashboardrole != null)
+			{
+				output.setEditable(dashboardrole.getEditable());
+			}
+			rolesList.add(output);
 		}
 
 		return rolesList;
@@ -495,7 +525,7 @@ public class DashboardAppService implements IDashboardAppService {
 
 		for(DashboardversionreportEntity dvr :dashboardReportsList)
 		{
-			_reportAppService.shareReport(dvr.getReportId(),true, reportUsers, new ArrayList<>());
+			_reportAppService.shareReport(dvr.getReportId(),true, usersList, rolesList);
 			
 			for(ShareReportInput reportuser : reportUsers) {
 				if(reportuser.getEditable()) {
@@ -510,11 +540,138 @@ public class DashboardAppService implements IDashboardAppService {
 				}
 			}
 		}
+		
 		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
 		dashboardDetails.setSharedWithOthers(true);
 		return dashboardDetails;
 	}
+	
+	
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public DashboardDetailsOutput editDashboardAccess(Long dashboardId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+	
+		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
+		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboard.getId(), "published"));
+		
+		List<DashboardversionreportEntity> dashboardReportsList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId, "published", dashboard.getUser().getId());
+		List<ShareReportInput> reportUsers = new ArrayList<ShareReportInput>();
+		List<Long> usersWithSharedDashboardsByRole = new ArrayList<>();
+		for(ShareReportInput roleInput : rolesList)
+		{
+			DashboardroleEntity dashboardRole= _dashboardroleManager.findById(new DashboardroleId(dashboardId, roleInput.getId()));
+			if(roleInput.getEditable() !=null)
+		    {
+		    	dashboardRole.setEditable(roleInput.getEditable());
+		    	_dashboardroleManager.update(dashboardRole);
+		    }
+			
+			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
+			for(UserroleEntity userrole : userroleList)
+			{
+				usersWithSharedDashboardsByRole.add(userrole.getUserId());
+				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userrole.getUserId()));
 
+				if(dashboarduser !=null && roleInput.getEditable() !=null) {
+					
+					dashboarduser.setEditable(roleInput.getEditable());
+					dashboarduser.setIsAssignedByRole(true);
+					dashboarduser = _dashboarduserManager.update(dashboarduser);
+					shareDashboardWithUser(dashboarduser,ownerPublishedVersion, roleInput.getEditable());
+
+				}
+				else if (roleInput.getEditable() == null && dashboarduser !=null) {
+					if(dashboarduser.getIsAssignedByRole())
+					{
+						dashboarduser.setOwnerSharingStatus(false);
+						dashboarduser = _dashboarduserManager.update(dashboarduser);
+					}
+				}
+				
+				ShareReportInput reportInput = new ShareReportInput();
+				reportInput.setId(userrole.getUserId());
+				reportInput.setEditable(roleInput.getEditable());
+				reportUsers.add(reportInput);
+			}
+			
+//		    else {
+//		      _dashboardroleManager.delete(dashboardRole);
+//		    }
+			
+			
+		
+		}
+		
+		for(ShareReportInput userInput : usersList)
+		{
+			if(!usersWithSharedDashboardsByRole.contains(userInput.getId())) {
+				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userInput.getId()));
+
+				if(dashboarduser !=null && userInput.getEditable() !=null) {
+					
+					dashboarduser.setEditable(userInput.getEditable());
+					dashboarduser.setIsAssignedByRole(false);
+					dashboarduser = _dashboarduserManager.update(dashboarduser);
+					shareDashboardWithUser(dashboarduser,ownerPublishedVersion, userInput.getEditable());
+
+				}
+				else if (userInput.getEditable() == null && dashboarduser !=null) {
+					if(dashboarduser.getIsAssignedByRole())
+					{
+						dashboarduser.setOwnerSharingStatus(false);
+						dashboarduser = _dashboarduserManager.update(dashboarduser);
+					}
+			}
+			}
+
+			ShareReportInput reportInput = new ShareReportInput();
+			reportInput.setId(userInput.getId());
+			reportInput.setEditable(userInput.getEditable());
+			reportUsers.add(reportInput);
+		}
+	
+		
+		for(DashboardversionreportEntity dvr :dashboardReportsList)
+		{
+			_reportAppService.editReportAccess(dvr.getReportId(), usersList, rolesList);
+			
+			for(ShareReportInput reportuser : reportUsers) {
+				
+				if(reportuser.getEditable() !=null) {
+					DashboardversionreportEntity running = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "running");
+					if(running !=null) {
+				    _reportDashboardManager.create(running);
+					if(reportuser.getEditable()) {
+						DashboardversionreportEntity published = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, reportuser.getId(), "published");
+						if(published ==null) {
+							published = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(running,reportuser.getId(), "published");
+						}
+						
+						  _reportDashboardManager.create(published);
+					}
+				}
+				}
+			}
+		}
+		
+		
+		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
+		return dashboardDetails;
+	}
+
+//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	public void deleteAccessFromUser(Long userId, Long dashboardId)
+//	{
+//		DashboardversionEntity dashboardRunningVersion = _dashboardversionManager.findById(new DashboardversionId(userId,dashboardId,"running"));
+//       DashboardversionEntity dashboardPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(userId,dashboardId,"published"));
+//	
+//        if(dashboardPublishedVersion !=null)
+//        	_dashboardversionManager.delete(dashboardPublishedVersion);
+//        
+//        _dashboardversionManager.delete(dashboardRunningVersion);
+//        
+//        
+//	}
+	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void createDashboarduserAndDashboardVersion(DashboardversionEntity ownerReportversion, Long userId, Boolean editable, Boolean isAssigByRole)
 	{
@@ -793,22 +950,50 @@ public class DashboardAppService implements IDashboardAppService {
 
 		_dashboardManager.update(foundDashboard);
 		
-		List<DashboardversionreportEntity> dvrList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId,"running", ownerId);
+		List<DashboardversionreportEntity> dvrRunningList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId,"running", ownerId);
+		List<DashboardversionreportEntity> dvrPublishedList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId,"published", ownerId);
 
-		for(DashboardversionreportEntity dvr : dvrList)
+		for(DashboardversionreportEntity dvr : dvrRunningList)
 		{
 			_reportAppService.changeOwner(ownerId, dvr.getReportId(), newOwnerId);	
+			ReportuserEntity ru = _reportuserManager.findById(new ReportuserId(dvr.getReportId(), ownerId));
+			if(ru == null) {
 			DashboardversionreportEntity updatedRunning = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, newOwnerId, "running");
 			_reportDashboardManager.create(updatedRunning);
-			DashboardversionreportEntity updatedPublished = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, newOwnerId, "published");
-			_reportDashboardManager.create(updatedPublished);
+			}
 			
 			_reportDashboardManager.delete(dvr);
+			
 			DashboardversionreportEntity ownerPublished=_reportDashboardManager.findById(new DashboardversionreportId(dvr.getDashboardId(), dvr.getUserId(), "published", dvr.getReportId()));
 			if(ownerPublished !=null)
 			_reportDashboardManager.delete(ownerPublished);
 		}
 		
+		for(DashboardversionreportEntity dvr : dvrPublishedList) {
+			
+			if(!dvrRunningList.stream().filter(o -> o.getReportId().equals(dvr.getReportId())).findFirst().isPresent()) {
+			
+				_reportAppService.changeOwner(ownerId, dvr.getReportId(), newOwnerId);	
+				ReportuserEntity ru = _reportuserManager.findById(new ReportuserId(dvr.getReportId(), ownerId));
+				if(ru == null) {
+				DashboardversionreportEntity updatedPublished = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, newOwnerId, "published");
+				_reportDashboardManager.create(updatedPublished);
+				}
+				
+			//	_reportDashboardManager.delete(dvr);
+				
+//				DashboardversionreportEntity ownerPublished=_reportDashboardManager.findById(new DashboardversionreportId(dvr.getDashboardId(), dvr.getUserId(), "published", dvr.getReportId()));
+//				if(ownerPublished !=null)
+//				_reportDashboardManager.delete(ownerPublished);
+			}           
+			
+			ReportuserEntity ru = _reportuserManager.findById(new ReportuserId(dvr.getReportId(), ownerId));
+			if(ru == null) {
+			DashboardversionreportEntity updatedPublished = dashboardversionMapper.dashboardversionreportEntityToDashboardversionreportEntity(dvr, newOwnerId, "published");
+			_reportDashboardManager.create(updatedPublished);
+			}
+			
+		}
 		
 		_dashboardversionManager.delete(foundOwnerDashboardPublishedversion);
 		_dashboardversionManager.delete(foundOwnerDashboardRunningversion);

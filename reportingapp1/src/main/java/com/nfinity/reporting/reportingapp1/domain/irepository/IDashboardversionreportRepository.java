@@ -21,11 +21,13 @@ public interface IDashboardversionreportRepository extends JpaRepository<Dashboa
 	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1 and r.dashboardversion.version =?2 and r.dashboardversion.userId = ?3 ORDER BY r.orderId DESC")
 	List<DashboardversionreportEntity> findByDashboardIdAndVersionAndUserIdInDesc(Long id, String version, Long userId);
 
-	@Query("select r from DashboardversionreportEntity r where r.report.id = ?1 ")
-	List<DashboardversionreportEntity> findByReportId(Long reportId);
+	@Query("select r from DashboardversionreportEntity r where r.report.id = ?1 and r.dashboardversion.userId = ?2 and r.dashboardversion.version =?3")
+	List<DashboardversionreportEntity> findByReportIdAndUserIdAndVersion(Long reportId, Long uerId, String version);
 	
 	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1")
 	List<DashboardversionreportEntity> findByDashboardId(Long dashboardId);
 	
+	@Query("select r from DashboardversionreportEntity r where r.dashboardversion.dashboardId = ?1 and r.report.id = ?2 and r.dashboardversion.userId != ?3 and r.dashboardversion.version =?4")
+	List<DashboardversionreportEntity> findByIdIfUserIdNotSame(Long dashboardId, Long reportId, Long userId, String version);
 	
 }
