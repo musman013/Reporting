@@ -226,12 +226,7 @@ public class ReportAppService implements IReportAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
-			if(reportuser != null)
-			{
-				output.setEditable(reportuser.getEditable());
-			}
 			usersList.add(output);
 		}
 
@@ -252,12 +247,7 @@ public class ReportAppService implements IReportAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
-			if(reportuser != null)
-			{
-				output.setEditable(reportuser.getEditable());
-			}
 			usersList.add(output);
 		}
 
@@ -605,6 +595,10 @@ public class ReportAppService implements IReportAppService {
 		ReportEntity report = _reportManager.findById(reportId);
 		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 
+		if(ownerPublishedVersion==null)
+		{
+			return null;
+		}
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{
@@ -768,49 +762,49 @@ public class ReportAppService implements IReportAppService {
 		}
 	}
 
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Report", key = "#p0")
-	public ReportDetailsOutput unshareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
-		ReportEntity report = _reportManager.findById(reportId);
-		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), reportId, "published"));
-		if(ownerPublishedVersion==null)
-		{
-			return null;
-		}
-		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
-		for(ShareReportInput roleInput : rolesList)
-		{	
-			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
-			for(UserroleEntity userrole : userroleList)
-			{
-				usersWithSharedReportsByRole.add(userrole.getUserId());
-				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
-
-				if(reportuser !=null ) {
-					reportuser.setOwnerSharingStatus(false);
-					reportuser = _reportuserManager.update(reportuser);
-				}
-			}
-
-		}
-
-		for(ShareReportInput userInput : usersList)
-		{
-			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
-
-				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
-
-				if(reportuser != null ) {
-					reportuser.setOwnerSharingStatus(false);
-					reportuser = _reportuserManager.update(reportuser);
-				}
-			}
-		}
-
-		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
-		reportDetails.setSharedWithOthers(false);
-		return reportDetails;
-	}
+//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	@Cacheable(value = "Report", key = "#p0")
+//	public ReportDetailsOutput unshareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+//		ReportEntity report = _reportManager.findById(reportId);
+//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), reportId, "published"));
+//		if(ownerPublishedVersion==null)
+//		{
+//			return null;
+//		}
+//		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
+//		for(ShareReportInput roleInput : rolesList)
+//		{	
+//			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
+//			for(UserroleEntity userrole : userroleList)
+//			{
+//				usersWithSharedReportsByRole.add(userrole.getUserId());
+//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
+//
+//				if(reportuser !=null ) {
+//					reportuser.setOwnerSharingStatus(false);
+//					reportuser = _reportuserManager.update(reportuser);
+//				}
+//			}
+//
+//		}
+//
+//		for(ShareReportInput userInput : usersList)
+//		{
+//			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
+//
+//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
+//
+//				if(reportuser != null ) {
+//					reportuser.setOwnerSharingStatus(false);
+//					reportuser = _reportuserManager.update(reportuser);
+//				}
+//			}
+//		}
+//
+//		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
+//		reportDetails.setSharedWithOthers(false);
+//		return reportDetails;
+//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<ReportDetailsOutput> getReports(Long userId,String search, Pageable pageable) throws Exception

@@ -390,14 +390,8 @@ public class DashboardAppService implements IDashboardAppService {
 
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
-			DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, user.getId()));
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundDashboard);
-			if(dashboarduser != null)
-			{
-				output.setEditable(dashboarduser.getEditable());
-			}
 			usersList.add(output);
-			
 		}
 
 		return usersList;
@@ -442,12 +436,7 @@ public class DashboardAppService implements IDashboardAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			DashboardroleEntity dashboardrole = _dashboardroleManager.findById(new DashboardroleId(dashboardId, role.getId()));
 			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundDashboard);
-			if(dashboardrole != null)
-			{
-				output.setEditable(dashboardrole.getEditable());
-			}
 			rolesList.add(output);
 		}
 
@@ -458,7 +447,10 @@ public class DashboardAppService implements IDashboardAppService {
 	public DashboardDetailsOutput shareDashboard(Long dashboardId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
 		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
 		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboard.getId(), "published"));
-
+		if(ownerPublishedVersion==null)
+		{
+			return null;
+		}
 		List<DashboardversionreportEntity> dashboardReportsList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId, "published", dashboard.getUser().getId());
 		List<ShareReportInput> reportUsers = new ArrayList<ShareReportInput>();
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
@@ -552,6 +544,10 @@ public class DashboardAppService implements IDashboardAppService {
 	
 		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
 		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboard.getId(), "published"));
+		if(ownerPublishedVersion==null)
+		{
+			return null;
+		}
 		
 		List<DashboardversionreportEntity> dashboardReportsList = _reportDashboardManager.findByDashboardIdAndVersionAndUserId(dashboardId, "published", dashboard.getUser().getId());
 		List<ShareReportInput> reportUsers = new ArrayList<ShareReportInput>();
@@ -592,12 +588,6 @@ public class DashboardAppService implements IDashboardAppService {
 				reportInput.setEditable(roleInput.getEditable());
 				reportUsers.add(reportInput);
 			}
-			
-//		    else {
-//		      _dashboardroleManager.delete(dashboardRole);
-//		    }
-			
-			
 		
 		}
 		
@@ -709,10 +699,7 @@ public class DashboardAppService implements IDashboardAppService {
 	{
 		UserEntity user = _userManager.findById(dashboarduser.getUserId());
 		DashboardversionEntity dashboardPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(user.getId(),dashboarduser.getDashboardId(),"published"));
-		//        if(dashboardPublishedVersion ==null)
-		//        {
-		//        	_dashboardversionManager.findById(new DashboardversionId(user.getId(),dashboarduser.getDashboardId(),"running"));
-		//        }
+		
 		if(dashboarduser.getEditable() && !editable) {
 
 			if(dashboarduser.getIsResetted()) {
@@ -776,49 +763,49 @@ public class DashboardAppService implements IDashboardAppService {
 		}
 	}
 
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	@Cacheable(value = "Dashboard", key = "#p0")
-	public DashboardDetailsOutput unshareDashboard(Long dashboardId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
-		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
-		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboardId, "published"));
-		if(ownerPublishedVersion==null)
-		{
-			return null;
-		}
-		List<Long> usersWithSharedDashboardsByRole = new ArrayList<>();
-		for(ShareReportInput roleInput : rolesList)
-		{	
-			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
-			for(UserroleEntity userrole : userroleList)
-			{
-				usersWithSharedDashboardsByRole.add(userrole.getUserId());
-				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userrole.getUserId()));
-
-				if(dashboarduser !=null ) {
-					dashboarduser.setOwnerSharingStatus(false);
-					dashboarduser = _dashboarduserManager.update(dashboarduser);
-				}
-			}
-
-		}
-
-		for(ShareReportInput userInput : usersList)
-		{
-			if(!usersWithSharedDashboardsByRole.contains(userInput.getId())) {
-
-				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userInput.getId()));
-
-				if(dashboarduser != null ) {
-					dashboarduser.setOwnerSharingStatus(false);
-					dashboarduser = _dashboarduserManager.update(dashboarduser);
-				}
-			}
-		}
-
-		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
-		dashboardDetails.setSharedWithOthers(false);
-		return dashboardDetails;
-	}
+//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+//	@Cacheable(value = "Dashboard", key = "#p0")
+//	public DashboardDetailsOutput unshareDashboard(Long dashboardId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+//		DashboardEntity dashboard = _dashboardManager.findById(dashboardId);
+//		DashboardversionEntity ownerPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getUser().getId(), dashboardId, "published"));
+//		if(ownerPublishedVersion==null)
+//		{
+//			return null;
+//		}
+//		List<Long> usersWithSharedDashboardsByRole = new ArrayList<>();
+//		for(ShareReportInput roleInput : rolesList)
+//		{	
+//			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
+//			for(UserroleEntity userrole : userroleList)
+//			{
+//				usersWithSharedDashboardsByRole.add(userrole.getUserId());
+//				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userrole.getUserId()));
+//
+//				if(dashboarduser !=null ) {
+//					dashboarduser.setOwnerSharingStatus(false);
+//					dashboarduser = _dashboarduserManager.update(dashboarduser);
+//				}
+//			}
+//
+//		}
+//
+//		for(ShareReportInput userInput : usersList)
+//		{
+//			if(!usersWithSharedDashboardsByRole.contains(userInput.getId())) {
+//
+//				DashboarduserEntity dashboarduser = _dashboarduserManager.findById(new DashboarduserId(dashboardId, userInput.getId()));
+//
+//				if(dashboarduser != null ) {
+//					dashboarduser.setOwnerSharingStatus(false);
+//					dashboarduser = _dashboarduserManager.update(dashboarduser);
+//				}
+//			}
+//		}
+//
+//		DashboardDetailsOutput dashboardDetails = mapper.dashboardEntitiesToDashboardDetailsOutput(dashboard, ownerPublishedVersion, null);
+//		dashboardDetails.setSharedWithOthers(false);
+//		return dashboardDetails;
+//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<DashboardDetailsOutput> getDashboards(Long userId,String search, Pageable pageable) throws Exception

@@ -564,7 +564,12 @@ public class DashboardController {
 		}
 
 		DashboardDetailsOutput output = _dashboardAppService.editDashboardAccess(Long.valueOf(id), usersList, rolesList);
-
+		  if(output == null)
+	        {
+	        	logHelper.getLogger().error("Unable to found user published version with id=%s", id);
+	        	throw new EntityNotFoundException(
+						String.format("Unable to found user published version with id=%s", id));
+	        }
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
@@ -611,61 +616,66 @@ public class DashboardController {
 		}
 
 		DashboardDetailsOutput output = _dashboardAppService.shareDashboard(Long.valueOf(id), usersList, rolesList);
-
+		  if(output == null)
+	        {
+	        	logHelper.getLogger().error("Unable to found user published version with id=%s", id);
+	        	throw new EntityNotFoundException(
+						String.format("Unable to found user published version with id=%s", id));
+	        }
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
-	@RequestMapping(value = "/{id}/unshare", method = RequestMethod.PUT)
-	public ResponseEntity<DashboardDetailsOutput> unshareDashboard(@PathVariable String id, @RequestBody @Valid Map<String, List<ShareReportInput>> input) {
-		UserEntity user = _userAppService.getUser();
-		FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
-
-		if (currentDashboard == null) {
-			logHelper.getLogger().error("Dashboard with id=%s not found.", id);
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-
-		if (currentDashboard.getOwnerId() == null || user.getId() != currentDashboard.getOwnerId()) {
-			logHelper.getLogger().error("Unable to unshare dashboard with id=%s.", id);
-			throw new EntityNotFoundException(
-					String.format("Unable to unshare dashboard with id=%s.", id));
-		}
-
-		List<ShareReportInput> usersList = input.get("users");
-		List<ShareReportInput> rolesList = input.get("roles");
-
-		for(ShareReportInput roleInput : rolesList)
-		{
-			FindRoleByIdOutput foundRole = _roleAppService.findById(roleInput.getId());
-			if(foundRole == null)
-			{
-				logHelper.getLogger().error("Role not found with id=%s", roleInput.getId());
-				throw new EntityNotFoundException(
-						String.format("Role not found with id=%s", roleInput.getId()));
-			}
-		}
-
-		for(ShareReportInput userInput : usersList)
-		{
-			FindUserByIdOutput foundUser = _userAppService.findById(userInput.getId());
-			if(foundUser == null)
-			{
-				logHelper.getLogger().error("User not found with id=%s", userInput.getId());
-				throw new EntityNotFoundException(
-						String.format("User not found with id=%s", userInput.getId()));
-			}
-		}
-
-		DashboardDetailsOutput output = _dashboardAppService.unshareDashboard(Long.valueOf(id), usersList, rolesList);
-        if(output == null)
-        {
-        	logHelper.getLogger().error("Unable to found user published version with id=%s", id);
-        	throw new EntityNotFoundException(
-					String.format("Unable to found user published version with id=%s", id));
-        }
-		return new ResponseEntity(output, HttpStatus.OK);
-	}
+//	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
+//	@RequestMapping(value = "/{id}/unshare", method = RequestMethod.PUT)
+//	public ResponseEntity<DashboardDetailsOutput> unshareDashboard(@PathVariable String id, @RequestBody @Valid Map<String, List<ShareReportInput>> input) {
+//		UserEntity user = _userAppService.getUser();
+//		FindDashboardByIdOutput currentDashboard = _dashboardAppService.findById(Long.valueOf(id));
+//
+//		if (currentDashboard == null) {
+//			logHelper.getLogger().error("Dashboard with id=%s not found.", id);
+//			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
+//		}
+//
+//		if (currentDashboard.getOwnerId() == null || user.getId() != currentDashboard.getOwnerId()) {
+//			logHelper.getLogger().error("Unable to unshare dashboard with id=%s.", id);
+//			throw new EntityNotFoundException(
+//					String.format("Unable to unshare dashboard with id=%s.", id));
+//		}
+//
+//		List<ShareReportInput> usersList = input.get("users");
+//		List<ShareReportInput> rolesList = input.get("roles");
+//
+//		for(ShareReportInput roleInput : rolesList)
+//		{
+//			FindRoleByIdOutput foundRole = _roleAppService.findById(roleInput.getId());
+//			if(foundRole == null)
+//			{
+//				logHelper.getLogger().error("Role not found with id=%s", roleInput.getId());
+//				throw new EntityNotFoundException(
+//						String.format("Role not found with id=%s", roleInput.getId()));
+//			}
+//		}
+//
+//		for(ShareReportInput userInput : usersList)
+//		{
+//			FindUserByIdOutput foundUser = _userAppService.findById(userInput.getId());
+//			if(foundUser == null)
+//			{
+//				logHelper.getLogger().error("User not found with id=%s", userInput.getId());
+//				throw new EntityNotFoundException(
+//						String.format("User not found with id=%s", userInput.getId()));
+//			}
+//		}
+//
+//		DashboardDetailsOutput output = _dashboardAppService.unshareDashboard(Long.valueOf(id), usersList, rolesList);
+//        if(output == null)
+//        {
+//        	logHelper.getLogger().error("Unable to found user published version with id=%s", id);
+//        	throw new EntityNotFoundException(
+//					String.format("Unable to found user published version with id=%s", id));
+//        }
+//		return new ResponseEntity(output, HttpStatus.OK);
+//	}
 
 	@PreAuthorize("hasAnyAuthority('DASHBOARDENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}/updateRecipientSharingStatus", method = RequestMethod.PUT)
