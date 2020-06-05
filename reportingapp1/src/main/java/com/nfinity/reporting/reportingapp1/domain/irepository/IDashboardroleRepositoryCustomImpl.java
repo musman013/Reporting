@@ -34,8 +34,8 @@ public class IDashboardroleRepositoryCustomImpl implements IDashboardroleReposit
 				+ "WHERE r.id NOT IN "
 				+ "    (SELECT role_id "
 				+ "     FROM %s.dashboardrole "
-				+ "     WHERE dashboard_id = :dashboardId) "
-//				+ "       AND owner_sharing_status = true) "
+				+ "     WHERE dashboard_id = :dashboardId "
+				+ "       AND owner_sharing_status = true) "
 				+ "  AND (:search IS NULL "
 				+ "       OR r.name ILIKE :search)",
 				schema, schema);
@@ -62,8 +62,8 @@ public class IDashboardroleRepositoryCustomImpl implements IDashboardroleReposit
 				+ "WHERE r.id IN " 
 				+ "    (SELECT role_id "
 				+ "     FROM %s.dashboardrole "
-				+ "     WHERE dashboard_id = :dashboardId) "
-//				+ "       AND owner_sharing_status = true) "
+				+ "     WHERE dashboard_id = :dashboardId "
+				+ "       AND owner_sharing_status = true) "
 				+ "  AND (:search IS NULL "
 				+ "       OR r.name ILIKE :search)",
 				schema, schema);

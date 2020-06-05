@@ -34,8 +34,8 @@ public class IReportroleRepositoryCustomImpl implements IReportroleRepositoryCus
 				+ "WHERE r.id NOT IN "
 				+ "    (SELECT role_id "
 				+ "     FROM %s.reportrole "
-				+ "     WHERE report_id = :reportId) "
-//				+ "       AND owner_sharing_status = true) "
+				+ "     WHERE report_id = :reportId "
+				+ "       AND owner_sharing_status = true) "
 				+ "  AND (:search IS NULL "
 				+ "       OR r.name ILIKE :search)",
 				schema, schema);
@@ -62,8 +62,8 @@ public class IReportroleRepositoryCustomImpl implements IReportroleRepositoryCus
 				+ "WHERE r.id IN " 
 				+ "    (SELECT role_id "
 				+ "     FROM %s.reportrole "
-				+ "     WHERE report_id = :reportId) "
-//				+ "       AND owner_sharing_status = true) "
+				+ "     WHERE report_id = :reportId "
+				+ "       AND owner_sharing_status = true) "
 				+ "  AND (:search IS NULL "
 				+ "       OR r.name ILIKE :search)",
 				schema, schema);

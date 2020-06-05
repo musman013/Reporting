@@ -38,6 +38,8 @@ import com.nfinity.reporting.reportingapp1.commons.search.*;
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 import com.querydsl.core.BooleanBuilder;
 
+import net.bytebuddy.description.modifier.Ownership;
+
 import java.util.*;
 import org.springframework.cache.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,7 @@ public class ReportAppService implements IReportAppService {
 
 	@Autowired
 	private IReportuserManager _reportuserManager;
-	
+
 	@Autowired
 	private IDashboarduserManager _dashboarduserManager;
 
@@ -208,7 +210,7 @@ public class ReportAppService implements IReportAppService {
 			return null;
 		}
 		UserEntity re = _reportManager.getUser(reportId);
-		
+
 		return mapper.userEntityToGetUserOutput(re, foundReport);
 	}
 
@@ -396,15 +398,15 @@ public class ReportAppService implements IReportAppService {
 		ReportuserEntity ru = _reportuserManager.findById(new ReportuserId(reportId, newOwnerId));
 		ReportversionEntity reportRunningversion;
 		if(ru != null) {
-			
-		    reportRunningversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "running"));
-		    ReportversionEntity reportPublishedversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "published"));
+
+			reportRunningversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "running"));
+			ReportversionEntity reportPublishedversion = _reportversionManager.findById(new ReportversionId(newOwnerId, reportId, "published"));
 			if(reportPublishedversion == null) {
-			reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(reportRunningversion, newOwnerId, "published");
-			reportPublishedversion.setUser(foundUser);
-			_reportversionManager.create(reportPublishedversion);
+				reportPublishedversion = reportversionMapper.reportversionEntityToReportversionEntity(reportRunningversion, newOwnerId, "published");
+				reportPublishedversion.setUser(foundUser);
+				_reportversionManager.create(reportPublishedversion);
 			}
-			
+
 			_reportuserManager.delete(ru);
 		}
 		else
@@ -420,7 +422,7 @@ public class ReportAppService implements IReportAppService {
 			reportPublishedversion.setUser(foundUser);
 			_reportversionManager.create(reportPublishedversion);			
 		}
-		
+
 		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "running"));
 		_reportversionAppservice.delete(new ReportversionId(ownerId, reportId, "published"));
 
@@ -428,24 +430,24 @@ public class ReportAppService implements IReportAppService {
 
 		for(DashboardversionreportEntity dvr : dvrRunningversionsList)
 		{
-			
+
 			List<DashboardversionreportEntity> sharedDashboardReportList = _reportDashboardManager.findByIdIfUserIdIsNotSame(dvr.getDashboardId(), reportId,ownerId, "running");
 			for(DashboardversionreportEntity shared : sharedDashboardReportList)
 			{
 				DashboarduserEntity du = _dashboarduserManager.findById(new DashboarduserId(shared.getDashboardId(), shared.getUserId()));
-			    if(du !=null) {
-				du.setIsRefreshed(false);
-			    _dashboarduserManager.update(du);
-			    }
+				if(du !=null) {
+					du.setIsRefreshed(false);
+					_dashboarduserManager.update(du);
+				}
 			}
-			
+
 			DashboardversionreportEntity ownerPublishedDashboardReport = _reportDashboardManager.findById(new DashboardversionreportId(dvr.getDashboardId(), ownerId, "published", reportId));
-			
+
 			_reportDashboardManager.delete(dvr);
 			if(ownerPublishedDashboardReport !=null)
 				_reportDashboardManager.delete(ownerPublishedDashboardReport);
 		}
-		
+
 		foundReport.setUser(foundUser);
 		_reportManager.update(foundReport);
 
@@ -468,14 +470,14 @@ public class ReportAppService implements IReportAppService {
 			ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
 			ReportversionEntity updatedVersion;
 			if(publishedversion == null ) {
-			 updatedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
-			
+				updatedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
+
 			}
 			else
 			{
 				updatedVersion = reportversionMapper.reportversionEntityToReportversionEntity(publishedversion, userId, "running"); 
 			}
-			
+
 			updatedVersion.setUser(foundUser);
 			_reportversionManager.update(updatedVersion);
 			foundReportuser.setIsRefreshed(true);
@@ -515,100 +517,88 @@ public class ReportAppService implements IReportAppService {
 
 		return null;
 	}
-	
+
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public ReportDetailsOutput editReportAccess(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
-	
+
 		ReportEntity report = _reportManager.findById(reportId);
 		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 		if(ownerPublishedVersion==null)
 		{
 			return null;
 		}
-		
+
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{
 			ReportroleEntity reportRole= _reportroleManager.findById(new ReportroleId(reportId, roleInput.getId()));
-			if(roleInput.getEditable() != null)
-		    {
-		    	reportRole.setEditable(roleInput.getEditable());
-		    	reportRole.setOwnerSharingStatus(true);
-		    	_reportroleManager.update(reportRole);
-		    }
-			else
+			if(reportRole !=null && roleInput.getEditable() != null)
+			{
+				reportRole.setEditable(roleInput.getEditable());
+				reportRole.setOwnerSharingStatus(true);
+				_reportroleManager.update(reportRole);
+			}
+			else if(reportRole !=null && roleInput.getEditable() == null)
 			{
 				reportRole.setOwnerSharingStatus(false);
 				_reportroleManager.update(reportRole);
 			}
-			
+
 			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
 			for(UserroleEntity userrole : userroleList)
 			{
-				usersWithSharedReportsByRole.add(userrole.getUserId());
-				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
+				if(!userrole.getUserId().equals(report.getUser().getId())) {
+					usersWithSharedReportsByRole.add(userrole.getUserId());
+					ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
 
-				if(reportuser !=null && roleInput.getEditable() !=null) {
-					
-					reportuser.setEditable(roleInput.getEditable());
-					reportuser.setIsAssignedByRole(true);
-					reportuser = _reportuserManager.update(reportuser);
-					shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
-
-				}
-				else if (roleInput.getEditable() == null && reportuser !=null) {
 					if(reportuser.getIsAssignedByRole())
 					{
+						if(reportuser !=null && roleInput.getEditable() !=null) {
+							shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
+							reportuser.setEditable(roleInput.getEditable());
+							reportuser.setIsAssignedByRole(true);
+							reportuser = _reportuserManager.update(reportuser);
+
+						}
+						else if (roleInput.getEditable() == null && reportuser !=null) {
+
+							reportuser.setOwnerSharingStatus(false);
+							reportuser = _reportuserManager.update(reportuser);
+
+						}
+					}
+				}
+			}
+
+
+		}
+
+		for(ShareReportInput userInput : usersList)
+		{
+			if(!userInput.getId().equals(report.getUser().getId()) && !usersWithSharedReportsByRole.contains(userInput.getId())) {
+				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
+				if(!reportuser.getIsAssignedByRole())
+				{
+					if(reportuser !=null && userInput.getEditable() !=null) {
+						shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
+						reportuser.setEditable(userInput.getEditable());
+						reportuser.setIsAssignedByRole(false);
+						reportuser = _reportuserManager.update(reportuser);
+
+					}
+					else if (userInput.getEditable() == null && reportuser !=null) {
+
 						reportuser.setOwnerSharingStatus(false);
 						reportuser = _reportuserManager.update(reportuser);
 					}
 				}
 			}
-			
-		
-		}
-		
-		for(ShareReportInput userInput : usersList)
-		{
-			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
-				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
-
-				if(reportuser !=null && userInput.getEditable() !=null) {
-					
-					reportuser.setEditable(userInput.getEditable());
-					reportuser.setIsAssignedByRole(false);
-					reportuser = _reportuserManager.update(reportuser);
-					shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
-
-				}
-				else if (userInput.getEditable() == null && reportuser !=null) {
-					if(!reportuser.getIsAssignedByRole())
-					{
-							reportuser.setOwnerSharingStatus(false);
-							reportuser = _reportuserManager.update(reportuser);
-					}
-			}
-			}
 
 		}
-	
+
 		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
 		return reportDetails;
 	}
-	
-//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	public void deleteAccessFromUser(Long userId, Long reportId)
-//	{
-//		ReportversionEntity reportRunningVersion = _reportversionManager.findById(new ReportversionId(userId,reportId,"running"));
-//        ReportversionEntity reportPublishedVersion = _reportversionManager.findById(new ReportversionId(userId,reportId,"published"));
-//	
-//        if(reportPublishedVersion !=null)
-//        	_reportversionManager.delete(reportPublishedVersion);
-//        
-//        _reportversionManager.delete(reportRunningVersion);
-//        
-//        
-//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public ReportDetailsOutput shareReport(Long reportId, Boolean isAssignedByDashboard, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
@@ -619,31 +609,42 @@ public class ReportAppService implements IReportAppService {
 		{
 			return null;
 		}
-		
+
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{
+			ReportroleEntity reportrole = _reportroleManager.findById(new ReportroleId(reportId, roleInput.getId()));
+			if(reportrole == null) {
 			CreateReportroleInput reportRoleInput = new CreateReportroleInput();
 			reportRoleInput.setRoleId(roleInput.getId());
 			reportRoleInput.setReportId(reportId);
 			reportRoleInput.setEditable(roleInput.getEditable());
 			reportRoleInput.setOwnerSharingStatus(true);
 			_reportroleAppservice.create(reportRoleInput);
+			}
+			else if (reportrole !=null && !reportrole.getOwnerSharingStatus())
+			{
+				reportrole.setOwnerSharingStatus(true);
+				reportrole.setEditable(roleInput.getEditable());
+				_reportroleManager.update(reportrole);
+			}
 
 			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
 			for(UserroleEntity userrole : userroleList)
 			{
 				usersWithSharedReportsByRole.add(userrole.getUserId());
 				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
-
+				
 				if(reportuser !=null ) {
+					if(!report.getUser().getId().equals( reportuser.getUser().getId())) {
+					
+					shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
 					reportuser.setEditable(roleInput.getEditable());
 					reportuser.setIsAssignedByRole(true);
 					reportuser = _reportuserManager.update(reportuser);
-					shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
+					}
 
 				}
-
 				else {
 					createReportuserAndReportVersion(ownerPublishedVersion,userrole.getUserId(), roleInput.getEditable(),true, isAssignedByDashboard);
 				}
@@ -658,11 +659,12 @@ public class ReportAppService implements IReportAppService {
 				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
 
 				if(reportuser !=null ) {
+					if(!report.getUser().getId().equals(userInput.getId())) {
+					shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
 					reportuser.setEditable(userInput.getEditable());
 					reportuser.setIsAssignedByRole(false);
 					reportuser = _reportuserManager.update(reportuser);
-					shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
-
+					}
 				}
 
 				else {
@@ -715,9 +717,11 @@ public class ReportAppService implements IReportAppService {
 		UserEntity user = _userManager.findById(reportuser.getUserId());
 
 		ReportversionEntity reportPublishedVersion = _reportversionManager.findById(new ReportversionId(user.getId(),reportuser.getReportId(),"published"));
-
-		if(reportuser.getEditable() && !editable) {
-
+        ReportversionEntity reportRunningVersion = _reportversionManager.findById(new ReportversionId(user.getId(),reportuser.getReportId(),"running"));
+		
+        if(reportuser.getEditable() && !editable) {
+			
+            if(reportuser.getOwnerSharingStatus()) {
 			if(reportuser.getIsResetted()) {
 				if (reportPublishedVersion != null) {
 					_reportversionManager.delete(reportPublishedVersion);	
@@ -729,14 +733,21 @@ public class ReportAppService implements IReportAppService {
 			}
 			else if(!reportuser.getIsResetted()) {
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
-
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
-
+            }
+            else
+            {
+            	if(reportuser.getIsResetted()) {
+    				if (reportPublishedVersion != null) {
+    					_reportversionManager.delete(reportPublishedVersion);	
+    				}
+            	}
+            }
 
 		} else if(!reportuser.getEditable() && !editable) {
-
+			if(reportuser.getOwnerSharingStatus()) {
 			if(reportPublishedVersion !=null && !reportuser.getIsResetted()) {
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
 				publishedVersion.setUser(user);
@@ -751,20 +762,21 @@ public class ReportAppService implements IReportAppService {
 				publishedVersion.setUser(user);
 				_reportversionManager.update(publishedVersion);
 			}
+			}
 
 
 		} else if(reportuser.getEditable() && editable) {
-			//	ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
+			if(reportuser.getOwnerSharingStatus()) {
 			ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
 
 			publishedVersion.setUser(user);
-			//publishedVersion.setUserId(user.getId());
 			_reportversionManager.update(publishedVersion);
+			}
 
 		} else if(!reportuser.getEditable() && editable) {
 
+			if(reportuser.getOwnerSharingStatus()) {
 			if(reportPublishedVersion !=null && !reportuser.getIsResetted()) {
-				//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
 
 				publishedVersion.setUser(user);
@@ -774,59 +786,73 @@ public class ReportAppService implements IReportAppService {
 				if (reportPublishedVersion != null) {
 					_reportversionManager.delete(reportPublishedVersion);	
 				}
-				//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), report.getId(), "published"));
+				
 				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedVersion, user.getId(), "published"); 
 				publishedVersion.setUser(user);
-				//	publishedVersion.setUserId(user.getId());
+				_reportversionManager.create(publishedVersion);
+			}
+			}
+			else
+			{
+				ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(reportRunningVersion, user.getId(), "published"); 
+				publishedVersion.setUser(user);
 				_reportversionManager.create(publishedVersion);
 			}
 
 		}
+        
+        if(!reportuser.getOwnerSharingStatus()) {
+        	reportuser.setOwnerSharingStatus(true);
+        	reportuser.setIsRefreshed(false);
+        	_reportuserManager.update(reportuser);	
+        }
+            
+	
 	}
 
-//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-//	@Cacheable(value = "Report", key = "#p0")
-//	public ReportDetailsOutput unshareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
-//		ReportEntity report = _reportManager.findById(reportId);
-//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), reportId, "published"));
-//		if(ownerPublishedVersion==null)
-//		{
-//			return null;
-//		}
-//		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
-//		for(ShareReportInput roleInput : rolesList)
-//		{	
-//			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
-//			for(UserroleEntity userrole : userroleList)
-//			{
-//				usersWithSharedReportsByRole.add(userrole.getUserId());
-//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
-//
-//				if(reportuser !=null ) {
-//					reportuser.setOwnerSharingStatus(false);
-//					reportuser = _reportuserManager.update(reportuser);
-//				}
-//			}
-//
-//		}
-//
-//		for(ShareReportInput userInput : usersList)
-//		{
-//			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
-//
-//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
-//
-//				if(reportuser != null ) {
-//					reportuser.setOwnerSharingStatus(false);
-//					reportuser = _reportuserManager.update(reportuser);
-//				}
-//			}
-//		}
-//
-//		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
-//		reportDetails.setSharedWithOthers(false);
-//		return reportDetails;
-//	}
+	//	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	//	@Cacheable(value = "Report", key = "#p0")
+	//	public ReportDetailsOutput unshareReport(Long reportId, List<ShareReportInput> usersList, List<ShareReportInput> rolesList) {
+	//		ReportEntity report = _reportManager.findById(reportId);
+	//		ReportversionEntity ownerPublishedVersion = _reportversionManager.findById(new ReportversionId(report.getUser().getId(), reportId, "published"));
+	//		if(ownerPublishedVersion==null)
+	//		{
+	//			return null;
+	//		}
+	//		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
+	//		for(ShareReportInput roleInput : rolesList)
+	//		{	
+	//			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
+	//			for(UserroleEntity userrole : userroleList)
+	//			{
+	//				usersWithSharedReportsByRole.add(userrole.getUserId());
+	//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
+	//
+	//				if(reportuser !=null ) {
+	//					reportuser.setOwnerSharingStatus(false);
+	//					reportuser = _reportuserManager.update(reportuser);
+	//				}
+	//			}
+	//
+	//		}
+	//
+	//		for(ShareReportInput userInput : usersList)
+	//		{
+	//			if(!usersWithSharedReportsByRole.contains(userInput.getId())) {
+	//
+	//				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
+	//
+	//				if(reportuser != null ) {
+	//					reportuser.setOwnerSharingStatus(false);
+	//					reportuser = _reportuserManager.update(reportuser);
+	//				}
+	//			}
+	//		}
+	//
+	//		ReportDetailsOutput reportDetails = mapper.reportEntitiesToReportDetailsOutput(report, ownerPublishedVersion, null);
+	//		reportDetails.setSharedWithOthers(false);
+	//		return reportDetails;
+	//	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<ReportDetailsOutput> getReports(Long userId,String search, Pageable pageable) throws Exception
