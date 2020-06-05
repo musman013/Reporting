@@ -70,13 +70,19 @@ public class UserpermissionEntity implements Serializable {
   
   	private UserEntity user;
  
-  
-//  @Override
-//  public boolean equals(Object o) {
-//    if (this == o) return true;
-//      if (!(o instanceof UserpermissionEntity)) return false;
-//        UserpermissionEntity userpermission = (UserpermissionEntity) o;
-//        return id != null && id.equals(userpermission.id);
-//  }
+	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.user != null) {
+  	this.user.removeUserpermission(this);
+  	this.user = null;
+  	}
+
+  	if(this.permission != null) {
+  	this.permission.removeUserpermission(this);
+  	this.permission = null;
+  	}
+
+  	}
 
 }

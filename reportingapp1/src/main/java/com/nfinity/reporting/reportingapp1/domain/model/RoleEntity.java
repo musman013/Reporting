@@ -111,6 +111,14 @@ public class RoleEntity implements Serializable {
   	public void removeReportrole(ReportroleEntity rr) {
         this.reportroleSet.remove(rr);
     }
+  	
+  	public void removeUserrole(UserroleEntity rr) {
+        this.userroleSet.remove(rr);
+    }
+  	
+  	public void removeRolepermission(RolepermissionEntity rr) {
+        this.rolepermissionSet.remove(rr);
+    }
     
 
 }

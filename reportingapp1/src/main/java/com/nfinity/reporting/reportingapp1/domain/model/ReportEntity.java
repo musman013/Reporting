@@ -109,6 +109,15 @@ public class ReportEntity implements Serializable {
   	public void removeDashboardversionreport(DashboardversionreportEntity rv) {
         this.reportdashboardSet.remove(rv);
     }
+  	
+  	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.user != null) {
+  	this.user.removeReport(this);
+  	this.user = null;
+  	}
+  	}
 
 //  @Override
 //  public boolean equals(Object o) {

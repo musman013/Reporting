@@ -227,6 +227,11 @@ public class ReportAppService implements IReportAppService {
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
+			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
+			if(reportuser != null)
+			{
+				output.setEditable(reportuser.getEditable());
+			}
 			usersList.add(output);
 		}
 
@@ -248,6 +253,11 @@ public class ReportAppService implements IReportAppService {
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
+			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
+			if(reportuser != null)
+			{
+				output.setEditable(reportuser.getEditable());
+			}
 			usersList.add(output);
 		}
 
@@ -293,12 +303,7 @@ public class ReportAppService implements IReportAppService {
 
 		while (roleIterator.hasNext()) {
 			RoleEntity role = roleIterator.next();
-			ReportroleEntity reportrole = _reportroleManager.findById(new ReportroleId(reportId, role.getId()));
 			GetRoleOutput output = mapper.roleEntityToGetRoleOutput(role, foundReport);
-			if(reportrole != null)
-			{
-				output.setEditable(reportrole.getEditable());
-			}
 			rolesList.add(output);
 		}
 
@@ -406,7 +411,7 @@ public class ReportAppService implements IReportAppService {
 		{
 			ReportversionEntity foundOwnerReportRunningversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "running"));
 			ReportversionEntity foundOwnerReportPublishedversion = _reportversionManager.findById(new ReportversionId(ownerId, reportId, "published"));
-			 reportRunningversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportRunningversion, foundUser.getId(), "running");
+			reportRunningversion = reportversionMapper.reportversionEntityToReportversionEntity(foundOwnerReportRunningversion, foundUser.getId(), "running");
 			reportRunningversion.setUser(foundUser);
 			_reportversionManager.create(reportRunningversion);
 
@@ -562,7 +567,7 @@ public class ReportAppService implements IReportAppService {
 
 				}
 				else if (userInput.getEditable() == null && reportuser !=null) {
-					if(reportuser.getIsAssignedByRole())
+					if(!reportuser.getIsAssignedByRole())
 					{
 							reportuser.setOwnerSharingStatus(false);
 							reportuser = _reportuserManager.update(reportuser);
