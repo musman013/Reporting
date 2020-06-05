@@ -12,6 +12,17 @@ public class CreateReportroleInput {
 
 	@NotNull(message = "editable Should not be null")
 	private Boolean editable;
+	
+	@NotNull(message = "ownerSharingStatus Should not be null")
+	private Boolean ownerSharingStatus;
+	
+	public Boolean getOwnerSharingStatus() {
+		return ownerSharingStatus;
+	}
+
+	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
+		this.ownerSharingStatus = ownerSharingStatus;
+	}
 
 	public Long getRoleId() {
 		return roleId;

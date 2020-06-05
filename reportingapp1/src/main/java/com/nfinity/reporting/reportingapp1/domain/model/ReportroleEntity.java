@@ -23,6 +23,7 @@ public class ReportroleEntity implements Serializable {
 	private Long reportId;
 	private Long roleId;
 	private Boolean editable;
+    private Boolean ownerSharingStatus;
 	
 	@Id
   	@Column(name = "reportId", nullable = false)
@@ -52,7 +53,17 @@ public class ReportroleEntity implements Serializable {
 	public void setEditable(Boolean editable) {
 		this.editable = editable;
 	}
-	
+
+	@Basic
+	@Column(name = "ownerSharingStatus", nullable = false)
+	public Boolean getOwnerSharingStatus() {
+		return ownerSharingStatus;
+	}
+
+	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
+		this.ownerSharingStatus = ownerSharingStatus;
+	}
+
 	@ManyToOne
   	@JoinColumn(name = "reportId", insertable=false, updatable=false)
   	public ReportEntity getReport() {

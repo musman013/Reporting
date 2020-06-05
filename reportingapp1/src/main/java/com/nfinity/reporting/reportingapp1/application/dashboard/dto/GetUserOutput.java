@@ -16,9 +16,6 @@ public class GetUserOutput {
 	private Date lastLoginTime;
 	private String lastName;
 	private Date lockoutEndDateUtc;
-	private String password;
-	private String passwordResetCode;
-	private Date passwordTokenExpiration;
 	private String phoneNumber;
 	private Long profilePictureId;
 	private Boolean twoFactorEnabled;
@@ -134,27 +131,6 @@ public class GetUserOutput {
 
 	public void setLockoutEndDateUtc(Date lockoutEndDateUtc){
 		this.lockoutEndDateUtc = lockoutEndDateUtc;
-	}
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password){
-		this.password = password;
-	}
-	public String getPasswordResetCode() {
-		return passwordResetCode;
-	}
-
-	public void setPasswordResetCode(String passwordResetCode){
-		this.passwordResetCode = passwordResetCode;
-	}
-	public Date getPasswordTokenExpiration() {
-		return passwordTokenExpiration;
-	}
-
-	public void setPasswordTokenExpiration(Date passwordTokenExpiration){
-		this.passwordTokenExpiration = passwordTokenExpiration;
 	}
 	public String getPhoneNumber() {
 		return phoneNumber;

@@ -228,8 +228,8 @@ public class UserEntity implements Serializable {
  
   	private Set<DashboardEntity> dashboardSet = new HashSet<DashboardEntity>(); 
   	
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
-  	public Set<DashboardversionEntity> getDashboardversionSet() { 
+  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL) 
+	public Set<DashboardversionEntity> getDashboardversionSet() { 
     	return dashboardversionSet; 
   	} 
  
@@ -294,8 +294,8 @@ public class UserEntity implements Serializable {
  
   	private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>();
 
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
-    public Set<UserroleEntity> getUserroleSet() { 
+  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+   public Set<UserroleEntity> getUserroleSet() { 
       return userroleSet; 
     } 
  
@@ -335,12 +335,28 @@ public class UserEntity implements Serializable {
         this.dashboardversionSet.remove(dv);
     }
   	
+  	public void removeDashboard(DashboardEntity dv) {
+        this.dashboardSet.remove(dv);
+    }
+  	
+	public void removeReport(ReportEntity dv) {
+        this.reportSet.remove(dv);
+    }
+  	
   	public void removeReportuser(ReportuserEntity rv) {
         this.reportuserSet.remove(rv);
     }
   	
   	public void removeDashboarduser(DashboarduserEntity rv) {
         this.dashboarduserSet.remove(rv);
+    }
+  	
+  	public void removeUserrole(UserroleEntity rv) {
+        this.userroleSet.remove(rv);
+    }
+  	
+  	public void removeUserpermission(UserpermissionEntity rv) {
+        this.userpermissionSet.remove(rv);
     }
 
 }

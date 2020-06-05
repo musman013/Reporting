@@ -56,6 +56,21 @@ public class UserroleEntity implements Serializable {
   
   	private UserEntity user;
   
+  	
+  	@PreRemove
+  	private void dismissParent() {
+  	//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
+  	if(this.user != null) {
+  	this.user.removeUserrole(this);
+  	this.user = null;
+  	}
+
+  	if(this.role != null) {
+  	this.role.removeUserrole(this);
+  	this.role = null;
+  	}
+
+  	}
 }
 
   

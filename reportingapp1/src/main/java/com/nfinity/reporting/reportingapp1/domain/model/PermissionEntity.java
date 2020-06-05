@@ -87,5 +87,14 @@ public class PermissionEntity implements Serializable {
     } 
  
     private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>(); 
+    
+    public void removeUserpermission(UserpermissionEntity rv) {
+        this.userpermissionSet.remove(rv);
+    }
+
+    public void removeRolepermission(RolepermissionEntity rv) {
+        this.rolepermissionSet.remove(rv);
+    }
+
 
 }
