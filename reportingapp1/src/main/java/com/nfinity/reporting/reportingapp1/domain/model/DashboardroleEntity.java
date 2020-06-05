@@ -22,6 +22,7 @@ public class DashboardroleEntity implements Serializable {
 	private Long dashboardId;
 	private Long roleId;
 	private Boolean editable;
+	private Boolean ownerSharingStatus;
 	
 	@Id
   	@Column(name = "dashboardId", nullable = false)
@@ -50,6 +51,16 @@ public class DashboardroleEntity implements Serializable {
 	}
 	public void setEditable(Boolean editable) {
 		this.editable = editable;
+	}
+	
+	@Basic
+	@Column(name = "ownerSharingStatus", nullable = false)
+	public Boolean getOwnerSharingStatus() {
+		return ownerSharingStatus;
+	}
+
+	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
+		this.ownerSharingStatus = ownerSharingStatus;
 	}
 	
 	@ManyToOne

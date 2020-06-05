@@ -447,7 +447,6 @@ public class ReportAppService implements IReportAppService {
 		}
 		
 		foundReport.setUser(foundUser);
-
 		_reportManager.update(foundReport);
 
 
@@ -466,7 +465,16 @@ public class ReportAppService implements IReportAppService {
 			ReportversionEntity ownerPublishedversion = _reportversionManager.findById(new ReportversionId(foundReport.getUser().getId(), reportId, "published"));
 			UserEntity foundUser = _userManager.findById(userId);
 
-			ReportversionEntity publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
+			ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
+			if(publishedversion ==null ) {
+			 publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
+			
+			}
+			else
+			{
+				publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "running"); 
+			}
+			
 			publishedversion.setUser(foundUser);
 			_reportversionManager.update(publishedversion);
 			foundReportuser.setIsRefreshed(true);
@@ -524,8 +532,14 @@ public class ReportAppService implements IReportAppService {
 			if(roleInput.getEditable() != null)
 		    {
 		    	reportRole.setEditable(roleInput.getEditable());
+		    	reportRole.setOwnerSharingStatus(true);
 		    	_reportroleManager.update(reportRole);
 		    }
+			else
+			{
+				reportRole.setOwnerSharingStatus(false);
+				_reportroleManager.update(reportRole);
+			}
 			
 			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
 			for(UserroleEntity userrole : userroleList)
@@ -604,6 +618,7 @@ public class ReportAppService implements IReportAppService {
 		{
 			return null;
 		}
+		
 		List<Long> usersWithSharedReportsByRole = new ArrayList<>();
 		for(ShareReportInput roleInput : rolesList)
 		{
@@ -611,6 +626,7 @@ public class ReportAppService implements IReportAppService {
 			reportRoleInput.setRoleId(roleInput.getId());
 			reportRoleInput.setReportId(reportId);
 			reportRoleInput.setEditable(roleInput.getEditable());
+			reportRoleInput.setOwnerSharingStatus(true);
 			_reportroleAppservice.create(reportRoleInput);
 
 			List<UserroleEntity> userroleList = _userroleManager.findByRoleId(roleInput.getId());
