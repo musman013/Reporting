@@ -466,17 +466,18 @@ public class ReportAppService implements IReportAppService {
 			UserEntity foundUser = _userManager.findById(userId);
 
 			ReportversionEntity publishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
-			if(publishedversion ==null ) {
-			 publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
+			ReportversionEntity updatedVersion;
+			if(publishedversion == null ) {
+			 updatedVersion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "published"); 
 			
 			}
 			else
 			{
-				publishedversion = reportversionMapper.reportversionEntityToReportversionEntity(ownerPublishedversion, userId, "running"); 
+				updatedVersion = reportversionMapper.reportversionEntityToReportversionEntity(publishedversion, userId, "running"); 
 			}
 			
-			publishedversion.setUser(foundUser);
-			_reportversionManager.update(publishedversion);
+			updatedVersion.setUser(foundUser);
+			_reportversionManager.update(updatedVersion);
 			foundReportuser.setIsRefreshed(true);
 			foundReportuser.setIsResetted(false);
 			foundReportuser = _reportuserManager.update(foundReportuser);

@@ -1026,17 +1026,18 @@ public class DashboardAppService implements IDashboardAppService {
 			UserEntity foundUser = _userManager.findById(userId);
 
 			DashboardversionEntity publishedversion = _dashboardversionManager.findById(new DashboardversionId(userId, dashboardId, "published"));
+			DashboardversionEntity updatedVersion;
 			if(publishedversion !=null)
 			{
-				publishedversion = dashboardversionMapper.dashboardversionEntityToDashboardversionEntity(ownerPublishedversion, userId, "published"); 
+				updatedVersion = dashboardversionMapper.dashboardversionEntityToDashboardversionEntity(ownerPublishedversion, userId, "published"); 
 			}
 			else
 			{
-				publishedversion = dashboardversionMapper.dashboardversionEntityToDashboardversionEntity(ownerPublishedversion, userId, "running"); 
+				updatedVersion = dashboardversionMapper.dashboardversionEntityToDashboardversionEntity(publishedversion, userId, "running"); 
 			}
 
-			publishedversion.setUser(foundUser);
-			_dashboardversionManager.update(publishedversion);
+			updatedVersion.setUser(foundUser);
+			_dashboardversionManager.update(updatedVersion);
 			foundDashboarduser.setIsRefreshed(true);
 			foundDashboarduser.setIsResetted(false);
 			foundDashboarduser = _dashboarduserManager.update(foundDashboarduser);
