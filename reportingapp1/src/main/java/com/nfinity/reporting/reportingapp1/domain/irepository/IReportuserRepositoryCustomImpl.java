@@ -28,12 +28,21 @@ public class IReportuserRepositoryCustomImpl implements IReportuserRepositoryCus
 
 	@Override
 	public Page<UserEntity> getAvailableReportusersList(Long reportId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".user e WHERE" + 
-				" e.id NOT IN (" + 
-				" SELECT user_id FROM "+env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser WHERE report_id = :reportId" + 
-				" )"+ " AND e.id NOT IN (SELECT owner_id FROM "+env.getProperty("spring.jpa.properties.hibernate.default_schema")+".report WHERE id = :reportId)" +
-				" AND " + 
-				" (:search is null OR e.user_name ilike :search)";
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.user e "
+				+ "WHERE e.id NOT IN "
+				+ "    (SELECT user_id "
+				+ "     FROM %s.reportuser ru "
+				+ "     WHERE report_id = :reportId "
+				+ "       AND ru.owner_sharing_status = TRUE ) "
+				+ "  AND e.id NOT IN "
+				+ "    (SELECT owner_id "
+				+ "     FROM %s.report "
+				+ "     WHERE id = :reportId) "
+				+ "  AND (:search IS NULL "
+				+ "       OR e.user_name ILIKE :search)", schema, schema, schema );
 		
 		Query query = entityManager.createNativeQuery(qlString, UserEntity.class)
 				.setParameter("reportId",reportId)
@@ -50,12 +59,19 @@ public class IReportuserRepositoryCustomImpl implements IReportuserRepositoryCus
 	
 	@Override
 	public Page<UserEntity> getReportusersList(Long reportId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".user e WHERE" + 
-				" e.id IN (" + 
-				" SELECT user_id FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportuser WHERE report_id = :reportId" + 
-				" )" + 
-				" AND " + 
-				" (:search is null OR e.user_name ilike :search)";
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.user e "
+				+ "WHERE e.id IN "
+				+ "    (SELECT user_id "
+				+ "     FROM %s.reportuser ru "
+				+ "     WHERE report_id = :reportId "
+				+ "       AND ru.owner_sharing_status = TRUE ) "
+				+ "  AND (:search IS NULL "
+				+ "       OR e.user_name ILIKE :search)"
+				, schema, schema);
+				
 		Query query = entityManager.createNativeQuery(qlString, UserEntity.class)
 				.setParameter("reportId",reportId)
 				.setParameter("search","%" + search + "%")

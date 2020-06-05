@@ -227,6 +227,11 @@ public class ReportAppService implements IReportAppService {
 		while (userIterator.hasNext()) {
 			UserEntity user = userIterator.next();
 			GetUserOutput output = mapper.userEntityToGetUserOutput(user, foundReport);
+			ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, user.getId()));
+			if(reportuser != null)
+			{
+				output.setEditable(reportuser.getEditable());
+			}
 			usersList.add(output);
 		}
 
@@ -562,7 +567,7 @@ public class ReportAppService implements IReportAppService {
 
 				}
 				else if (userInput.getEditable() == null && reportuser !=null) {
-					if(reportuser.getIsAssignedByRole())
+					if(!reportuser.getIsAssignedByRole())
 					{
 							reportuser.setOwnerSharingStatus(false);
 							reportuser = _reportuserManager.update(reportuser);

@@ -18,22 +18,28 @@ import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 @Repository
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class IReportroleRepositoryCustomImpl implements IReportroleRepositoryCustom {
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired 
 	private Environment env;
 
 	@Override
 	public Page<RoleEntity> getAvailableReportrolesList(Long reportId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".role e WHERE" + 
-				"	e.id NOT IN (" + 
-				"		SELECT role_id FROM "+env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportrole WHERE report_id = :reportId" + 
-				"	)" + 
-				"	AND " + 
-				"	(:search is null OR e.name ilike :search)";
-		
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.role r "
+				+ "WHERE r.id NOT IN "
+				+ "    (SELECT role_id "
+				+ "     FROM %s.reportrole "
+				+ "     WHERE report_id = :reportId) "
+//				+ "       AND owner_sharing_status = true) "
+				+ "  AND (:search IS NULL "
+				+ "       OR r.name ILIKE :search)",
+				schema, schema);
+
 		Query query = entityManager.createNativeQuery(qlString, RoleEntity.class)
 				.setParameter("reportId",reportId)
 				.setParameter("search","%" + search + "%")
@@ -46,15 +52,21 @@ public class IReportroleRepositoryCustomImpl implements IReportroleRepositoryCus
 
 		return result;
 	}
-	
+
 	@Override
 	public Page<RoleEntity> getReportrolesList(Long reportId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".role e WHERE" + 
-				"	e.id IN (" + 
-				"		SELECT role_id FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".reportrole WHERE report_id = :reportId" + 
-				"	)" + 
-				"	AND " + 
-				"	(:search is null OR e.name ilike :search)";
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.role r "
+				+ "WHERE r.id IN " 
+				+ "    (SELECT role_id "
+				+ "     FROM %s.reportrole "
+				+ "     WHERE report_id = :reportId) "
+//				+ "       AND owner_sharing_status = true) "
+				+ "  AND (:search IS NULL "
+				+ "       OR r.name ILIKE :search)",
+				schema, schema);
 		Query query = entityManager.createNativeQuery(qlString, RoleEntity.class)
 				.setParameter("reportId",reportId)
 				.setParameter("search","%" + search + "%")

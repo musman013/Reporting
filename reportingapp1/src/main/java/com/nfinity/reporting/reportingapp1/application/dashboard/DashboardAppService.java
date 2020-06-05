@@ -605,7 +605,7 @@ public class DashboardAppService implements IDashboardAppService {
 
 				}
 				else if (userInput.getEditable() == null && dashboarduser !=null) {
-					if(dashboarduser.getIsAssignedByRole())
+					if(!dashboarduser.getIsAssignedByRole())
 					{
 						dashboarduser.setOwnerSharingStatus(false);
 						dashboarduser = _dashboarduserManager.update(dashboarduser);

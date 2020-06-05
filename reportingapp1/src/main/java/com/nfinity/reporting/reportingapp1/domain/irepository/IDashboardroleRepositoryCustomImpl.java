@@ -27,12 +27,18 @@ public class IDashboardroleRepositoryCustomImpl implements IDashboardroleReposit
 
 	@Override
 	public Page<RoleEntity> getAvailableDashboardrolesList(Long dashboardId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".role e WHERE" + 
-				"	e.id NOT IN (" + 
-				"		SELECT role_id FROM "+env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboardrole WHERE dashboard_id = :dashboardId" + 
-				"	)" + 
-				"	AND " + 
-				"	(:search is null OR e.name ilike :search)";
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.role r "
+				+ "WHERE r.id NOT IN "
+				+ "    (SELECT role_id "
+				+ "     FROM %s.dashboardrole "
+				+ "     WHERE dashboard_id = :dashboardId) "
+//				+ "       AND owner_sharing_status = true) "
+				+ "  AND (:search IS NULL "
+				+ "       OR r.name ILIKE :search)",
+				schema, schema);
 		
 		Query query = entityManager.createNativeQuery(qlString, RoleEntity.class)
 				.setParameter("dashboardId",dashboardId)
@@ -49,12 +55,19 @@ public class IDashboardroleRepositoryCustomImpl implements IDashboardroleReposit
 	
 	@Override
 	public Page<RoleEntity> getDashboardrolesList(Long dashboardId, String search, Pageable pageable) {
-		String qlString = "SELECT * FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".role e WHERE" + 
-				"	e.id IN (" + 
-				"		SELECT role_id FROM "+ env.getProperty("spring.jpa.properties.hibernate.default_schema")+".dashboardrole WHERE dashboard_id = :dashboardId" + 
-				"	)" + 
-				"	AND " + 
-				"	(:search is null OR e.name ilike :search)";
+		String schema = env.getProperty("spring.jpa.properties.hibernate.default_schema");
+		String qlString = String.format(""
+				+ "SELECT * "
+				+ "FROM %s.role r "
+				+ "WHERE r.id IN " 
+				+ "    (SELECT role_id "
+				+ "     FROM %s.dashboardrole "
+				+ "     WHERE dashboard_id = :dashboardId) "
+//				+ "       AND owner_sharing_status = true) "
+				+ "  AND (:search IS NULL "
+				+ "       OR r.name ILIKE :search)",
+				schema, schema);
+		
 		Query query = entityManager.createNativeQuery(qlString, RoleEntity.class)
 				.setParameter("dashboardId",dashboardId)
 				.setParameter("search","%" + search + "%")
