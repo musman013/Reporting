@@ -505,7 +505,7 @@ public class ReportAppService implements IReportAppService {
 			ReportversionEntity runningversion = reportversionMapper.reportversionEntityToReportversionEntity(publishedversion, userId, "running");
 			//	runningversion.setVersion("running");
 			runningversion=_reportversionManager.update(runningversion);
-			if(!foundReportuser.getEditable()) {
+			if(foundReportuser !=null && !foundReportuser.getEditable()) {
 				_reportversionManager.delete(publishedversion);
 			}
 
@@ -551,19 +551,19 @@ public class ReportAppService implements IReportAppService {
 					usersWithSharedReportsByRole.add(userrole.getUserId());
 					ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userrole.getUserId()));
 
-					if(reportuser.getIsAssignedByRole())
+					if(reportuser !=null && reportuser.getIsAssignedByRole())
 					{
 						if(reportuser !=null && roleInput.getEditable() !=null) {
 							shareReportWithUser(reportuser,ownerPublishedVersion, roleInput.getEditable());
 							reportuser.setEditable(roleInput.getEditable());
 							reportuser.setIsAssignedByRole(true);
-							reportuser = _reportuserManager.update(reportuser);
+							 _reportuserManager.update(reportuser);
 
 						}
 						else if (roleInput.getEditable() == null && reportuser !=null) {
 
 							reportuser.setOwnerSharingStatus(false);
-							reportuser = _reportuserManager.update(reportuser);
+							 _reportuserManager.update(reportuser);
 
 						}
 					}
@@ -577,19 +577,19 @@ public class ReportAppService implements IReportAppService {
 		{
 			if(!userInput.getId().equals(report.getUser().getId()) && !usersWithSharedReportsByRole.contains(userInput.getId())) {
 				ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, userInput.getId()));
-				if(!reportuser.getIsAssignedByRole())
+				if(reportuser !=null && !reportuser.getIsAssignedByRole())
 				{
 					if(reportuser !=null && userInput.getEditable() !=null) {
 						shareReportWithUser(reportuser,ownerPublishedVersion, userInput.getEditable());
 						reportuser.setEditable(userInput.getEditable());
 						reportuser.setIsAssignedByRole(false);
-						reportuser = _reportuserManager.update(reportuser);
+						 _reportuserManager.update(reportuser);
 
 					}
 					else if (userInput.getEditable() == null && reportuser !=null) {
 
 						reportuser.setOwnerSharingStatus(false);
-						reportuser = _reportuserManager.update(reportuser);
+						 _reportuserManager.update(reportuser);
 					}
 				}
 			}

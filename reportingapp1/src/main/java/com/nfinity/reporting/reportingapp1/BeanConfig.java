@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -41,9 +43,15 @@ public class BeanConfig {
          jc.getPoolConfig().setMaxIdle(30);
          jc.getPoolConfig().setMinIdle(10);
          template.setConnectionFactory(jc);
-	         return template;
+         doInRedis(jc.getConnection());
+	     return template;
     }
-
+    
+    public Void doInRedis(RedisConnection connection) throws DataAccessException {
+        connection.flushAll();
+        return null;
+    }
+    
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
