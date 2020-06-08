@@ -485,7 +485,10 @@ public class ReportAppService implements IReportAppService {
 			foundReportuser = _reportuserManager.update(foundReportuser);
 
 			ReportversionEntity runningversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
-			return mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
+			ReportDetailsOutput output = mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
+			output.setSharedWithMe(true);
+			
+			return output;
 		}
 
 		return null;
@@ -512,7 +515,10 @@ public class ReportAppService implements IReportAppService {
 			foundReportuser.setIsResetted(true);
 			foundReportuser = _reportuserManager.update(foundReportuser);
 
-			return mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
+			ReportDetailsOutput output = mapper.reportEntitiesToReportDetailsOutput(foundReport,runningversion,foundReportuser);
+			output.setSharedWithMe(true);
+			
+			return output;
 		}
 
 		return null;
