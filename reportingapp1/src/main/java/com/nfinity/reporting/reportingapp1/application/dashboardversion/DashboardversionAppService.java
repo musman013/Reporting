@@ -58,7 +58,7 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 				dashboardversion.setUser(foundUser);
 			}
 		}
-	  	if(input.getDashboardId()!=null) {
+	  	if(input.getDashboardId()!=null) { 
 			DashboardEntity foundDashboard = _dashboardManager.findById(input.getDashboardId());
 			if(foundDashboard!=null) {
 				dashboardversion.setDashboard(foundDashboard);
@@ -102,7 +102,6 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 	@Transactional(propagation = Propagation.REQUIRED)
 //	@CacheEvict(value="Dashboardversion", key = "#p0")
 	public void delete(DashboardversionId dashboardversionId) {
-
 		DashboardversionEntity existing = _dashboardversionManager.findById(dashboardversionId) ; 
 		_dashboardversionManager.delete(existing);
 		

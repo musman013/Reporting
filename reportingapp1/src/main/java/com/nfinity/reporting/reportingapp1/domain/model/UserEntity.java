@@ -217,7 +217,7 @@ public class UserEntity implements Serializable {
   		this.profilePictureId = profilePictureId;
   	}
   	
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<DashboardEntity> getDashboardSet() { 
     	return dashboardSet; 
   	} 
@@ -228,7 +228,7 @@ public class UserEntity implements Serializable {
  
   	private Set<DashboardEntity> dashboardSet = new HashSet<DashboardEntity>(); 
   	
-  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true) 
 	public Set<DashboardversionEntity> getDashboardversionSet() { 
     	return dashboardversionSet; 
   	} 
@@ -240,7 +240,7 @@ public class UserEntity implements Serializable {
   	private Set<DashboardversionEntity> dashboardversionSet = new HashSet<DashboardversionEntity>(); 
   	
   
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportEntity> getReportSet() { 
     	return reportSet; 
   	} 
@@ -251,7 +251,7 @@ public class UserEntity implements Serializable {
  
   	private Set<ReportEntity> reportSet = new HashSet<ReportEntity>(); 
   	
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportversionEntity> getReportversionSet() { 
     	return reportversionSet; 
   	} 
@@ -283,7 +283,7 @@ public class UserEntity implements Serializable {
   	}
   
 
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<UserpermissionEntity> getUserpermissionSet() { 
 		return userpermissionSet; 
   	} 
@@ -294,7 +294,7 @@ public class UserEntity implements Serializable {
  
   	private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>();
 
-  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+  	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
    public Set<UserroleEntity> getUserroleSet() { 
       return userroleSet; 
     } 
@@ -305,7 +305,7 @@ public class UserEntity implements Serializable {
  
 	private Set<UserroleEntity> userroleSet = new HashSet<UserroleEntity>(); 
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportuserEntity> getReportuserSet() { 
     	return reportuserSet; 
   	} 
@@ -316,7 +316,7 @@ public class UserEntity implements Serializable {
  
   	private Set<ReportuserEntity> reportuserSet = new HashSet<ReportuserEntity>();
   	
-  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<DashboarduserEntity> getDashboarduserSet() { 
     	return dashboarduserSet; 
   	} 

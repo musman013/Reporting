@@ -2,8 +2,18 @@ package com.nfinity.reporting.reportingapp1.application.authorization.user;
 
 import com.nfinity.reporting.reportingapp1.application.authorization.user.dto.*;
 import com.nfinity.reporting.reportingapp1.domain.authorization.user.IUserManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboarduser.DashboarduserManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversion.IDashboardversionManager;
+import com.nfinity.reporting.reportingapp1.domain.dashboardversionreport.IDashboardversionreportManager;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboarduserEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.DashboardversionreportEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.QUserEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportuserEntity;
+import com.nfinity.reporting.reportingapp1.domain.model.ReportversionEntity;
 import com.nfinity.reporting.reportingapp1.domain.model.UserEntity;
+import com.nfinity.reporting.reportingapp1.domain.reportuser.ReportuserManager;
+import com.nfinity.reporting.reportingapp1.domain.reportversion.IReportversionManager;
 import com.nfinity.reporting.reportingapp1.commons.search.*;
 import com.querydsl.core.BooleanBuilder;
 
@@ -31,6 +41,21 @@ public class UserAppService implements IUserAppService {
 	
 	@Autowired
 	private IUserManager _userManager;
+	
+	@Autowired
+	private DashboarduserManager _dashboarduserManager;
+	
+	@Autowired
+	private ReportuserManager _reportuserManager;
+	
+	@Autowired
+	private IDashboardversionManager _dashboardversionManager;
+	
+	@Autowired
+	private IReportversionManager _reportversionManager;
+	
+	@Autowired
+	private IDashboardversionreportManager _reportDashboardManager;
 
 	@Autowired
 	private IUserMapper mapper;
@@ -60,6 +85,35 @@ public class UserAppService implements IUserAppService {
 	public void delete(Long userId) {
 
 		UserEntity existing = _userManager.findById(userId) ; 
+		List<DashboardversionreportEntity> dvrList = _reportDashboardManager.findByUserId(userId);
+		for(DashboardversionreportEntity dvr : dvrList) {
+			_reportDashboardManager.delete(dvr);
+		}
+		
+	    List<DashboarduserEntity> duList = _dashboarduserManager.findByUserId(userId);
+	    for(DashboarduserEntity du : duList )
+	    {
+	    	_dashboarduserManager.delete(du);
+	    }
+	    
+	    List<ReportuserEntity> ruList = _reportuserManager.findByUserId(userId);
+	    for(ReportuserEntity du : ruList )
+	    {
+	    	_reportuserManager.delete(du);
+	    }
+	    
+	   List<DashboardversionEntity> dvList= _dashboardversionManager.findByUserId(userId);
+	   for(DashboardversionEntity du : dvList )
+	    {
+	    	_dashboardversionManager.delete(du);
+	    }
+	   
+	   List<ReportversionEntity> rvList = _reportversionManager.findByUserId(userId);
+	   for(ReportversionEntity rv : rvList)
+	   {
+		   _reportversionManager.delete(rv);
+	   }
+	    
 		_userManager.delete(existing);
 		
 	}

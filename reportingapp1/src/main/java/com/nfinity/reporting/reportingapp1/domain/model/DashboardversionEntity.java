@@ -101,7 +101,7 @@ public class DashboardversionEntity implements Serializable {
   
   	private UserEntity user;
   	
-  	@OneToMany(mappedBy = "dashboardversion", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "dashboardversion", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<DashboardversionreportEntity> getDashboardversionreportSet() { 
     	return dashboardversionreportSet; 
   	} 
