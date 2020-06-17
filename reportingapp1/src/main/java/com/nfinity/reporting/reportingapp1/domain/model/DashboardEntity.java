@@ -58,7 +58,7 @@ public class DashboardEntity implements Serializable {
 
 	private UserEntity user;
 
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
 	public Set<DashboardversionEntity> getDashboardversionSet() { 
 		return dashboardversionSet; 
 	} 
@@ -70,7 +70,7 @@ public class DashboardEntity implements Serializable {
 	private Set<DashboardversionEntity> dashboardversionSet = new HashSet<DashboardversionEntity>(); 
 
 
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
 	public Set<DashboarduserEntity> getDashboarduserSet() { 
 		return dashboarduserSet; 
 	} 
@@ -81,7 +81,7 @@ public class DashboardEntity implements Serializable {
 
 	private Set<DashboarduserEntity> dashboarduserSet = new HashSet<DashboarduserEntity>(); 
 
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
 	public Set<DashboardroleEntity> getDashboardroleSet() { 
 		return dashboardroleSet; 
 	} 

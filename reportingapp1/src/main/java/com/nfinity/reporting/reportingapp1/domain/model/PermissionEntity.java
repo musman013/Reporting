@@ -1,6 +1,5 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import com.nfinity.reporting.reportingapp1.domain.model.RoleEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -66,7 +65,7 @@ public class PermissionEntity implements Serializable {
         return 31;
     }
 
-    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL) 
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<RolepermissionEntity> getRolepermissionSet() { 
       return rolepermissionSet; 
     } 
@@ -77,7 +76,7 @@ public class PermissionEntity implements Serializable {
  
     private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
   
-    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL) 
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<UserpermissionEntity> getUserpermissionSet() { 
       return userpermissionSet; 
     } 

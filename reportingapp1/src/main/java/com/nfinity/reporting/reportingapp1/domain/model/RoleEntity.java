@@ -57,7 +57,7 @@ public class RoleEntity implements Serializable {
         return 31;
     }
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<RolepermissionEntity> getRolepermissionSet() { 
       return rolepermissionSet; 
     } 
@@ -68,7 +68,7 @@ public class RoleEntity implements Serializable {
  
     private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
   
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
     public Set<UserroleEntity> getUserroleSet() { 
       return userroleSet; 
     } 
@@ -79,7 +79,7 @@ public class RoleEntity implements Serializable {
  
     private Set<UserroleEntity> userroleSet = new HashSet<UserroleEntity>(); 
     
-  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportroleEntity> getReportroleSet() { 
     	return reportroleSet; 
   	} 
@@ -90,7 +90,7 @@ public class RoleEntity implements Serializable {
  
   	private Set<ReportroleEntity> reportroleSet = new HashSet<ReportroleEntity>(); 
   	
-  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<DashboardroleEntity> getDashboardroleSet() { 
     	return dashboardroleSet; 
   	} 

@@ -48,7 +48,7 @@ public class ReportEntity implements Serializable {
   
   	private UserEntity user;
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportversionEntity> getReportversionSet() { 
     	return reportversionSet; 
   	} 
@@ -60,7 +60,7 @@ public class ReportEntity implements Serializable {
   	private Set<ReportversionEntity> reportversionSet = new HashSet<ReportversionEntity>(); 
   	
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<DashboardversionreportEntity> getReportdashboardSet() { 
     	return reportdashboardSet; 
   	} 
@@ -71,7 +71,7 @@ public class ReportEntity implements Serializable {
  
   	private Set<DashboardversionreportEntity> reportdashboardSet = new HashSet<DashboardversionreportEntity>(); 
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportuserEntity> getReportuserSet() { 
     	return reportuserSet; 
   	} 
@@ -82,7 +82,7 @@ public class ReportEntity implements Serializable {
  
   	private Set<ReportuserEntity> reportuserSet = new HashSet<ReportuserEntity>(); 
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
   	public Set<ReportroleEntity> getReportroleSet() { 
     	return reportroleSet; 
   	} 

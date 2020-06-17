@@ -28,9 +28,9 @@ public class UserManager implements IUserManager {
 		return _userRepository.save(user);
 	}
 
-	public void delete(UserEntity user) {
+	public void delete(UserEntity user) { 
 
-		_userRepository.delete(user);	
+		_userRepository.delete(user);
 	}
 
 	public UserEntity update(UserEntity user) {
