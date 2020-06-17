@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -205,6 +206,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         logHelper.getLogger().error("An Exception Occurred:", ex);
         return buildResponseEntity(apiError);
     }
+
+	/**
+	 * Handles UnprocessableEntity. Created to encapsulate errors with more detail than javax.persistence.UnprocessableEntity.
+	 *
+	 * @param ex the UnprocessableEntity
+	 * @return the ApiError object
+	 */
+	@ExceptionHandler(UnprocessableEntity.class)
+	protected ResponseEntity<Object> handleUnprocessableEntity(
+			UnprocessableEntity ex) {
+		logHelper.getLogger().error("An Exception Occurred:", ex);
+		ApiError apiError = new ApiError(UNPROCESSABLE_ENTITY);
+		apiError.setMessage(ex.getMessage());
+		return buildResponseEntity(apiError);
+	}
 
 	/**
 	 * Handles EntityExistsException. Created to encapsulate errors with more detail than javax.persistence.EntityExistsException.
