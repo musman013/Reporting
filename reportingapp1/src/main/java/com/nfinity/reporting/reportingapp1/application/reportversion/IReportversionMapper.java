@@ -27,7 +27,7 @@ public interface IReportversionMapper {
 
 	@Mappings({ 
 		@Mapping(source = "userId", target = "userId"),
-		@Mapping(source = "version", target = "version")
+		@Mapping(source = "version", target = "reportVersion")
 	}) 
 	ReportversionEntity reportversionEntityToReportversionEntity(ReportversionEntity entity,Long userId, String version);
 
@@ -50,7 +50,7 @@ public interface IReportversionMapper {
 
 	@Mappings({
 		@Mapping(source = "user.id", target = "id"),                  
-		@Mapping(source = "reportversion.version", target = "reportVersion"),
+		@Mapping(source = "reportversion.reportVersion", target = "reportVersion"),
 	})
 	GetUserOutput userEntityToGetUserOutput(UserEntity user, ReportversionEntity reportversion);
 

@@ -74,10 +74,11 @@ public class ReportversionAppService implements IReportversionAppService {
 			reportversion.setReport(foundReport);
 		}
 
-		reportversion.setVersion("running");
+		reportversion.setReportVersion("running");
 		ReportversionEntity createdRunningReportversion = _reportversionManager.create(reportversion);
 
-		reportversion.setVersion("published");
+		reportversion = mapper.createReportversionInputToReportversionEntity(input);
+		reportversion.setReportVersion("published");
 		ReportversionEntity createdPublishedReportversion = _reportversionManager.create(reportversion);
 
 		return mapper.reportversionEntityToCreateReportversionOutput(createdRunningReportversion);
@@ -99,7 +100,7 @@ public class ReportversionAppService implements IReportversionAppService {
 			reportversion.setReport(foundReport);
 		}
 
-		reportversion.setVersion(reportversionId.getVersion());
+		reportversion.setReportVersion(reportversionId.getReportVersion());
 		ReportversionEntity updatedReportversion = _reportversionManager.update(reportversion);
 
 		return mapper.reportversionEntityToUpdateReportversionOutput(updatedReportversion);

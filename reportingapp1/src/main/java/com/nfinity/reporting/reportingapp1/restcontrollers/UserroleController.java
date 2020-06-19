@@ -1,5 +1,7 @@
 package com.nfinity.reporting.reportingapp1.restcontrollers;
 
+import java.util.Optional;
+
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
@@ -61,15 +63,10 @@ public class UserroleController {
     @PreAuthorize("hasAnyAuthority('USERROLEENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateUserroleOutput> create(@RequestBody @Valid CreateUserroleInput userrole) {
-		CreateUserroleOutput output=_userroleAppService.create(userrole);
 		
-		if(output==null)
-		{
-			logHelper.getLogger().error("No record found");
-			throw new EntityNotFoundException(
-				String.format("No record found"));
-		}
-	    
+    	CreateUserroleOutput output=_userroleAppService.create(userrole);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("No record found")));
+
 		FindUserByIdOutput foundUser =_userAppService.findById(output.getUserId());
 		_jwtAppService.deleteAllUserTokens(foundUser.getUserName());  
 	
@@ -81,21 +78,14 @@ public class UserroleController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String id) {
-		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
-		if(userroleid == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
-		FindUserroleByIdOutput output = _userroleAppService.findById(userroleid);
-		if (output == null) {
-			logHelper.getLogger().error("There does not exist a userrole with a id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("There does not exist a userrole with a id=%s", id));
-		}
 		
-		 _userroleAppService.delete(userroleid);
+		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
+		Optional.ofNullable(userroleid).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+
+		FindUserroleByIdOutput output = _userroleAppService.findById(userroleid);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a userrole with a id=%s", id)));
+
+		_userroleAppService.delete(userroleid);
 	     
 	  	FindUserByIdOutput foundUser =_userAppService.findById(output.getUserId());
 		 _jwtAppService.deleteAllUserTokens(foundUser.getUserName());  
@@ -105,41 +95,29 @@ public class UserroleController {
 	@PreAuthorize("hasAnyAuthority('USERROLEENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateUserroleOutput> update(@PathVariable String id, @RequestBody @Valid UpdateUserroleInput userrole) {
+		
 		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
-		if(userroleid == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
+		Optional.ofNullable(userroleid).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+
 		FindUserroleByIdOutput currentUserrole = _userroleAppService.findById(userroleid);
-			
-		if (currentUserrole == null) {
-			logHelper.getLogger().error("Unable to update. Userrole with id {} not found.", id);
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(currentUserrole).orElseThrow(() -> new EntityNotFoundException(String.format("Unable to update. Userrole with id=%s not found.", id)));
 	
 		FindUserByIdOutput foundUser =_userAppService.findById(currentUserrole.getUserId());
 		_jwtAppService.deleteAllUserTokens(foundUser.getUserName());  
 		
+		userrole.setVersion(currentUserrole.getVersion());
 		return new ResponseEntity(_userroleAppService.update(userroleid,userrole), HttpStatus.OK);
 	}
 
     @PreAuthorize("hasAnyAuthority('USERROLEENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindUserroleByIdOutput> findById(@PathVariable String id) {
-		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
-		if(userroleid == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
-	
+		
+    	UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
+		Optional.ofNullable(userroleid).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+
 		FindUserroleByIdOutput output = _userroleAppService.findById(userroleid);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found.")));
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -160,34 +138,24 @@ public class UserroleController {
 	@RequestMapping(value = "/{id}/user", method = RequestMethod.GET)
 	public ResponseEntity<GetUserOutput> getUser(@PathVariable String id) {
 		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
-		if(userroleid == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
+		Optional.ofNullable(userroleid).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+
 		GetUserOutput output= _userroleAppService.getUser(userroleid);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found.")));
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('USERROLEENTITY_READ')")
 	@RequestMapping(value = "/{id}/role", method = RequestMethod.GET)
 	public ResponseEntity<GetRoleOutput> getRole(@PathVariable String id) {
+		
 		UserroleId userroleid =_userroleAppService.parseUserroleKey(id);
-		if(userroleid == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
-	
+		Optional.ofNullable(userroleid).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+
 		GetRoleOutput output= _userroleAppService.getRole(userroleid);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found.")));
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 

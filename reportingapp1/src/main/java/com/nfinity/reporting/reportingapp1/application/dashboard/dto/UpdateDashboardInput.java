@@ -6,6 +6,10 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import com.nfinity.reporting.reportingapp1.application.report.dto.UpdateReportInput;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class UpdateDashboardInput {
 
 	private String description;
@@ -18,70 +22,6 @@ public class UpdateDashboardInput {
 	private Boolean isPublished;
 	List<UpdateReportInput> reportDetails= new ArrayList<>();
 	private Boolean isShareable;
-
-	public Boolean getIsShareable() {
-		return isShareable;
-	}
-
-	public void setIsShareable(Boolean isShareable) {
-		this.isShareable = isShareable;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(Long ownerId){
-		this.ownerId = ownerId;
-	}
-
-	public Boolean getIsPublished() {
-		return isPublished;
-	}
-
-	public void setIsPublished(Boolean isPublished) {
-		this.isPublished = isPublished;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description){
-		this.description = description;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title){
-		this.title = title;
-	}
-
-	public List<UpdateReportInput> getReportDetails() {
-		return reportDetails;
-	}
-
-	public void setReportDetails(List<UpdateReportInput> reportDetails) {
-		this.reportDetails = reportDetails;
-	}
-
-
+	private Long version;
+	
 }

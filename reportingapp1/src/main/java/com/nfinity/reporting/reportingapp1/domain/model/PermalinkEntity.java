@@ -1,6 +1,5 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 import lombok.Getter;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "permalink", schema = "reporting")
-public class PermalinkEntity implements Serializable {
+public class PermalinkEntity extends AbstractEntity {
 
 //    @Id
 //    @GeneratedValue(generator = "uuid2")
@@ -20,6 +19,8 @@ public class PermalinkEntity implements Serializable {
 //    @Column(name = "id", columnDefinition = "VARCHAR(255)")
 //    private UUID id;
 
+	private static final long serialVersionUID = 1L;
+	
     @Id
     @Column(name = "id", nullable = false, length =256)
   	private UUID id;

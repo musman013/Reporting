@@ -1,114 +1,86 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "report", schema = "reporting")
-public class ReportEntity implements Serializable {
-
-	private Long id;
-	private Boolean isPublished;
-  	
-	public ReportEntity() {
-  	}
+public class ReportEntity extends AbstractEntity {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
   	@GeneratedValue(strategy = GenerationType.IDENTITY)
   	@Column(name = "id", nullable = false)
-  	public Long getId() {
-  		return id;
-  	}
-
-  	public void setId(Long id) {
-  		this.id = id;
-  	}
+	private Long id;
   	
   	@Basic
 	@Column(name = "isPublished", nullable = false)
-  	public Boolean getIsPublished() {
-		return isPublished;
-	}
-
-	public void setIsPublished(Boolean isPublished) {
-		this.isPublished = isPublished;
-	}
+  	private Boolean isPublished;
   	
   	@ManyToOne
   	@JoinColumn(name = "ownerId")
-  	public UserEntity getUser() {
-    	return user;
-  	}
-  	public void setUser(UserEntity user) {
-    	this.user = user;
-  	}
-  
   	private UserEntity user;
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
-  	public Set<ReportversionEntity> getReportversionSet() { 
-    	return reportversionSet; 
-  	} 
- 
-  	public void setReportversionSet(Set<ReportversionEntity> reportversion) { 
-    	this.reportversionSet = reportversion; 
-  	}
- 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
   	private Set<ReportversionEntity> reportversionSet = new HashSet<ReportversionEntity>(); 
   	
-  	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
-  	public Set<DashboardversionreportEntity> getReportdashboardSet() { 
-    	return reportdashboardSet; 
-  	} 
- 
-  	public void setReportdashboardSet(Set<DashboardversionreportEntity> reportdashboard) { 
-    	this.reportdashboardSet = reportdashboard; 
-  	} 
- 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
   	private Set<DashboardversionreportEntity> reportdashboardSet = new HashSet<DashboardversionreportEntity>(); 
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
-  	public Set<ReportuserEntity> getReportuserSet() { 
-    	return reportuserSet; 
-  	} 
- 
-  	public void setReportuserSet(Set<ReportuserEntity> reportuser) { 
-    	this.reportuserSet = reportuser; 
-  	} 
- 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
   	private Set<ReportuserEntity> reportuserSet = new HashSet<ReportuserEntity>(); 
   	
-  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true) 
-  	public Set<ReportroleEntity> getReportroleSet() { 
-    	return reportroleSet; 
-  	} 
- 
-  	public void setReportroleSet(Set<ReportroleEntity> reportrole) { 
-    	this.reportroleSet = reportrole; 
-  	} 
- 
+  	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL) 
   	private Set<ReportroleEntity> reportroleSet = new HashSet<ReportroleEntity>(); 
   	
- 
-  	public void removeReportUser(ReportuserEntity rv) {
-        this.reportuserSet.remove(rv);
+  	public void addReportuser(ReportuserEntity reportUser) {
+  		reportuserSet.add(reportUser);
+  		reportUser.setReport(this);
+	}
+  	
+  	public void removeReportuser(ReportuserEntity reportUser) {
+        reportuserSet.remove(reportUser);
+        reportUser.setReport(null);
+    }
+  
+  	public void addReportrole(ReportroleEntity reportRole) {
+  		reportroleSet.add(reportRole);
+  		reportRole.setReport(this);
+	}
+  	
+  	public void removeReportrole(ReportroleEntity reportRole) {
+       reportroleSet.remove(reportRole);
+       reportRole.setReport(null);
     }
   	
-  	public void removeReportRole(ReportroleEntity rv) {
-        this.reportroleSet.remove(rv);
-    }
+  	public void addReportversion(ReportversionEntity reportVersion) {
+  		reportversionSet.add(reportVersion);
+  		reportVersion.setReport(this);
+	}
   	
-  	public void removeReportVersion(ReportversionEntity rv) {
-        this.reportversionSet.remove(rv);
+  	public void removeReportversion(ReportversionEntity reportVersion) {
+        reportversionSet.remove(reportVersion);
+        reportVersion.setReport(null);
     }
-  	
-  	public void removeDashboardversionreport(DashboardversionreportEntity rv) {
-        this.reportdashboardSet.remove(rv);
-    }
+
+  	public void addDashboardversionreport(DashboardversionreportEntity dashboardversionreport) {
+  		reportdashboardSet.add(dashboardversionreport);
+  		dashboardversionreport.setReport(this);
+	}
+
+	public void removeDashboardversionreport(DashboardversionreportEntity dashboardversionreport) {
+		reportdashboardSet.remove(dashboardversionreport);
+		dashboardversionreport.setReport(null);
+	}
   	
   	@PreRemove
   	private void dismissParent() {

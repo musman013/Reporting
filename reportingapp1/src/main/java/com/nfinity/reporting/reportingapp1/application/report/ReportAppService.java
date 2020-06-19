@@ -131,8 +131,9 @@ public class ReportAppService implements IReportAppService {
 		ReportversionEntity rv = _reportversionManager.findById(reportversionId);
 		UpdateReportversionInput reportversion = mapper.updateReportInputToUpdateReportversionInput(input);
 		reportversion.setReportId(rv.getReport().getId());
-		reportversion.setVersion(rv.getVersion());
-
+		reportversion.setReportVersion(rv.getReportVersion());
+        reportversion.setVersion(rv.getVersion());
+        
 		UpdateReportversionOutput reportversionOutput =  _reportversionAppservice.update(reportversionId, reportversion);
 
 		ReportuserEntity reportuser = _reportuserManager.findById(new ReportuserId(reportId, input.getUserId()));
@@ -381,8 +382,16 @@ public class ReportAppService implements IReportAppService {
 		foundReport.setIsPublished(true);
 		foundReport = _reportManager.update(foundReport);
 		ReportversionEntity foundReportversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "running"));
-
+		ReportversionEntity foundPublishedversion = _reportversionManager.findById(new ReportversionId(userId, reportId, "published"));
 		ReportversionEntity publishedVersion = reportversionMapper.reportversionEntityToReportversionEntity(foundReportversion, userId, "published");
+		
+		if(foundPublishedversion !=null)
+		{
+			publishedVersion.setVersion(foundPublishedversion.getVersion());
+		}
+		else
+			publishedVersion.setVersion(0L);
+		
 		_reportversionManager.update(publishedVersion);
 
 		return mapper.reportEntitiesToReportDetailsOutput(foundReport,foundReportversion,null);

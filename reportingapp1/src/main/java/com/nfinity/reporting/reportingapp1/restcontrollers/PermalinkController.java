@@ -35,10 +35,8 @@ import com.nfinity.reporting.reportingapp1.application.report.dto.FindReportById
 import com.nfinity.reporting.reportingapp1.application.reportuser.IReportuserAppService;
 import com.nfinity.reporting.reportingapp1.application.reportuser.dto.FindReportuserByIdOutput;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 
 @RestController
@@ -70,7 +68,6 @@ public class PermalinkController {
 	private Environment env;
 
 
-
 	public PermalinkController(PermalinkAppService permalinkAppService,
 			LoggingHelper helper) {
 		super();
@@ -84,11 +81,8 @@ public class PermalinkController {
 		UserEntity user = _userAppService.getUser();
 		if(permalink.getResource() == "report") {
 			FindReportByIdOutput report = _reportAppService.findById(Long.valueOf(permalink.getResourceId()));
-			if (report == null) {
-				logHelper.getLogger().error("There does not exist a report with a id=%s", permalink.getResourceId());
-				throw new EntityNotFoundException(
-						String.format("There does not exist a report with a id=%s", permalink.getResourceId()));
-			}
+			Optional.ofNullable(report).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a report with a id=%s", permalink.getResourceId())));
+			
 			FindReportuserByIdOutput reportuser = _reportuserAppService.findById(new ReportuserId(Long.valueOf(permalink.getResourceId()), user.getId()));
 
 			if(report.getOwnerId() != user.getId() &&  reportuser == null) {
@@ -99,11 +93,8 @@ public class PermalinkController {
 		}
 		if(permalink.getResource() == "dashboard") {
 			FindDashboardByIdOutput dashboard = _dashboardAppService.findById(Long.valueOf(permalink.getResourceId()));
-			if (dashboard == null) {
-				logHelper.getLogger().error("There does not exist a dashboard with a id=%s", permalink.getResourceId());
-				throw new EntityNotFoundException(
-						String.format("There does not exist a dashboard with a id=%s", permalink.getResourceId()));
-			}
+			Optional.ofNullable(dashboard).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a dashboard with a id=%s", permalink.getResourceId())));
+			
 			FindDashboarduserByIdOutput dashboarduser = _dashboarduserAppService.findById(new DashboarduserId(Long.valueOf(permalink.getResourceId()), user.getId()));
 			
 			if(dashboard.getOwnerId() != user.getId() &&  dashboarduser == null) {
@@ -120,40 +111,35 @@ public class PermalinkController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable UUID id) {
+		
 		FindPermalinkByIdOutput output = _permalinkAppService.findById(id);
-		if (output == null) {
-			logHelper.getLogger().error("There does not exist a permalink with a id=%s", id);
-			throw new EntityNotFoundException(
-					String.format("There does not exist a permalink with a id=%s", id));
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a permalink with a id=%s", id)));
+		
 		_permalinkAppService.delete(id);
 	}
-
 
 	// ------------ Update permalink ------------
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdatePermalinkOutput> update(@PathVariable UUID id, @RequestBody @Valid UpdatePermalinkInput permalink) {
+		
 		FindPermalinkByIdOutput currentPermalink = _permalinkAppService.findById(id);
-
-		if (currentPermalink == null) {
-			logHelper.getLogger().error("Unable to update. Permalink with id {} not found.", id);
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-
+		Optional.ofNullable(currentPermalink).orElseThrow(() -> new EntityNotFoundException(String.format("Unable to update. Permalink with id=%snot found.", id)));
+		
 		return new ResponseEntity(_permalinkAppService.update(id,permalink), HttpStatus.OK);
 	}
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindPermalinkByIdOutput> findById(@PathVariable UUID id) {
+		
 		FindPermalinkByIdOutput output = _permalinkAppService.findById(id);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a permalink with a id=%s", id)));
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+		
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
 

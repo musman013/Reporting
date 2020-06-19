@@ -15,10 +15,10 @@ import com.nfinity.reporting.reportingapp1.domain.model.ReportversionId;
 @Repository
 public interface IReportversionRepository extends JpaRepository<ReportversionEntity, ReportversionId>,QuerydslPredicateExecutor<ReportversionEntity> {
 
-	@Query("select r from ReportversionEntity r where r.user.id = ?1 and r.version = ?2")
+	@Query("select r from ReportversionEntity r where r.user.id = ?1 and r.reportVersion = ?2")
 	ReportversionEntity findByReportversionAndUserId(Long userId, String version);
 	
-	@Query("select r from ReportversionEntity r where r.user.id = ?1 and r.report.id = ?2 and r.version = ?3")
+	@Query("select r from ReportversionEntity r where r.user.id = ?1 and r.report.id = ?2 and r.reportVersion = ?3")
 	ReportversionEntity findByReportIdAndVersionAndUserId(Long userId,Long reportId, String version);
 	
 	@Query("select r from ReportversionEntity r where r.user.id = ?1")

@@ -2,49 +2,25 @@ package com.nfinity.reporting.reportingapp1.domain.model;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 public class DashboardversionreportId implements Serializable {
 
-	    private Long dashboardId;
-	    private Long userId;
-	    private String dashboardVersion;
-	    private Long reportId;
+	private static final long serialVersionUID = 1L;
+	private Long dashboardId;
+	private Long userId;
+	private String dashboardVersion;
+	private Long reportId;
 
-	    public DashboardversionreportId() {
-	    }
-	    
-	    public DashboardversionreportId(Long dashboardId,Long userId,String dashboardVersion,Long reportId) {
-	  		this.dashboardId =dashboardId;
-	  		this.userId = userId;
-	  		this.dashboardVersion = dashboardVersion;
-	  		this.reportId =reportId;
-	    }
-	    
-	    public Long getUserId() {
-			return userId;
-		}
+	public DashboardversionreportId(Long dashboardId,Long userId,String dashboardVersion,Long reportId) {
+		this.dashboardId =dashboardId;
+		this.userId = userId;
+		this.dashboardVersion = dashboardVersion;
+		this.reportId =reportId;
+	}
 
-		public void setUserId(Long userId) {
-			this.userId = userId;
-		}
-
-		public Long getDashboardId() {
-	        return dashboardId;
-	    }
-	    public void setDashboardId(Long dashboardId){
-	        this.dashboardId = dashboardId;
-	    }
-	    
-	    public String getDashboardVersion() {
-	        return dashboardVersion;
-	    }
-	    public void setDashboardVersion(String dashboardVersion){
-	        this.dashboardVersion = dashboardVersion;
-	    }
-	    
-	    public Long getReportId() {
-	        return reportId;
-	    }
-	    public void setReportId(Long reportId){
-	        this.reportId = reportId;
-	    }
 }

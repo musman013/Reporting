@@ -15,7 +15,10 @@ import com.nfinity.reporting.reportingapp1.application.resourceviewer.ResourceVi
 import com.nfinity.reporting.reportingapp1.application.resourceviewer.dto.ResourceOutput;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.persistence.EntityNotFoundException;
 
 import com.nfinity.reporting.reportingapp1.commons.logging.LoggingHelper;
 
@@ -50,21 +53,15 @@ public class ResourceViewerController {
 		}
 		
 		FindPermalinkByIdOutput permalink = _permalinkAppService.findById(uuid);
-		if (permalink == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(permalink).orElseThrow(() -> new EntityNotFoundException(String.format("Not found")));
 		
 		if (!_resourceViewerAppService.isAuthorized(permalink, password)) {
 			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
 		}
 		
 		ResourceOutput output = _resourceViewerAppService.getData(permalink);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found")));
 		
-		if(output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		
-
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
 

@@ -5,6 +5,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.json.simple.JSONObject;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class UpdateReportInput {
 
 	@NotNull
@@ -21,93 +25,6 @@ public class UpdateReportInput {
 	private String title;
 	private String reportWidth;
     private Boolean isAssignedByDashboard;
+    private Long version;
 	
-	public Boolean getIsAssignedByDashboard() {
-		return isAssignedByDashboard;
-	}
-
-	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
-		this.isAssignedByDashboard = isAssignedByDashboard;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(Long ownerId){
-		this.ownerId = ownerId;
-	}
-	
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public Boolean getIsPublished() {
-		return isPublished;
-	}
-
-	public void setIsPublished(Boolean isPublished) {
-		this.isPublished = isPublished;
-	}
-
-	public String getReportWidth() {
-		return reportWidth;
-	}
-
-	public void setReportWidth(String reportWidth) {
-		this.reportWidth = reportWidth;
-	}
-	
-	public String getCtype() {
-		return ctype;
-	}
-
-	public void setCtype(String ctype){
-		this.ctype = ctype;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description){
-		this.description = description;
-	}
-
-	public JSONObject getQuery() {
-		return query;
-	}
-
-	public void setQuery(JSONObject query){
-		this.query = query;
-	}
-
-	public String getReportType() {
-		return reportType;
-	}
-
-	public void setReportType(String reportType){
-		this.reportType = reportType;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title){
-		this.title = title;
-	}
-
 }

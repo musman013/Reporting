@@ -36,19 +36,19 @@ public interface IDashboardversionMapper {
 
    @Mappings({ 
 		@Mapping(source = "userId", target = "userId"),
-		@Mapping(source = "version", target = "version")
+		@Mapping(source = "dversion", target = "dashboardVersion")
 	}) 
-	DashboardversionEntity dashboardversionEntityToDashboardversionEntity(DashboardversionEntity entity,Long userId, String version);
+	DashboardversionEntity dashboardversionEntityToDashboardversionEntity(DashboardversionEntity entity,Long userId, String dversion);
 
    @Mappings({ 
 		@Mapping(source = "userId", target = "userId"),
-		@Mapping(source = "version", target = "dashboardVersion")
+		@Mapping(source = "dversion", target = "dashboardVersion")
 	}) 
-    DashboardversionreportEntity dashboardversionreportEntityToDashboardversionreportEntity(DashboardversionreportEntity dashboardreport,Long userId,String version);
+    DashboardversionreportEntity dashboardversionreportEntityToDashboardversionreportEntity(DashboardversionreportEntity dashboardreport,Long userId,String dversion);
    
    @Mappings({
 		@Mapping(source = "user.id", target = "id"),                  
-		@Mapping(source = "dashboardversion.version", target = "dashboardVersion"),
+		@Mapping(source = "dashboardversion.dashboardVersion", target = "dashboardVersion"),
 	})
    GetUserOutput userEntityToGetUserOutput(UserEntity user, DashboardversionEntity dashboardversion);
 

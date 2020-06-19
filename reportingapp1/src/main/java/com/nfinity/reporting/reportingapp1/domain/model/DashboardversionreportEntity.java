@@ -1,7 +1,5 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,108 +11,54 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "dashboardversionreport", schema = "reporting")
 @IdClass(DashboardversionreportId.class)
-public class DashboardversionreportEntity implements Serializable {
+public class DashboardversionreportEntity extends AbstractEntity {
 
-	private Long dashboardId;
-	private Long userId;
-	private String dashboardVersion;
-	private Long reportId;
-	private String reportWidth;
-	private Long orderId;
-
-	public DashboardversionreportEntity() {
-	}
-
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name = "dashboardId", nullable = false)
-	public Long getDashboardId() {
-		return dashboardId;
-	}
-
-	public void setDashboardId(Long dashboardversionId) {
-		this.dashboardId = dashboardversionId;
-	}
+	private Long dashboardId;
 
 	@Id
 	@Column(name = "userId", nullable = false)
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+	private Long userId;
 
 	@Id
 	@Column(name = "dashboardVersion", nullable = false)
-	public String getDashboardVersion() {
-		return dashboardVersion;
-	}
-
-	public void setDashboardVersion(String dashboardVersion) {
-		this.dashboardVersion = dashboardVersion;
-	}
+	private String dashboardVersion;
 
 	@Id
 	@Column(name = "reportId", nullable = false)
-	public Long getReportId() {
-		return reportId;
-	}
-
-	public void setReportId(Long reportId) {
-		this.reportId = reportId;
-	}
+	private Long reportId;
 	
 	@Basic
 	@Column(name = "reportWidth", nullable = false, length = 255)
-	public String getReportWidth() {
-		return reportWidth;
-	}
-
-	public void setReportWidth(String reportWidth) {
-		this.reportWidth = reportWidth;
-	}
+	private String reportWidth;
 
 	@Basic
 	@Column(name = "orderId", nullable = false)
-	public Long getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
-	}
+	private Long orderId;
 
 	@ManyToOne
 	@JoinColumns({
 		@JoinColumn(name = "dashboardId", referencedColumnName = "dashboardId", insertable=false, updatable=false),
-		@JoinColumn(name = "dashboardVersion",referencedColumnName = "version", insertable=false, updatable=false),
-		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable=false, updatable=false),
-
+		@JoinColumn(name = "dashboardVersion",referencedColumnName = "dashboardVersion", insertable=false, updatable=false),
+		@JoinColumn(name = "userId", referencedColumnName = "userId", insertable=false, updatable=false)
 	})
-	public DashboardversionEntity getDashboardversion() {
-		return dashboardversion;
-	}
-	public void setDashboardversion(DashboardversionEntity dashboardversion) {
-		this.dashboardversion = dashboardversion;
-	}
-
-	private DashboardversionEntity dashboardversion;
+	private DashboardversionEntity dashboardversionEntity;
 
 	@ManyToOne
 	@JoinColumn(name = "reportId", insertable=false, updatable=false)
-	public ReportEntity getReport() {
-		return report;
-	}
-	public void setReport(ReportEntity report) {
-		this.report = report;
-	}
-
 	private ReportEntity report;
-
 	
 	@PreRemove
   	private void dismissParent() {
@@ -124,9 +68,9 @@ public class DashboardversionreportEntity implements Serializable {
   	this.report = null;
   	}
 
-  	if(this.dashboardversion != null) {
-  	this.dashboardversion.removeDashboardversionreport(this);
-  	this.dashboardversion = null;
+  	if(this.dashboardversionEntity != null) {
+  	this.dashboardversionEntity.removeDashboardversionreport(this);
+  	this.dashboardversionEntity = null;
   	}
 
   	}

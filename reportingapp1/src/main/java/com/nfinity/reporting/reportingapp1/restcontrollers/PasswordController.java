@@ -1,6 +1,7 @@
 package com.nfinity.reporting.reportingapp1.restcontrollers;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,14 +68,8 @@ public class PasswordController {
 		}
 
 		UserEntity user = _userAppService.savePasswordResetCode(email);
-
-		if(user == null)
-		{
-			logHelper.getLogger().error("There does not exist a user with a email=%s", email);
-			throw new EntityNotFoundException(
-					String.format("There does not exist a user with a email=%s", email));
-		}
-
+		Optional.ofNullable(user).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a user with a email=%s", email)));
+		
 		String appUrl = request.getScheme() + "://" + request.getServerName();
 		System.out.println("App url " + appUrl);
 		_emailService.sendEmail(_emailService.buildEmail(email, appUrl, user.getPasswordResetCode()));
@@ -84,14 +79,10 @@ public class PasswordController {
 
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<String> setNewPassword(@RequestBody ResetPasswordInput input) {
+		
 		UserEntity output = _userAppService.findByPasswordResetCode(input.getToken());
-		if(output == null)
-		{
-			logHelper.getLogger().error("Invalid password reset link.");
-			throw new EntityNotFoundException(
-					String.format("Invalid password reset link."));
-		}
-
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid password reset link.")));
+		
 		if(new Date().after(output.getPasswordTokenExpiration()))
 		{
 			logHelper.getLogger().error("Token has expired, please request a new password reset");
@@ -109,6 +100,7 @@ public class PasswordController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public ResponseEntity<String> changePassword(@RequestBody UpdatePasswordInput input) throws InvalidInputException {
+		
 		UserEntity loggedInUser =  _userAppService.getUser();
 		if(!pEncoder.matches(input.getOldPassword(), loggedInUser.getPassword()))
 		{

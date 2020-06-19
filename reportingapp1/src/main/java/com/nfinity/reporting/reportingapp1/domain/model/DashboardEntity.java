@@ -1,109 +1,76 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "dashboard", schema = "reporting")
-public class DashboardEntity implements Serializable {
+public class DashboardEntity extends AbstractEntity {
 
-	private Long id;
-	private Boolean isPublished;
-	private Boolean isShareable;
-
-	public DashboardEntity() {
-	}
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	private Long id;
 
 	@Basic
 	@Column(name = "isPublished", nullable = false)
-	public Boolean getIsPublished() {
-		return isPublished;
-	}
-
-	public void setIsPublished(Boolean isPublished) {
-		this.isPublished = isPublished;
-	}
+	private Boolean isPublished;
 
 	@Basic
 	@Column(name = "isShareable", nullable = false)
-	public Boolean getIsShareable() {
-		return isShareable;
-	}
-
-	public void setIsShareable(Boolean isShareable) {
-		this.isShareable = isShareable;
-	}
+	private Boolean isShareable;
 
 	@ManyToOne
 	@JoinColumn(name = "ownerId")
-	public UserEntity getUser() {
-		return user;
-	}
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
-
 	private UserEntity user;
 
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
-	public Set<DashboardversionEntity> getDashboardversionSet() { 
-		return dashboardversionSet; 
-	} 
-
-	public void setDashboardversionSet(Set<DashboardversionEntity> dashboardversion) { 
-		this.dashboardversionSet = dashboardversion; 
-	} 
-
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
 	private Set<DashboardversionEntity> dashboardversionSet = new HashSet<DashboardversionEntity>(); 
 
-
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
-	public Set<DashboarduserEntity> getDashboarduserSet() { 
-		return dashboarduserSet; 
-	} 
-
-	public void setDashboarduserSet(Set<DashboarduserEntity> dashboarduser) { 
-		this.dashboarduserSet = dashboarduser; 
-	} 
-
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
 	private Set<DashboarduserEntity> dashboarduserSet = new HashSet<DashboarduserEntity>(); 
 
-	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true) 
-	public Set<DashboardroleEntity> getDashboardroleSet() { 
-		return dashboardroleSet; 
-	} 
-
-	public void setDashboardroleSet(Set<DashboardroleEntity> dashboardrole) { 
-		this.dashboardroleSet = dashboardrole; 
-	} 
-
+	@OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL) 
 	private Set<DashboardroleEntity> dashboardroleSet = new HashSet<DashboardroleEntity>(); 
 
-	public void removeDashboardVersion(DashboardversionEntity rv) {
-		this.dashboardversionSet.remove(rv);
+	public void addDashboardversion(DashboardversionEntity dashboardversion) {
+		dashboardversionSet.add(dashboardversion);
+		dashboardversion.setDashboard(this);
+	}
+	
+	public void removeDashboardversion(DashboardversionEntity dashboardversion) {
+		dashboardversionSet.remove(dashboardversion);
+		dashboardversion.setDashboard(null);
 	}
 
-	public void removeDashboardrole(DashboardroleEntity rv) {
-		this.dashboardroleSet.remove(rv);
+	public void addDashboardrole(DashboardroleEntity dashboardrole) {
+		dashboardroleSet.add(dashboardrole);
+		dashboardrole.setDashboard(this);
 	}
 
-	public void removeDashboarduser(DashboarduserEntity rv) {
-		this.dashboarduserSet.remove(rv);
+	public void removeDashboardrole(DashboardroleEntity dashboardrole) {
+		dashboardroleSet.remove(dashboardrole);
+		dashboardrole.setDashboard(null);
 	}
 
+	public void addDashboarduser(DashboarduserEntity dashboarduser) {
+		dashboarduserSet.add(dashboarduser);
+		dashboarduser.setDashboard(this);
+	}
+
+	public void removeDashboarduser(DashboarduserEntity dashboarduser) {
+		dashboarduserSet.remove(dashboarduser);
+		dashboarduser.setDashboard(null);
+	}
+	
 	@PreRemove
 	private void dismissParent() {
 		//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP

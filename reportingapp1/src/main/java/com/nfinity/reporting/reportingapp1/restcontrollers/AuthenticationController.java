@@ -3,7 +3,6 @@ package com.nfinity.reporting.reportingapp1.restcontrollers;
 import com.nfinity.reporting.reportingapp1.security.JWTAppService;
 import com.nfinity.reporting.reportingapp1.security.SecurityConstants;
 import com.nfinity.reporting.reportingapp1.commons.domain.EmptyJsonResponse;
-import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.http.ResponseEntity; 
 import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.http.HttpStatus; 

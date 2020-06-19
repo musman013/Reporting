@@ -3,213 +3,65 @@ package com.nfinity.reporting.reportingapp1.application.authorization.user.dto;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.Pattern;
 
+@Getter @Setter
 public class CreateUserInput {
 
-  private Integer accessFailedCount; 
-  @Length(max = 64, message = "authenticationSource must be less than 64 characters")
-  private String authenticationSource;
-  
-  @NotNull(message = "emailAddress Should not be null")
-  @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Email Address should be valid")
-  @Length(max = 256, message = "emailAddress must be less than 256 characters")
-  private String emailAddress;
-  
-  @Length(max = 328, message = "emailConfirmationCode must be less than 328 characters")
-  private String emailConfirmationCode;
-  
-  @NotNull(message = "firstName Should not be null")
-  @Length(max = 32, message = "firstName must be less than 32 characters")
-  private String firstName;
-  
-  private Boolean isActive;
-  
-  private Boolean isEmailConfirmed;
-  private Boolean isLockoutEnabled;
-  
-  @Length(max = 255, message = "isPhoneNumberConfirmed must be less than 255 characters")
-  private String isPhoneNumberConfirmed;
-  
-   private Date lastLoginTime;
-  
-  @NotNull(message = "lastName Should not be null")
-  @Length(max = 32, message = "lastName must be less than 32 characters")
-  private String lastName;
-  
-  private Date lockoutEndDateUtc;
-  
-  @NotNull(message = "password Should not be null")
-  @Length(max = 128, message = "password must be less than 128 characters")
-  private String password;
- 
-  @Length(max = 328, message = "passwordResetCode must be less than 328 characters")
-  private String passwordResetCode;
-  
-  private Date passwordTokenExpiration;
-  
-   @Length(max = 32, message = "phoneNumber must be less than 32 characters")
-  private String phoneNumber;
-  
-  private Long profilePictureId;
-  
-  private Boolean twoFactorEnabled;
-  
-  @NotNull(message = "userName Should not be null")
-  @Length(max = 32, message = "userName must be less than 32 characters")
-  private String userName;
+	private Integer accessFailedCount; 
+	@Length(max = 64, message = "authenticationSource must be less than 64 characters")
+	private String authenticationSource;
 
-  public Integer getAccessFailedCount() {
-  return accessFailedCount;
-  }
+	@NotNull(message = "emailAddress Should not be null")
+	@Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Email Address should be valid")
+	@Length(max = 256, message = "emailAddress must be less than 256 characters")
+	private String emailAddress;
 
-  public void setAccessFailedCount(Integer accessFailedCount){
-  this.accessFailedCount = accessFailedCount;
-  }
-  
-  public String getAuthenticationSource() {
-  return authenticationSource;
-  }
+	@Length(max = 328, message = "emailConfirmationCode must be less than 328 characters")
+	private String emailConfirmationCode;
 
-  public void setAuthenticationSource(String authenticationSource){
-  this.authenticationSource = authenticationSource;
-  }
-  
-  public String getEmailAddress() {
-  return emailAddress;
-  }
+	@NotNull(message = "firstName Should not be null")
+	@Length(max = 32, message = "firstName must be less than 32 characters")
+	private String firstName;
 
-  public void setEmailAddress(String emailAddress){
-  this.emailAddress = emailAddress;
-  }
-  
-  public String getEmailConfirmationCode() {
-  return emailConfirmationCode;
-  }
+	private Boolean isActive;
 
-  public void setEmailConfirmationCode(String emailConfirmationCode){
-  this.emailConfirmationCode = emailConfirmationCode;
-  }
-  
-  public String getFirstName() {
-  return firstName;
-  }
+	private Boolean isEmailConfirmed;
+	private Boolean isLockoutEnabled;
 
-  public void setFirstName(String firstName){
-  this.firstName = firstName;
-  }
-  
-  public Boolean getIsActive() {
-  return isActive;
-  }
+	@Length(max = 255, message = "isPhoneNumberConfirmed must be less than 255 characters")
+	private String isPhoneNumberConfirmed;
 
-  public void setIsActive(Boolean isActive){
-  this.isActive = isActive;
-  }
-  
-  public Boolean getIsEmailConfirmed() {
-  return isEmailConfirmed;
-  }
+	private Date lastLoginTime;
 
-  public void setIsEmailConfirmed(Boolean isEmailConfirmed){
-  this.isEmailConfirmed = isEmailConfirmed;
-  }
-  
-  public Boolean getIsLockoutEnabled() {
-  return isLockoutEnabled;
-  }
+	@NotNull(message = "lastName Should not be null")
+	@Length(max = 32, message = "lastName must be less than 32 characters")
+	private String lastName;
 
-  public void setIsLockoutEnabled(Boolean isLockoutEnabled){
-  this.isLockoutEnabled = isLockoutEnabled;
-  }
-  
-  public String getIsPhoneNumberConfirmed() {
-  return isPhoneNumberConfirmed;
-  }
+	private Date lockoutEndDateUtc;
 
-  public void setIsPhoneNumberConfirmed(String isPhoneNumberConfirmed){
-  this.isPhoneNumberConfirmed = isPhoneNumberConfirmed;
-  }
-  
-  public Date getLastLoginTime() {
-  return lastLoginTime;
-  }
+	@NotNull(message = "password Should not be null")
+	@Length(max = 128, message = "password must be less than 128 characters")
+	private String password;
 
-  public void setLastLoginTime(Date lastLoginTime){
-  this.lastLoginTime = lastLoginTime;
-  }
-  
-  public String getLastName() {
-  return lastName;
-  }
+	@Length(max = 328, message = "passwordResetCode must be less than 328 characters")
+	private String passwordResetCode;
 
-  public void setLastName(String lastName){
-  this.lastName = lastName;
-  }
-  
-  public Date getLockoutEndDateUtc() {
-  return lockoutEndDateUtc;
-  }
+	private Date passwordTokenExpiration;
 
-  public void setLockoutEndDateUtc(Date lockoutEndDateUtc){
-  this.lockoutEndDateUtc = lockoutEndDateUtc;
-  }
-  
-  public String getPassword() {
-  return password;
-  }
+	@Length(max = 32, message = "phoneNumber must be less than 32 characters")
+	private String phoneNumber;
 
-  public void setPassword(String password){
-  this.password = password;
-  }
-  
-  public String getPasswordResetCode() {
-  return passwordResetCode;
-  }
+	private Long profilePictureId;
 
-  public void setPasswordResetCode(String passwordResetCode){
-  this.passwordResetCode = passwordResetCode;
-  }
-  
-  public Date getPasswordTokenExpiration() {
-  return passwordTokenExpiration;
-  }
+	private Boolean twoFactorEnabled;
 
-  public void setPasswordTokenExpiration(Date passwordTokenExpiration){
-  this.passwordTokenExpiration = passwordTokenExpiration;
-  }
-  
-  public String getPhoneNumber() {
-  return phoneNumber;
-  }
+	@NotNull(message = "userName Should not be null")
+	@Length(max = 32, message = "userName must be less than 32 characters")
+	private String userName;
 
-  public void setPhoneNumber(String phoneNumber){
-  this.phoneNumber = phoneNumber;
-  }
-  
-  public Long getProfilePictureId() {
-  return profilePictureId;
-  }
-
-  public void setProfilePictureId(Long profilePictureId){
-  this.profilePictureId = profilePictureId;
-  }
-  
-  public Boolean getTwoFactorEnabled() {
-  return twoFactorEnabled;
-  }
-
-  public void setTwoFactorEnabled(Boolean twoFactorEnabled){
-  this.twoFactorEnabled = twoFactorEnabled;
-  }
-  
-  public String getUserName() {
-  return userName;
-  }
-
-  public void setUserName(String userName){
-  this.userName = userName;
-  }
-  
- 
 }

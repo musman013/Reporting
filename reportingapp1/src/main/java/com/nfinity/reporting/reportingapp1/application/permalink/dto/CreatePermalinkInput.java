@@ -1,6 +1,5 @@
 package com.nfinity.reporting.reportingapp1.application.permalink.dto;
 
-import java.util.Date;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 

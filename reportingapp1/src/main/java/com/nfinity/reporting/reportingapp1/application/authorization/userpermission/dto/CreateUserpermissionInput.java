@@ -1,8 +1,11 @@
 package com.nfinity.reporting.reportingapp1.application.authorization.userpermission.dto;
 
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CreateUserpermissionInput {
 
     @NotNull(message = "permissionId Should not be null")
@@ -12,28 +15,4 @@ public class CreateUserpermissionInput {
     private Long userId;
     private Boolean revoked;
     
-    public Boolean getRevoked() {
-    	return revoked;
-    }
-
-    public void setRevoked(Boolean revoked) {
-    	this.revoked = revoked;
-    }
-    
-  	public Long getPermissionId() {
-  		return permissionId;
-  	}
-
-  	public void setPermissionId(Long permissionId){
-  		this.permissionId = permissionId;
-  	}
-  
-  	public Long getUserId() {
-  		return userId;
-  	}
-
-  	public void setUserId(Long userId){
-  		this.userId = userId;
-  	}
- 
 }

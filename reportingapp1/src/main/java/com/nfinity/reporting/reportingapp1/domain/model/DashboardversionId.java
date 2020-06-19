@@ -2,44 +2,25 @@ package com.nfinity.reporting.reportingapp1.domain.model;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 public class DashboardversionId implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
     private Long dashboardId;
     private Long userId;
-    private String version;
+    private String dashboardVersion;
    
-
-    public DashboardversionId(){
-    }
-    
-    public DashboardversionId(Long userId,Long dashboardId,  String version) {
+    public DashboardversionId(Long userId,Long dashboardId,  String dashboardVersion) {
 		super();
 		this.dashboardId = dashboardId;
 		this.userId = userId;
-		this.version = version;
+		this.dashboardVersion = dashboardVersion;
 	}
     
-	public Long getDashboardId() {
-        return dashboardId;
-    }
-	
-    public void setDashboardId(Long dashboardId){
-        this.dashboardId = dashboardId;
-    }
-    
-    public Long getUserId() {
-        return userId;
-    }
-	
-    public void setUserId(Long userId){
-        this.userId = userId;
-    }
-    
-    public String getVersion() {
-        return version;
-    }
-    
-    public void setVersion(String version){
-        this.version = version;
-    }
 }

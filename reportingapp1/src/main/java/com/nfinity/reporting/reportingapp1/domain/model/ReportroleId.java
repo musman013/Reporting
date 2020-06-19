@@ -1,34 +1,22 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter @Setter
+@NoArgsConstructor
 public class ReportroleId implements Serializable {
 
+	private static final long serialVersionUID = 1L;
     private Long reportId;
     private Long roleId;
 
-    public ReportroleId(){
-    }
-    
     public ReportroleId(Long reportId, Long roleId) {
 		super();
 		this.reportId = reportId;
 		this.roleId = roleId;
 	}
     
-	public Long getReportId() {
-        return reportId;
-    }
-	
-    public void setReportId(Long reportId){
-        this.reportId = reportId;
-    }
-    
-    public Long getRoleId() {
-        return roleId;
-    }
-    
-    public void setRoleId(Long roleId){
-        this.roleId = roleId;
-    }
 }

@@ -94,7 +94,7 @@ public class DashboardversionreportManager implements IDashboardversionreportMan
 		Optional<DashboardversionreportEntity> dbDashboardversionreport= _reportdashboardRepository.findById(reportdashboardId);
 		if(dbDashboardversionreport.isPresent()) {
 			DashboardversionreportEntity existingDashboardversionreport = dbDashboardversionreport.get();
-		    return existingDashboardversionreport.getDashboardversion();
+		    return existingDashboardversionreport.getDashboardversionEntity();
 		} else {
 		    return null;
 		}

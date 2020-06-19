@@ -1,33 +1,14 @@
 package com.nfinity.reporting.reportingapp1.application.dashboardrole.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class FindDashboardroleByIdOutput {
 
-  private Long roleId;
-  private Long dashboardId;
-  private String roleDescriptiveField;
- 
-  public String getRoleDescriptiveField() {
-  	return roleDescriptiveField;
-  }
+	private Long roleId;
+	private Long dashboardId;
+	private String roleDescriptiveField;
+	private Long version;
 
-  public void setRoleDescriptiveField(String roleDescriptiveField){
-  	this.roleDescriptiveField = roleDescriptiveField;
-  }
- 
-  public Long getRoleId() {
-  	return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  	this.roleId = roleId;
-  }
-  
-  public Long getDashboardId() {
-  	return dashboardId;
-  }
-
-  public void setDashboardId(Long dashboardId){
-  	this.dashboardId = dashboardId;
-  }
- 
 }

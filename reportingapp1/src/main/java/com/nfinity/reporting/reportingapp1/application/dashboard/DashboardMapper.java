@@ -92,6 +92,7 @@ public interface DashboardMapper {
 		@Mapping(source = "dashboardversion.userId", target = "userId"), 
 		@Mapping(source = "dashboard.user.id", target = "ownerId"),
 		@Mapping(source = "dashboardversion.dashboardId", target = "id"),
+		@Mapping(source = "dashboard.version", target = "version")
 	})
 	FindDashboardByIdOutput dashboardEntitiesToFindDashboardByIdOutput(DashboardEntity dashboard, DashboardversionEntity dashboardversion, DashboarduserEntity dashboarduser);
 

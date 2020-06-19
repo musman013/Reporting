@@ -1,5 +1,9 @@
 package com.nfinity.reporting.reportingapp1.application.dashboard.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CreateDashboardOutput {
 
 	private String description;
@@ -9,62 +13,5 @@ public class CreateDashboardOutput {
 	private Long ownerId;
 	private String ownerDescriptiveField;
 	private Boolean isShareable;
-
-	public Boolean getIsShareable() {
-		return isShareable;
-	}
-
-	public void setIsShareable(Boolean isShareable) {
-		this.isShareable = isShareable;
-	}
-
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(Long ownerId){
-		this.ownerId = ownerId;
-	}
-
-
-	public Boolean getIsPublished() {
-		return isPublished;
-	}
-
-	public void setIsPublished(Boolean isPublished) {
-		this.isPublished = isPublished;
-	}
-
-	public String getOwnerDescriptiveField() {
-		return ownerDescriptiveField;
-	}
-
-	public void setOwnerDescriptiveField(String ownerDescriptiveField){
-		this.ownerDescriptiveField = ownerDescriptiveField;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description){
-		this.description = description;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title){
-		this.title = title;
-	}
-
+	
 }

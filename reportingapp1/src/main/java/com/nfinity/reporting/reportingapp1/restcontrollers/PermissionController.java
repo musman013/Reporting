@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -33,19 +34,19 @@ public class PermissionController {
 
 	@Autowired
 	private PermissionAppService _permissionAppService;
-    
-    @Autowired
+
+	@Autowired
 	private RolepermissionAppService  _rolepermissionAppService;
-    @Autowired
+	@Autowired
 	private UserpermissionAppService  _userpermissionAppService;
 	@Autowired
 	private LoggingHelper logHelper;
 
 	@Autowired
 	private Environment env;
-	
+
 	public PermissionController(PermissionAppService appService,LoggingHelper helper,UserpermissionAppService userpermissionAppService,RolepermissionAppService rolepermissionAppService) {
-		
+
 		this._permissionAppService= appService;
 		this.logHelper = helper;
 		this._userpermissionAppService = userpermissionAppService;
@@ -60,13 +61,13 @@ public class PermissionController {
 	public ResponseEntity<CreatePermissionOutput> create(@RequestBody @Valid CreatePermissionInput permission) {
 
 		FindPermissionByNameOutput existing = _permissionAppService.findByPermissionName(permission.getName());
-        
-        if (existing != null) {
-            logHelper.getLogger().error("There already exists a permission with name=%s", permission.getName());
-            throw new EntityExistsException(
-                    String.format("There already exists a permission with name=%s", permission.getName()));
-        }
-        
+
+		if (existing != null) {
+			logHelper.getLogger().error("There already exists a permission with name=%s", permission.getName());
+			throw new EntityExistsException(
+					String.format("There already exists a permission with name=%s", permission.getName()));
+		}
+
 		CreatePermissionOutput output=_permissionAppService.create(permission);
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -76,76 +77,65 @@ public class PermissionController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String id) {
-    FindPermissionByIdOutput output = _permissionAppService.findById(Long.valueOf(id));
-	
-	if (output == null) {
-		logHelper.getLogger().error("There does not exist a permission with a id=%s", id);
-		throw new EntityNotFoundException(
-			String.format("There does not exist a permission with a id=%s", id));
+		
+		FindPermissionByIdOutput output = _permissionAppService.findById(Long.valueOf(id));
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a permission with a id=%s", id)));
+
+		_permissionAppService.delete(Long.valueOf(id));
 	}
-    _permissionAppService.delete(Long.valueOf(id));
-    }
-	
+
 	// ------------ Update permission ------------
 	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdatePermissionOutput> update(@PathVariable String id, @RequestBody @Valid UpdatePermissionInput permission) {
-    FindPermissionByIdOutput currentPermission = _permissionAppService.findById(Long.valueOf(id));
 		
-		if (currentPermission == null) {
-			logHelper.getLogger().error("Unable to update. Permission with id {} not found.", id);
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		FindPermissionByIdOutput currentPermission = _permissionAppService.findById(Long.valueOf(id));
+		Optional.ofNullable(currentPermission).orElseThrow(() -> new EntityNotFoundException(String.format("Unable to update. Permission with id=%s not found.", id)));
 		
-    return new ResponseEntity(_permissionAppService.update(Long.valueOf(id),permission), HttpStatus.OK);
+		permission.setVersion(currentPermission.getVersion());
+		return new ResponseEntity(_permissionAppService.update(Long.valueOf(id),permission), HttpStatus.OK);
 	}
 
-    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindPermissionByIdOutput> findById(@PathVariable String id) {
-    FindPermissionByIdOutput output = _permissionAppService.findById(Long.valueOf(id));
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		
+		FindPermissionByIdOutput output = _permissionAppService.findById(Long.valueOf(id));
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Permission with id=%s not found.", id)));
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
-    
-    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
+
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
+		
 		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
+		
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		
+
 		return ResponseEntity.ok(_permissionAppService.find(searchCriteria,Pageable));
 	}
-    
-    @PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
+
+	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{permissionid}/rolepermission", method = RequestMethod.GET)
 	public ResponseEntity getRolepermission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
-   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
+		
 		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
-		
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
-		Map<String,String> joinColDetails=_permissionAppService.parseRolepermissionJoinColumn(permissionid);
-		if(joinColDetails== null)
-		{
-			logHelper.getLogger().error("Invalid Join Column");
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		searchCriteria.setJoinColumns(joinColDetails);
 		
-    	List<FindRolepermissionByIdOutput> output = _rolepermissionAppService.find(searchCriteria,pageable);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Map<String,String> joinColDetails=_permissionAppService.parseRolepermissionJoinColumn(permissionid);
+		Optional.ofNullable(joinColDetails).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid Join Column")));
+		
+		searchCriteria.setJoinColumns(joinColDetails);
+
+		List<FindRolepermissionByIdOutput> output = _rolepermissionAppService.find(searchCriteria,pageable);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not Found")));
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -153,25 +143,20 @@ public class PermissionController {
 	@PreAuthorize("hasAnyAuthority('PERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{permissionid}/userpermission", method = RequestMethod.GET)
 	public ResponseEntity getUserpermission(@PathVariable String permissionid, @RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort)throws Exception {
-   		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
-		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
-		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		
+		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
+		
+		Pageable pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
+
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		Map<String,String> joinColDetails=_permissionAppService.parseUserpermissionJoinColumn(permissionid);
-		if(joinColDetails== null)
-		{
-			logHelper.getLogger().error("Invalid Join Column");
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
-		searchCriteria.setJoinColumns(joinColDetails);
+		Optional.ofNullable(joinColDetails).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid Join Column")));
 		
-    	List<FindUserpermissionByIdOutput> output = _userpermissionAppService.find(searchCriteria,pageable);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		searchCriteria.setJoinColumns(joinColDetails);
+
+		List<FindUserpermissionByIdOutput> output = _userpermissionAppService.find(searchCriteria,pageable);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not Found")));
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	} 

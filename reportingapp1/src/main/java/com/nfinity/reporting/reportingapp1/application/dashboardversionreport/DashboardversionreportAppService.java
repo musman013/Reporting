@@ -54,9 +54,9 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 
 		DashboardversionreportEntity reportdashboard = mapper.createReportdashboardInputToDashboardversionreportEntity(input);
 		if(input.getDashboardId()!=null) {
-			DashboardversionEntity foundDashboard = _dashboardversionManager.findById(new DashboardversionId(input.getUserId(),input.getDashboardId(), input.getVersion()));
+			DashboardversionEntity foundDashboard = _dashboardversionManager.findById(new DashboardversionId(input.getUserId(),input.getDashboardId(), input.getDashboardVersion()));
 			if(foundDashboard!=null) {
-				reportdashboard.setDashboardversion(foundDashboard);
+				reportdashboard.setDashboardversionEntity(foundDashboard);
 			}
 		}
 		if(input.getReportId()!=null) {
@@ -100,10 +100,10 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 		DashboardversionEntity dashboardrunningVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getOwnerId(),dashboard.getId(), "running"));
 		if(dashboardrunningVersion !=null) {
 			reportdashboard.setDashboardId(dashboardrunningVersion.getDashboardId());
-			reportdashboard.setDashboardVersion(dashboardrunningVersion.getVersion());
+			reportdashboard.setDashboardVersion(dashboardrunningVersion.getDashboardVersion());
 			reportdashboard.setUserId(dashboardrunningVersion.getUserId());
 
-			reportdashboard.setDashboardversion(dashboardrunningVersion);
+			reportdashboard.setDashboardversionEntity(dashboardrunningVersion);
 		}
 
 		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdAndVersionAndUserIdInDesc(reportdashboard.getDashboardId(), "running", dashboard.getOwnerId());
@@ -144,10 +144,10 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 		DashboardversionEntity dashboardPublishedVersion = _dashboardversionManager.findById(new DashboardversionId(dashboard.getOwnerId(),dashboard.getId(), "published"));
 		if(dashboardPublishedVersion !=null) {
 			reportdashboard.setDashboardId(dashboardPublishedVersion.getDashboardId());
-			reportdashboard.setDashboardVersion(dashboardPublishedVersion.getVersion());
+			reportdashboard.setDashboardVersion(dashboardPublishedVersion.getDashboardVersion());
 			reportdashboard.setUserId(dashboardPublishedVersion.getUserId());
 
-			reportdashboard.setDashboardversion(dashboardPublishedVersion);
+			reportdashboard.setDashboardversionEntity(dashboardPublishedVersion);
 		}
 
 		List<DashboardversionreportEntity> list = _reportdashboardManager.findByDashboardIdAndVersionAndUserIdInDesc(reportdashboard.getDashboardId(),"published", dashboard.getOwnerId());
@@ -187,9 +187,9 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 
 		DashboardversionreportEntity reportdashboard = mapper.updateReportdashboardInputToDashboardversionreportEntity(input);
 		if(input.getDashboardId()!=null) {
-			DashboardversionEntity foundDashboard = _dashboardversionManager.findById(new DashboardversionId(input.getUserId(),input.getDashboardId(), input.getVersion()));
+			DashboardversionEntity foundDashboard = _dashboardversionManager.findById(new DashboardversionId(input.getUserId(),input.getDashboardId(), input.getDashboardVersion()));
 			if(foundDashboard!=null) {
-				reportdashboard.setDashboardversion(foundDashboard);
+				reportdashboard.setDashboardversionEntity(foundDashboard);
 			}
 		}
 		if(input.getReportId()!=null) {
@@ -209,6 +209,11 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 	public void delete(DashboardversionreportId reportdashboardId) {
 
 		DashboardversionreportEntity existing = _reportdashboardManager.findById(reportdashboardId) ; 
+		ReportEntity report=_reportManager.findById(reportdashboardId.getReportId());
+		report.removeDashboardversionreport(existing);
+		DashboardversionEntity dashboardversion = _dashboardversionManager.findById(new DashboardversionId(reportdashboardId.getUserId(), reportdashboardId.getDashboardId(), reportdashboardId.getDashboardVersion()));
+		dashboardversion.removeDashboardversionreport(existing);
+		
 		_reportdashboardManager.delete(existing);
 
 	}
@@ -304,19 +309,17 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 	public BooleanBuilder searchKeyValuePair(QDashboardversionreportEntity reportdashboard, Map<String,SearchFields> map,Map<String,String> joinColumns) {
 		BooleanBuilder builder = new BooleanBuilder();
 
-		for (Map.Entry<String, SearchFields> details : map.entrySet()) {
-		}
 		for (Map.Entry<String, String> joinCol : joinColumns.entrySet()) {
 			if(joinCol != null && joinCol.getKey().equals("dashboardId")) {
-				builder.and(reportdashboard.dashboardversion.dashboardId.eq(Long.parseLong(joinCol.getValue())));
+				builder.and(reportdashboard.dashboardversionEntity.dashboardId.eq(Long.parseLong(joinCol.getValue())));
 			}
 
 			if(joinCol != null && joinCol.getKey().equals("userId")) {
-				builder.and(reportdashboard.dashboardversion.userId.eq(Long.parseLong(joinCol.getValue())));
+				builder.and(reportdashboard.dashboardversionEntity.userId.eq(Long.parseLong(joinCol.getValue())));
 			}
 
-			if(joinCol != null && joinCol.getKey().equals("version")) {
-				builder.and(reportdashboard.dashboardversion.version.eq((joinCol.getValue())));
+			if(joinCol != null && joinCol.getKey().equals("dashboardVersion")) {
+				builder.and(reportdashboard.dashboardversionEntity.dashboardVersion.eq((joinCol.getValue())));
 			}
 
 			if(joinCol != null && joinCol.getKey().equals("reportId")) {
@@ -350,7 +353,7 @@ public class DashboardversionreportAppService implements IDashboardversionreport
 
 		reportdashboardId.setDashboardId(Long.valueOf(keyMap.get("dashboardId")));
 		reportdashboardId.setDashboardId(Long.valueOf(keyMap.get("userId")));
-		reportdashboardId.setDashboardId(Long.valueOf(keyMap.get("version")));
+		reportdashboardId.setDashboardId(Long.valueOf(keyMap.get("dashboardVersion")));
 		reportdashboardId.setReportId(Long.valueOf(keyMap.get("reportId")));
 		return reportdashboardId;
 

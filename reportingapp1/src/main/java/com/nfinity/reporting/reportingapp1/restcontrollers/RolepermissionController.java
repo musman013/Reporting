@@ -1,5 +1,7 @@
 package com.nfinity.reporting.reportingapp1.restcontrollers;
 
+import java.util.Optional;
+
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
@@ -48,13 +50,9 @@ public class RolepermissionController {
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_CREATE')")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<CreateRolepermissionOutput> create(@RequestBody @Valid CreateRolepermissionInput rolepermission) {
-		CreateRolepermissionOutput output=_rolepermissionAppService.create(rolepermission);
-		if(output==null)
-		{
-			logHelper.getLogger().error("No record found");
-		throw new EntityNotFoundException(
-				String.format("No record found"));
-	    }
+		
+    	CreateRolepermissionOutput output=_rolepermissionAppService.create(rolepermission);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("No record found")));
 		
 		_rolepermissionAppService.deleteUserTokens(output.getRoleId());
 		
@@ -66,22 +64,14 @@ public class RolepermissionController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String id) {
-		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
-		if(rolepermissionId == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
-		FindRolepermissionByIdOutput output = _rolepermissionAppService.findById(rolepermissionId);
-		if (output == null) {
-			logHelper.getLogger().error("There does not exist a rolepermission with a id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("There does not exist a rolepermission with a id=%s", id));
-		}
-	
-		_rolepermissionAppService.deleteUserTokens(output.getRoleId());
 		
+		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
+		Optional.ofNullable(rolepermissionId).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+		
+		FindRolepermissionByIdOutput output = _rolepermissionAppService.findById(rolepermissionId);
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("There does not exist a rolepermission with a id=%s", id)));
+		
+		_rolepermissionAppService.deleteUserTokens(output.getRoleId());
 		_rolepermissionAppService.delete(rolepermissionId);
     }
 	
@@ -89,21 +79,15 @@ public class RolepermissionController {
 	@PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_UPDATE')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<UpdateRolepermissionOutput> update(@PathVariable String id, @RequestBody @Valid UpdateRolepermissionInput rolepermission) {
-		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
-		if(rolepermissionId == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
-		FindRolepermissionByIdOutput currentRolepermission = _rolepermissionAppService.findById(rolepermissionId);
 		
-		if (currentRolepermission == null) {
-			logHelper.getLogger().error("Unable to update. Rolepermission with id {} not found.", id);
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
+		Optional.ofNullable(rolepermissionId).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+		
+		FindRolepermissionByIdOutput currentRolepermission = _rolepermissionAppService.findById(rolepermissionId);
+		Optional.ofNullable(currentRolepermission).orElseThrow(() -> new EntityNotFoundException(String.format("Unable to update. Rolepermission with id=%s not found.", id)));
 		
 		_rolepermissionAppService.deleteUserTokens(rolepermissionId.getRoleId());
+		rolepermission.setVersion(currentRolepermission.getVersion());
 		
 		return new ResponseEntity(_rolepermissionAppService.update(rolepermissionId,rolepermission), HttpStatus.OK);
 	}
@@ -111,17 +95,12 @@ public class RolepermissionController {
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<FindRolepermissionByIdOutput> findById(@PathVariable String id) {
-		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
-		if(rolepermissionId == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
+		
+    	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
+		Optional.ofNullable(rolepermissionId).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+		
 		FindRolepermissionByIdOutput output = _rolepermissionAppService.findById(rolepermissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found")));
 		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
@@ -129,10 +108,10 @@ public class RolepermissionController {
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity find(@RequestParam(value="search", required=false) String search, @RequestParam(value = "offset", required=false) String offset, @RequestParam(value = "limit", required=false) String limit, Sort sort) throws Exception {
-		if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
+		
+    	if (offset == null) { offset = env.getProperty("fastCode.offset.default"); }
 		if (limit == null) { limit = env.getProperty("fastCode.limit.default"); }
-//		if (sort.isUnsorted()) { sort = new Sort(Sort.Direction.fromString(env.getProperty("fastCode.sort.direction.default")), new String[]{env.getProperty("fastCode.sort.property.default")}); }
-
+		
 		Pageable Pageable = new OffsetBasedPageRequest(Integer.parseInt(offset), Integer.parseInt(limit), sort);
 		SearchCriteria searchCriteria = SearchUtils.generateSearchCriteriaObject(search);
 		
@@ -142,34 +121,26 @@ public class RolepermissionController {
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}/permission", method = RequestMethod.GET)
 	public ResponseEntity<GetPermissionOutput> getPermission(@PathVariable String id) {
-		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
-		if(rolepermissionId == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
+		
+    	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
+		Optional.ofNullable(rolepermissionId).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+		
 		GetPermissionOutput output= _rolepermissionAppService.getPermission(rolepermissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found")));
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   
     @PreAuthorize("hasAnyAuthority('ROLEPERMISSIONENTITY_READ')")
 	@RequestMapping(value = "/{id}/role", method = RequestMethod.GET)
 	public ResponseEntity<GetRoleOutput> getRole(@PathVariable String id) {
-		RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
-		if(rolepermissionId == null)
-		{
-			logHelper.getLogger().error("Invalid id=%s", id);
-			throw new EntityNotFoundException(
-				String.format("Invalid id=%s", id));
-		}
+		
+    	RolepermissionId rolepermissionId =_rolepermissionAppService.parseRolepermissionKey(id);
+		Optional.ofNullable(rolepermissionId).orElseThrow(() -> new EntityNotFoundException(String.format("Invalid id=%s", id)));
+		
 		GetRoleOutput output= _rolepermissionAppService.getRole(rolepermissionId);
-		if (output == null) {
-			return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.NOT_FOUND);
-		}
+		Optional.ofNullable(output).orElseThrow(() -> new EntityNotFoundException(String.format("Not found")));
+		
 		return new ResponseEntity(output, HttpStatus.OK);
 	}
   

@@ -1,7 +1,5 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -16,148 +14,74 @@ import javax.persistence.Table;
 import org.json.simple.JSONObject;
 import com.nfinity.reporting.reportingapp1.JSONObjectConverter;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "reportversion", schema = "reporting")
 @IdClass(ReportversionId.class)
-public class ReportversionEntity implements Serializable {
+public class ReportversionEntity extends AbstractEntity {
 	
-	private Long userId;
-	private Long reportId;
-  	private String ctype;
-  	private String description;
-  	private JSONObject query;
-  	private String reportType;
-  	private String title;
-  	private String version;
-  	private Boolean isAssignedByDashboard;
-
-	public ReportversionEntity() {
-  	}
-
+	private static final long serialVersionUID = 1L;
+	
 	@Id
   	@Column(name = "userId", nullable = false)
-  	public Long getUserId() {
-  		return userId;
-  	}
-
-  	public void setUserId(Long userId) {
-  		this.userId = userId;
-  	}
-  	
-  	@Id
+	private Long userId;
+	
+	@Id
   	@Column(name = "reportId", nullable = false)
-  	public Long getReportId() {
-  		return reportId;
-  	}
-
-  	public void setReportId(Long reportId) {
-  		this.reportId = reportId;
-  	}
-  	
-  	@Id
-  	@Column(name = "version", nullable = false, length =255)
-  	public String getVersion() {
-  		return version;
-  	}
-
-  	public void setVersion(String version) {
-  		this.version = version;
-  	}
-
-  	@Basic
+	private Long reportId;
+	
+	@Basic
   	@Column(name = "ctype", nullable = true, length =255)
-  	public String getCtype() {
-  		return ctype;
-  	}
-
-  	public void setCtype(String ctype) {
-  		this.ctype = ctype;
-  	}
-  
-  	@Basic
+  	private String ctype;
+	
+	@Basic
   	@Column(name = "description", nullable = true, length =255)
-  	public String getDescription() {
-  		return description;
-  	}
-
-  	public void setDescription(String description) {
-  		this.description = description;
-  	}
-  	
+  	private String description;
+	
 	@Basic
   	@Column(columnDefinition = "TEXT",name = "query", nullable = true, length =255)
   	@Convert(converter= JSONObjectConverter.class)
-  	public JSONObject getQuery() {
-  		return query;
-  	}
-
-  	public void setQuery(JSONObject query) {
-  		this.query = query;
-  	}
-  
-  	@Basic
+  	private JSONObject query;
+	
+	@Basic
   	@Column(name = "reportType", nullable = true, length =255)
-  	public String getReportType() {
-  		return reportType;
-  	}
-
-  	public void setReportType(String reportType) {
-  		this.reportType = reportType;
-  	}
- 
-  	@Basic
+  	private String reportType;
+	
+	@Basic
   	@Column(name = "title", nullable = false, length =255)
-  	public String getTitle() {
-  		return title;
-  	}
-
-  	public void setTitle(String title) {
-  		this.title = title;
-  	}
+  	private String title;
+  	
+  	@Id
+  	@Column(name = "reportVersion", nullable = false, length =255)
+  	private String reportVersion;
   	
   	@Basic
 	@Column(name = "isAssignedByDashboard" , nullable= false)
-  	public Boolean getIsAssignedByDashboard() {
-		return isAssignedByDashboard;
-	}
+  	private Boolean isAssignedByDashboard;
 
-
-	public void setIsAssignedByDashboard(Boolean isAssignedByDashboard) {
-		this.isAssignedByDashboard = isAssignedByDashboard;
-	}
-  	
   	@ManyToOne
   	@JoinColumn(name = "reportId", referencedColumnName = "id", insertable = false, updatable = false)
-  	public ReportEntity getReport() {
-    	return report;
-  	}
-  	public void setReport(ReportEntity report) {
-    	this.report = report;
-  	}
-  
   	private ReportEntity report;
   	
   	@ManyToOne
   	@JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
-  	public UserEntity getUser() {
-    	return user;
-  	}
-  	public void setUser(UserEntity user) {
-    	this.user = user;
-  	}
-  
   	private UserEntity user;
   	
   	@PreRemove
     private void dismissParent() {
   		//SYNCHRONIZING THE OTHER SIDE OF RELATIONSHIP
   		if(this.user != null) {
-  			this.user.removeReportVersion(this);
+  			this.user.removeReportversion(this);
   	        this.user = null;	
   		}
   		
   		if(this.report != null) {
-  			this.report.removeReportVersion(this);
+  			this.report.removeReportversion(this);
   	        this.report = null;	
   		}
         

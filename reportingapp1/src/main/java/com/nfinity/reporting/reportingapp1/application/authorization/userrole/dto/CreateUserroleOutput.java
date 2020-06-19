@@ -1,6 +1,9 @@
 package com.nfinity.reporting.reportingapp1.application.authorization.userrole.dto;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CreateUserroleOutput {
 
     private Long roleId;
@@ -8,34 +11,4 @@ public class CreateUserroleOutput {
     private String userDescriptiveField;
 	private String roleDescriptiveField;
  
-    public String getRoleDescriptiveField() {
-  		return roleDescriptiveField;
-    }
-
-    public void setRoleDescriptiveField(String roleDescriptiveField){
-  		this.roleDescriptiveField = roleDescriptiveField;
-    }
- 
-    public Long getRoleId() {
-  		return roleId;
-    }
-
-    public void setRoleId(Long roleId){
-  		this.roleId = roleId;
-    }
-  
-  	 public Long getUserId() {
-  	 	return userId;
-  	 }
-
-  	 public void setUserId(Long userId){
-  	 	this.userId = userId;
-  	 }
-     public String getUserDescriptiveField() {
-  		return userDescriptiveField;
-  	 }
-
-  	 public void setUserDescriptiveField(String userDescriptiveField){
-  	 	this.userDescriptiveField = userDescriptiveField;
-  	 }
 }

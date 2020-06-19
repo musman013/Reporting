@@ -2,6 +2,10 @@ package com.nfinity.reporting.reportingapp1.application.reportuser.dto;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class UpdateReportuserInput {
 
 	@NotNull(message = "userId Should not be null")
@@ -9,19 +13,4 @@ public class UpdateReportuserInput {
 	@NotNull(message = "reportId Should not be null")
 	private Long reportId;
 
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId){
-		this.userId = userId;
-	}
-
-	public Long getReportId() {
-		return reportId;
-	}
-
-	public void setReportId(Long reportId){
-		this.reportId = reportId;
-	}
 }

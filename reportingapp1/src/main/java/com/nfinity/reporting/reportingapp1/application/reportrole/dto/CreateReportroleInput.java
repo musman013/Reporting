@@ -2,6 +2,10 @@ package com.nfinity.reporting.reportingapp1.application.reportrole.dto;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CreateReportroleInput {
 
 	@NotNull(message = "roleId Should not be null")
@@ -16,39 +20,4 @@ public class CreateReportroleInput {
 	@NotNull(message = "ownerSharingStatus Should not be null")
 	private Boolean ownerSharingStatus;
 	
-	public Boolean getOwnerSharingStatus() {
-		return ownerSharingStatus;
-	}
-
-	public void setOwnerSharingStatus(Boolean ownerSharingStatus) {
-		this.ownerSharingStatus = ownerSharingStatus;
-	}
-
-	public Long getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(Long roleId){
-		this.roleId = roleId;
-	}
-
-	public Long getReportId() {
-		return reportId;
-	}
-
-	public void setReportId(Long reportId){
-		this.reportId = reportId;
-	}
-
-	public Boolean getEditable() {
-		return editable;
-	}
-
-	public void setEditable(Boolean editable) {
-		this.editable = editable;
-	}
-
-
-
-
 }

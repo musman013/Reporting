@@ -43,7 +43,7 @@ public class BeanConfig {
          jc.getPoolConfig().setMaxIdle(30);
          jc.getPoolConfig().setMinIdle(10);
          template.setConnectionFactory(jc);
-         doInRedis(jc.getConnection());
+     //    doInRedis(jc.getConnection());
 	     return template;
     }
     

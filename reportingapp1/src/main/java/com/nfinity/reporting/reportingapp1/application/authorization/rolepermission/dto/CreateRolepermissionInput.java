@@ -1,8 +1,11 @@
 package com.nfinity.reporting.reportingapp1.application.authorization.rolepermission.dto;
 
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CreateRolepermissionInput {
 
   @NotNull(message = "permissionId Should not be null")
@@ -10,22 +13,5 @@ public class CreateRolepermissionInput {
   
   @NotNull(message = "roleId Should not be null")
   private Long roleId;
-  
-  public Long getPermissionId() {
-  return permissionId;
-  }
-
-  public void setPermissionId(Long permissionId){
-  this.permissionId = permissionId;
-  }
-  
-  public Long getRoleId() {
-  return roleId;
-  }
-
-  public void setRoleId(Long roleId){
-  this.roleId = roleId;
-  }
-  
  
 }

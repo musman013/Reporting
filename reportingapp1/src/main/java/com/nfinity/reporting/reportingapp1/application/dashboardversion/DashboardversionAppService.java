@@ -55,18 +55,21 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 	  	if(input.getUserId()!=null) {
 			UserEntity foundUser = _userManager.findById(input.getUserId());
 			if(foundUser!=null) {
-				dashboardversion.setUser(foundUser);
+			//	dashboardversion.setUser(foundUser);
+				foundUser.addDashboardversion(dashboardversion);
 			}
 		}
 	  	if(input.getDashboardId()!=null) { 
 			DashboardEntity foundDashboard = _dashboardManager.findById(input.getDashboardId());
 			if(foundDashboard!=null) {
-				dashboardversion.setDashboard(foundDashboard);
+			//	dashboardversion.setDashboard(foundDashboard);
+				foundDashboard.addDashboardversion(dashboardversion);
 			}
 		}
-	  	dashboardversion.setVersion("running");
+	  	dashboardversion.setDashboardVersion("running");
 		DashboardversionEntity createdRunningDashboardversion = _dashboardversionManager.create(dashboardversion);
-		dashboardversion.setVersion("published");
+		dashboardversion = mapper.createDashboardversionInputToDashboardversionEntity(input);
+		dashboardversion.setDashboardVersion("published");
 		DashboardversionEntity createdPublishedDashboardversion = _dashboardversionManager.create(dashboardversion);
 		
 		return mapper.dashboardversionEntityToCreateDashboardversionOutput(createdRunningDashboardversion);
@@ -90,7 +93,7 @@ public class DashboardversionAppService implements IDashboardversionAppService {
 			dashboardversion.setDashboard(foundDashboard);
 		}
 		
-	  	dashboardversion.setVersion(dashboardversionId.getVersion());
+	  	dashboardversion.setDashboardVersion(dashboardversionId.getDashboardVersion());
 	  	DashboardversionEntity updatedDashboardversion = _dashboardversionManager.update(dashboardversion);
 
 		return mapper.dashboardversionEntityToUpdateDashboardversionOutput(updatedDashboardversion);

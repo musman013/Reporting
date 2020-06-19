@@ -1,99 +1,65 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
+
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "Permission", schema = "reporting")
+public class PermissionEntity extends AbstractEntity {
+    
+	private static final long serialVersionUID = 1L;
 
-public class PermissionEntity implements Serializable {
+    @Id
+    @Column(name = "Id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Basic
+    @Column(name = "DisplayName", nullable = false, length = 128)
     private String displayName;
 
-    public PermissionEntity() {
-    }
+    @Basic
+    @Column(name = "Name", nullable = false, length = 128,unique = true)
+    private String name;
     
     public PermissionEntity(String name, String displayName) {
     	this.name = name;
     	this.displayName = displayName;
     }
 
-    @Id
-    @Column(name = "Id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Basic
-    @Column(name = "DisplayName", nullable = false, length = 128)
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    @Basic
-    @Column(name = "Name", nullable = false, length = 128,unique = true)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PermissionEntity)) return false;
-        PermissionEntity permission = (PermissionEntity) o;
-        return id != null && id.equals(permission.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 31;
-    }
-
-    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<RolepermissionEntity> getRolepermissionSet() { 
-      return rolepermissionSet; 
-    } 
- 
-    public void setRolepermissionSet(Set<RolepermissionEntity> rolepermission) { 
-      this.rolepermissionSet = rolepermission; 
-    } 
- 
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL) 
     private Set<RolepermissionEntity> rolepermissionSet = new HashSet<RolepermissionEntity>(); 
   
-    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true) 
-    public Set<UserpermissionEntity> getUserpermissionSet() { 
-      return userpermissionSet; 
-    } 
- 
-    public void setUserpermissionSet(Set<UserpermissionEntity> userpermission) { 
-      this.userpermissionSet = userpermission; 
-    } 
- 
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL) 
     private Set<UserpermissionEntity> userpermissionSet = new HashSet<UserpermissionEntity>(); 
     
-    public void removeUserpermission(UserpermissionEntity rv) {
-        this.userpermissionSet.remove(rv);
-    }
+    public void addRolepermission(RolepermissionEntity rolepermission) {
+		rolepermissionSet.add(rolepermission);
+		rolepermission.setPermission(this);
+	}
 
-    public void removeRolepermission(RolepermissionEntity rv) {
-        this.rolepermissionSet.remove(rv);
-    }
+	public void removeRolepermission(RolepermissionEntity rolepermission) {
+		rolepermissionSet.remove(rolepermission);
+		rolepermission.setPermission(null);
+	}
+	
+	public void addUserpermission(UserpermissionEntity userpermission) {
+		userpermissionSet.add(userpermission);
+		userpermission.setPermission(this);
+	}
+
+	public void removeUserpermission(UserpermissionEntity userpermission) {
+		userpermissionSet.remove(userpermission);
+		userpermission.setPermission(null);
+	}
 
 
 }

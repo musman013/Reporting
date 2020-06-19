@@ -2,7 +2,12 @@ package com.nfinity.reporting.reportingapp1.application.report.dto;
 
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class GetUserOutput {
+	
 	private Integer accessFailedCount;
 	private String authenticationSource;
 	private String emailAddress;
@@ -22,141 +27,5 @@ public class GetUserOutput {
 	private String userName;
 	private Long reportId;
 	private Boolean editable;
-
-
-	public Boolean getEditable() {
-		return editable;
-	}
-
-	public void setEditable(Boolean editable) {
-		this.editable = editable;
-	}
-
-	public Long getReportId() {
-		return reportId;
-	}
-
-	public void setReportId(Long reportId){
-		this.reportId = reportId;
-	}
-	public Integer getAccessFailedCount() {
-		return accessFailedCount;
-	}
-
-	public void setAccessFailedCount(Integer accessFailedCount){
-		this.accessFailedCount = accessFailedCount;
-	}
-	public String getAuthenticationSource() {
-		return authenticationSource;
-	}
-
-	public void setAuthenticationSource(String authenticationSource){
-		this.authenticationSource = authenticationSource;
-	}
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-
-	public void setEmailAddress(String emailAddress){
-		this.emailAddress = emailAddress;
-	}
-	public String getEmailConfirmationCode() {
-		return emailConfirmationCode;
-	}
-
-	public void setEmailConfirmationCode(String emailConfirmationCode){
-		this.emailConfirmationCode = emailConfirmationCode;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName){
-		this.firstName = firstName;
-	}
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id){
-		this.id = id;
-	}
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive){
-		this.isActive = isActive;
-	}
-	public Boolean getIsEmailConfirmed() {
-		return isEmailConfirmed;
-	}
-
-	public void setIsEmailConfirmed(Boolean isEmailConfirmed){
-		this.isEmailConfirmed = isEmailConfirmed;
-	}
-	public Boolean getIsLockoutEnabled() {
-		return isLockoutEnabled;
-	}
-
-	public void setIsLockoutEnabled(Boolean isLockoutEnabled){
-		this.isLockoutEnabled = isLockoutEnabled;
-	}
-	public String getIsPhoneNumberConfirmed() {
-		return isPhoneNumberConfirmed;
-	}
-
-	public void setIsPhoneNumberConfirmed(String isPhoneNumberConfirmed){
-		this.isPhoneNumberConfirmed = isPhoneNumberConfirmed;
-	}
-	public Date getLastLoginTime() {
-		return lastLoginTime;
-	}
-
-	public void setLastLoginTime(Date lastLoginTime){
-		this.lastLoginTime = lastLoginTime;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName){
-		this.lastName = lastName;
-	}
-	public Date getLockoutEndDateUtc() {
-		return lockoutEndDateUtc;
-	}
-
-	public void setLockoutEndDateUtc(Date lockoutEndDateUtc){
-		this.lockoutEndDateUtc = lockoutEndDateUtc;
-	}
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber){
-		this.phoneNumber = phoneNumber;
-	}
-	public Long getProfilePictureId() {
-		return profilePictureId;
-	}
-
-	public void setProfilePictureId(Long profilePictureId){
-		this.profilePictureId = profilePictureId;
-	}
-	public Boolean getTwoFactorEnabled() {
-		return twoFactorEnabled;
-	}
-
-	public void setTwoFactorEnabled(Boolean twoFactorEnabled){
-		this.twoFactorEnabled = twoFactorEnabled;
-	}
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName){
-		this.userName = userName;
-	}
 
 }

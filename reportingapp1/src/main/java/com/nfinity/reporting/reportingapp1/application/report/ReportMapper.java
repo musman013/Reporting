@@ -45,9 +45,7 @@ public interface ReportMapper {
 
 	ReportEntity updateReportInputToReportEntity(UpdateReportInput reportDto);
 	
-
 	UpdateReportversionInput updateReportInputToUpdateReportversionInput(UpdateReportInput reportDto);
-
 
 	@Mappings({ 
 		@Mapping(source = "entity.id", target = "id"), 
@@ -60,12 +58,14 @@ public interface ReportMapper {
 		@Mapping(source = "reportversion.userId", target = "userId"), 
 		@Mapping(source = "report.user.id", target = "ownerId"),
 		@Mapping(source = "reportversion.reportId", target = "id"),
+		@Mapping(source = "report.version", target = "version")
 	})
 	FindReportByIdOutput reportEntitiesToFindReportByIdOutput(ReportEntity report, ReportversionEntity reportversion, ReportuserEntity reportuser);
 
 	@Mappings({ 
 		//@Mapping(source = "entity.id", target = "id"),
-		@Mapping(source = "entity.user.id", target = "ownerId")
+		@Mapping(source = "entity.user.id", target = "ownerId"),
+		@Mapping(source = "entity.version", target = "version")
 	}) 
 	FindReportByIdOutput reportEntityToFindReportByIdOutput(ReportEntity entity, ReportversionEntity reportversion);
 
@@ -84,7 +84,7 @@ public interface ReportMapper {
 	@Mappings({
 		@Mapping(source = "reportversion.userId", target = "userId"),  
 		@Mapping(source = "report.user.id", target = "ownerId"),
-		@Mapping(source = "reportversion.reportId", target = "id"),
+		@Mapping(source = "reportversion.reportId", target = "id")
 	})
 	ReportDetailsOutput reportEntitiesToReportDetailsOutput(ReportEntity report, ReportversionEntity reportversion, ReportuserEntity reportuser);
 	

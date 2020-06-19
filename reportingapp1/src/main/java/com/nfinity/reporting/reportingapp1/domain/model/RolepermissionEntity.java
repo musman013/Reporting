@@ -1,81 +1,44 @@
 package com.nfinity.reporting.reportingapp1.domain.model;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Date;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "Rolepermission", schema = "reporting")
 @IdClass(RolepermissionId.class)
-public class RolepermissionEntity implements Serializable {
+public class RolepermissionEntity extends AbstractEntity {
 
-  private Long permissionId;
-  private Long roleId;
- 
-  public RolepermissionEntity() {
-  }
-  
-  public RolepermissionEntity(Long permissionId, Long roleId) {
-	  this.roleId = roleId;
-	  this.permissionId = permissionId;
-  }
+	private static final long serialVersionUID = 1L; 
+	
+	@Id
+	@Column(name = "permissionId", nullable = false)
+	private Long permissionId; 
+	
+	@Id
+	@Column(name = "roleId", nullable = false)
+	private Long roleId; 
 
-  @ManyToOne
-  @JoinColumn(name = "permissionId", insertable=false, updatable=false)
-  public PermissionEntity getPermission() {
-    return permission;
-  }
-  public void setPermission(PermissionEntity permission) {
-    this.permission = permission;
-  }
-  
-  private PermissionEntity permission;
- 
-  @Id
-  @Column(name = "permissionId", nullable = false)
-  public Long getPermissionId() {
-  return permissionId;
-  }
+	@ManyToOne
+	@JoinColumn(name = "permissionId", insertable=false, updatable=false)
+	private PermissionEntity permission;
 
-  public void setPermissionId(Long permissionId){
-  this.permissionId = permissionId;
-  }
-  
-  @ManyToOne
-  @JoinColumn(name = "roleId", insertable=false, updatable=false)
-  public RoleEntity getRole() {
-    return role;
-  }
-  public void setRole(RoleEntity role) {
-    this.role = role;
-  }
-  
-  private RoleEntity role;
- 
-  @Id
-  @Column(name = "roleId", nullable = false)
-  public Long getRoleId() {
-  return roleId;
-  }
+	@ManyToOne
+	@JoinColumn(name = "roleId", insertable=false, updatable=false)
+	private RoleEntity role;
 
-  public void setRoleId(Long roleId){
-  this.roleId = roleId;
-  }
-  
-//  @Override
-//  public boolean equals(Object o) {
-//    if (this == o) return true;
-//      if (!(o instanceof RolepermissionEntity)) return false;
-//        RolepermissionEntity rolepermission = (RolepermissionEntity) o;
-//        return id != null && id.equals(rolepermission.id);
-//  }
+	public RolepermissionEntity(Long permissionId, Long roleId) {
+		this.roleId = roleId;
+		this.permissionId = permissionId;
+	}
 
 }
 
-  
-      
+
+
 
 
